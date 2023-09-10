@@ -15,24 +15,26 @@ document.addEventListener('DOMContentLoaded', function(){
         initialView: "dayGridMonth",
         //日付の（複数）選択を可能にする
         selectable: true,
-        select: function(args) {
+        select: function(info) {
             /*var title = prompt('イベント名')
             if (title) {
                 calendar.addEvent({
                     title: title,
-                    start: args.start,
-                    end: args.end,
-                    alllDay: args.allDay
+                    start: info.start,
+                    end: info.end,
+                    alllDay: info.allDay
                 })
             calendar.unselect()
             */
 
-           //日付をクリックしたら，その日付のイベントを作成するページに移動する
-           const url = "http://127.0.0.1:8000/event/"+args.start
-           console.log(url);
-           //イベントの日付を取得する
-           console.log(args.start);
-           window.location.href = url;
+            // 日付をyyyy-mm-dd形式にformatする
+            start_day = info.start.toISOString().split("T");
+
+            // urlの作成
+            const url = "http://127.0.0.1:8000/event/"+start_day[0];
+            
+            //クリックした日付のイベントを作成するページに移動する
+            window.location.href = url;
         },
         eventClick: function(arg) {
             if (confirm('本当にこのイベントを削除しますか？')) {
