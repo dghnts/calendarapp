@@ -9,15 +9,17 @@
 <form action="" name="event" method="post">
     {% csrf_token %}
     <label for="startdate">開始日</label>
-    <input type="date" name="startdate" value={{ event_date}}>
+    <input type="date" name="start_dt" value={{ event_date}}>
     <label for="enddate">終了日</label>
-    <input typo="date" name="enddate" value={{ event_date }}>
+    <input type="date" name="end_dt" value={{ event_date }}>
     <label for="content">イベントの内容</label>
     <input type="text" name="content" placeholder="イベントの内容">
+    <!-- 
     <label for="repeat">繰り返しの頻度</label>
     <input type="text" name="repeat">
-    <label for="繰り返しの終了日"></label>
+    <label for="stop">繰り返しの終了日</label>
     <input type="date" name="stop" >
+-->
     <input type="submit" value="保存">
 </form>
 {% endblock %}
