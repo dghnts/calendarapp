@@ -11,4 +11,16 @@ class ScheduleForm(forms.ModelForm):
     
     class Meta:
         model = Schedule
-        fields = ["calendar", "start_dt", "end_dt", "content", "user", "repeat", "stop"]
+        fields = [#"calendar"#,
+                  "start_dt", 
+                  "end_dt", 
+                  "content", 
+                  #"user", "repeat", "stop",
+                  ]
+        
+        # エラーメッセージ
+        error_messages = {
+            'content': {
+                   'required': "イベントの内容を入力してください",
+            },
+        }

@@ -7,5 +7,10 @@
 {% endblock  %}
 
 {% block main %}
+  <div>
+    {% for message in messages %}
+      <div>{{ message }}</div>
+    {% endfor %}
+  </div>
   <div id='calendar'></div>
 {% endblock %}@

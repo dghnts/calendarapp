@@ -1,0 +1,5 @@
+#データベース関連
+*/migrations
+*/__pycache__
+#アプリ開発の時に書いたメモ
+idea.md
