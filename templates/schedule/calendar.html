@@ -1,9 +1,18 @@
 {% extends "common/base.html"%}
+{% load static %}
+{% block page_title %}
+カレンダー（仮）
+{% endblock %}
 
 {% block extra_head %}
   <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
   <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/locales-all.global.min.js"></script>
-  <script src='../../static/calendar/js/calendar.js'></script>
+  <script> 
+    {% autoescape off %}
+      let schedule = {{ schedule }}
+    {% endautoescape %} 
+  </script>
+  <script src="{% static '/calendar/js/calendar.js' %}"></script>
 {% endblock  %}
 
 {% block main %}
@@ -13,4 +22,5 @@
     {% endfor %}
   </div>
   <div id='calendar'></div>
-{% endblock %}@
+
+{% endblock %}

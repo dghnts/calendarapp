@@ -36,9 +36,11 @@ document.addEventListener('DOMContentLoaded', function(){
             //クリックした日付のイベントを作成するページに移動する
             window.location.href = url;
         },
+        events: schedule,
+        //イベントをクリックしたときの処理
         eventClick: function(arg) {
             if (confirm('本当にこのイベントを削除しますか？')) {
-              arg.event.remove()
+              arg.event.remove();
             }
         },
         editable: true,
