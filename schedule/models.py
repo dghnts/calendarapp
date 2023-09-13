@@ -43,7 +43,7 @@ class Event(models.Model):
     # repeat =  models.DurationField(verbose_name="繰り返し期間", default="", null=True, blank=True)
     
     # いつまで繰り返し処理を行うのかを指定する
-    # stop = models.DateTimeField(verbose_name="繰り返し終了日", default="", null=True, blank=True)
+    # stop = models.DateTimeField(verbose_name="繰り返し終了日", default=timedelta(days=7), null=True, blank=True)
     
     # スケジュールを登録したユーザー
     # スケジュールを作成したユーザーが削除されたらスケジュールも削除される
