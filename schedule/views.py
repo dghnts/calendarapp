@@ -5,12 +5,45 @@ from .models import Schedule
 
 from django.contrib import messages
 
-# Create your views here.
+from json import dumps
+
+'''
+# modelのフィールド一覧を取得するための関数
+def get_fields_name(models):
+    # 各フィールドのmeta情報を取得
+    meta_fields = models._meta.get_fields()
+    
+    #for data in meta_fields:
+    #    print(type(data))
+    
+    fields = list()
+    
+    # enumerate型を利用して各フィールドの名前を取得
+    for i, meta_field in enumerate(meta_fields):
+        # id以外のすべてのフィールドを取得
+        if i > 0:
+            fields.append(meta_field.name)
+            
+    return fields
+'''
 
 # カレンダーを表示させるview
 class CalendarView(View):
     def get(self, request, *args, **kwargs):
-        return render(request,"schedule/calendar.html")
+        context = {}
+        schedule_list = []
+        # 全ての登録されたスケジュールに対して以下の処理を実行する
+        for schedule in Schedule.objects.all():
+            # スケジュールの詳細を保存する辞書を作成
+            details = {}
+            details["title"] = schedule.content
+            details["start"] = schedule.start_dt.strftime('%Y-%m-%d')
+            details["end"] = schedule.end_dt.strftime('%Y-%m-%d')
+            schedule_list.append(details)
+        print(schedule_list)
+        
+        context["schedule"] = dumps(schedule_list)
+        return render(request,"schedule/calendar.html",context)
 
 calendar = CalendarView.as_view()
 
