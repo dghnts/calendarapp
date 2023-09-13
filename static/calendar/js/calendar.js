@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', function(){
         //日付の（複数）選択を可能にする
         selectable: true,
         select: function(info) {
-            /*var title = prompt('イベント名')
+            /*
+            var title = prompt('イベント名')
             if (title) {
                 calendar.addEvent({
                     title: title,
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function(){
             */
 
             // 日付をyyyy-mm-dd形式にformatする
-            start_day = info.start.toISOString().split("T");
+            start_day = info.startStr.split("T");
 
             // urlの作成
             const url = "http://127.0.0.1:8000/event/"+start_day[0];
@@ -39,9 +40,7 @@ document.addEventListener('DOMContentLoaded', function(){
         events: schedule,
         //イベントをクリックしたときの処理
         eventClick: function(arg) {
-            if (confirm('本当にこのイベントを削除しますか？')) {
-              arg.event.remove();
-            }
+            //イベント詳細ページへ移動する
         },
         editable: true,
         dayMaxEvents: true,
