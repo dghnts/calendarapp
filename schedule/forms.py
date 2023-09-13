@@ -1,5 +1,5 @@
 from django import forms
-from .models import Calendar,Schedule
+from .models import Calendar,Event
 
 class CalendarForm(forms.ModelForm):
     
@@ -7,20 +7,22 @@ class CalendarForm(forms.ModelForm):
         model = Calendar
         fields = ["user", "name", "share"]
         
-class ScheduleForm(forms.ModelForm):
+class EventForm(forms.ModelForm):
     
     class Meta:
-        model = Schedule
+        model = Event
         fields = [#"calendar"#,
-                  "start_dt", 
-                  "end_dt", 
-                  "content", 
-                  #"user", "repeat", "stop",
+                  "start", 
+                  "end", 
+                  "title", 
+                  # "user",
+                  # "repeat",
+                  # "stop",
                   ]
         
         # エラーメッセージ
         error_messages = {
-            'content': {
+            'title': {
                    'required': "イベントの内容を入力してください",
             },
         }

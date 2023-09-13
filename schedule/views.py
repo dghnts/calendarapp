@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from .forms import ScheduleForm
-from .models import Schedule
+from .forms import EventForm
+from .models import Event
 
 from django.contrib import messages
 
 from json import dumps
+from django.utils.timezone import localtime
 
 '''
 # modelのフィールド一覧を取得するための関数
@@ -31,18 +32,20 @@ def get_fields_name(models):
 class CalendarView(View):
     def get(self, request, *args, **kwargs):
         context = {}
-        schedule_list = []
+        event_list = []
         # 全ての登録されたスケジュールに対して以下の処理を実行する
-        for schedule in Schedule.objects.all():
+        for event in Event.objects.all():
             # スケジュールの詳細を保存する辞書を作成
             details = {}
-            details["title"] = schedule.content
-            details["start"] = schedule.start_dt.strftime('%Y-%m-%d')
-            details["end"] = schedule.end_dt.strftime('%Y-%m-%d')
-            schedule_list.append(details)
-        print(schedule_list)
+            # jsでイベントを操作するときに利用するid(schedulemodelのidを利用できる)
+            details["id"] = event.id
+            details["title"] = event.title
+            details["start"] = localtime(event.start).strftime('%Y-%m-%d')
+            details["end"] = localtime(event.end).strftime('%Y-%m-%d')
+            event_list.append(details)
+        print(event_list)
         
-        context["schedule"] = dumps(schedule_list)
+        context["events"] = dumps(event_list)
         return render(request,"schedule/calendar.html",context)
 
 calendar = CalendarView.as_view()
@@ -53,10 +56,10 @@ class ReigsterEventView(View):
         # contextに日付の情報を渡す
         context = {}
         context["event_date"] = pk
-        return render(request, "schedule/event.html", context)
+        return render(request, "schedule/register_event.html", context)
     
     def post(self, request, *args, **kwargs):
-        form = ScheduleForm(request.POST)
+        form = EventForm(request.POST)
         
         # バリデーションチェック
         if not form.is_valid():
@@ -79,3 +82,29 @@ class ReigsterEventView(View):
         return redirect("schedule:calendar")
         
 register_event = ReigsterEventView.as_view()
+
+
+# イベント登録フォーム用のview
+class EventView(View):
+    def get(self, request, pk, *args, **keargs):
+        # 詳細を表示したいイベントをidから取得する
+        event = Event.objects.filter(id=pk).first()
+        context = {"event": event}
+        return render(request, "schedule/event.html",context)
+    
+            
+event = EventView.as_view()
+
+# イベント削除用のview
+class DeleteEventView(View):
+    def post(self, request, pk, *args, **keargs):
+        
+        #削除したいイベントを取得
+        event = Event.objects.filter(id=pk).first()
+        event.delete()
+        
+        #削除完了メッセージをcalendarｄのページで表示する
+        messages.info(request,"イベントを削除しました")
+        return redirect("schedule:calendar")
+            
+delete_event = DeleteEventView.as_view()

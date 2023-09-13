@@ -29,18 +29,22 @@ document.addEventListener('DOMContentLoaded', function(){
             */
 
             // 日付をyyyy-mm-dd形式にformatする
+            console.log(info.start);
             start_day = info.startStr.split("T");
 
             // urlの作成
-            const url = "http://127.0.0.1:8000/event/"+start_day[0];
+            const url = "http://127.0.0.1:8000/registerevent/"+start_day[0];
             
             //クリックした日付のイベントを作成するページに移動する
-            window.location.href = url;
+            //window.location.href = url;
         },
-        events: schedule,
+        events: events,
         //イベントをクリックしたときの処理
-        eventClick: function(arg) {
+        eventClick: function(info) {
+            id = info.event.id
+            console.log(id);
             //イベント詳細ページへ移動する
+            window.location.href = "http://127.0.0.1:8000/event/"+id
         },
         editable: true,
         dayMaxEvents: true,
