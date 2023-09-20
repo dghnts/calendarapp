@@ -99,7 +99,7 @@ event = EventView.as_view()
 class DeleteEventView(View):
     def post(self, request, pk, *args, **keargs):
         
-        #削除したいイベントを取得
+        # 削除したいイベントを取得
         event = Event.objects.filter(id=pk).first()
         event.delete()
         

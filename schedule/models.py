@@ -1,7 +1,9 @@
 from django.db import models
-from datetime import datetime, timedelta
+from datetime import timedelta
+from django.utils import timezone
 
 from users.models import CustomUser
+
 
 # カレンダーモデル
 class Calendar(models.Model):
@@ -40,10 +42,14 @@ class Event(models.Model):
     
     ## どのくらいのスパンで繰り返すか指定
     ## 繰り返しの初期値を7日間で設定
+    # durationsfieldのdefault値はtimedeltaｓ型で指定する
     # repeat =  models.DurationField(verbose_name="繰り返し期間", default="", null=True, blank=True)
+    repeat =  models.DurationField(verbose_name="繰り返し期間", default=timedelta(days=7), null=True, blank=True)
     
     # いつまで繰り返し処理を行うのかを指定する
-    # stop = models.DateTimeField(verbose_name="繰り返し終了日", default=timedelta(days=7), null=True, blank=True)
+    # Datetimefieldのdefault値はdatetimeｓ型でｓ
+    #stop = models.DateTimeField(verbose_name="繰り返し終了日", default=timedelta(days=7), null=True, blank=True)
+    stop = models.DateTimeField(verbose_name="繰り返し終了日", default=timezone.now()+timedelta(days=1000), null=True, blank=True)
     
     # スケジュールを登録したユーザー
     # スケジュールを作成したユーザーが削除されたらスケジュールも削除される
