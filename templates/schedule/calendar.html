@@ -13,7 +13,6 @@
       let events = {{ events }}
     {% endautoescape %} 
   </script>
-  <script src="{% static '/calendar/js/calendar.js' %}"></script>
 {% endblock  %}
 
 {% block main %}
@@ -29,6 +28,51 @@
       </div>
       <div class="col-md-6">
         <div id='list_events'></div>
+      </div>
+    </div>
+  </div>
+  <!--モーダルダイアログの記述-->
+  <!-- Button trigger modal -->
+  <button type="button" id="register" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="display:none">
+  </button>
+  <div class="modal" id="staticBackdrop" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">イベント編集画面</h5>
+          <!-- modal終了のボタン -->
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="{% url 'schedule:register_event' %}" name="event" method="post" id="register_event">
+            {% csrf_token %}
+            <div>
+              <label for="content" class="form-label">イベントの内容</label>
+              <input type="text" class="form-control" name="title" placeholder="イベントの内容">
+            </div>
+            <div>
+              <label for="startdate" class="form-label">開始日</label>
+              <input type="text" class="form-control" name="start" readonly> 
+            </div>
+            <div>
+              <label for="enddate" class="form-label">終了日</label>
+              <input type="text" class="form-control" name="end" readonly> 
+            </div>
+            <!-- 
+            <label for="repeat">繰り返しの頻度</label>
+            <input type="text" name="repeat">
+            <label for="stop">繰り返しの終了日</label>
+            <input type="date" name="stop" >
+            -->
+          </form>
+        </div>
+        <div class="modal-footer">
+               <button type="submit" class="btn btn-primary" form="register_event">保存</button>
+               <form action="" name="delete_event" method="post">
+                {% csrf_token %}
+                <input type="submit" value="削除">
+               </form>
+        </div>
       </div>
     </div>
   </div>
