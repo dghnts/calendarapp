@@ -1,7 +1,7 @@
 from django.db import models
 from datetime import timedelta
 from django.utils import timezone
-
+from config import settings
 from users.models import CustomUser
 
 
@@ -9,12 +9,12 @@ from users.models import CustomUser
 class Calendar(models.Model):
     #作成したユーザー
     #作成者のアカウントが消えたらカレンダーも同時に削除される
-    user = models.ForeignKey(CustomUser, verbose_name="作成者", on_delete=models.CASCADE)
-    #登録するカレンダーの名前
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="作成者", on_delete=models.CASCADE)
+    #登録するカレンダーの名前y
     name = models.CharField(verbose_name="カレンダー", max_length=100)
     
     # カレンダーを共有するユーザー名の指定
-    share = models.ManyToManyField(CustomUser,verbose_name="公開範囲", related_name="share_calendar")
+    share = models.ManyToManyField(settings.AUTH_USER_MODEL, verbose_name="公開範囲", related_name="share_calendar")
 
 # スケジュールモデル
 class Event(models.Model):
@@ -24,7 +24,7 @@ class Event(models.Model):
     
     #スケジュールを登録するカレンダー
     #カレンダー額削除されると同時にスケジュールも削除される    
-    # calendar = models.ForeignKey(Calendar, verbose_name="スケジュール", on_delete=models.CASCADE)
+    # calendar = models.ForeignKey(Calendar, verbose_name="カレンダー", on_delete=models.CASCADE)
     
     # スケジュールの開始日
     # 日時はユーザーが指定するから，auto_now,auto_now_addはFalse
@@ -44,13 +44,19 @@ class Event(models.Model):
     ## 繰り返しの初期値を7日間で設定
     # durationsfieldのdefault値はtimedeltaｓ型で指定する
     # repeat =  models.DurationField(verbose_name="繰り返し期間", default="", null=True, blank=True)
-    repeat =  models.DurationField(verbose_name="繰り返し期間", default=timedelta(days=7), null=True, blank=True)
+    #repeat =  models.DurationField(verbose_name="繰り返し期間", default=timedelta(days=7), null=True, blank=True)
     
     # いつまで繰り返し処理を行うのかを指定する
     # Datetimefieldのdefault値はdatetimeｓ型でｓ
-    #stop = models.DateTimeField(verbose_name="繰り返し終了日", default=timedelta(days=7), null=True, blank=True)
-    stop = models.DateTimeField(verbose_name="繰り返し終了日", default=timezone.now()+timedelta(days=1000), null=True, blank=True)
+    ## stop = models.DateTimeField(verbose_name="繰り返し終了日", default=timedelta(days=7), null=True, blank=True)
+    ## stop = models.DateTimeField(verbose_name="繰り返し終了日", default=timezone.now()+timedelta(days=1000), null=True, blank=True)
     
     # スケジュールを登録したユーザー
     # スケジュールを作成したユーザーが削除されたらスケジュールも削除される
-    # user = models.ForeignKey(CustomUser, verbose_name="スケジュール作成者", on_delete=models.CASCADE)
+    # user = models.ForeignKey(CustomUser, verbose_name="投稿者", on_delete=models.CASCADE)
+
+# TODO: 後から権限を編集できるようにする
+# TODO: CalendarPermissionでも良いのでは？
+#class CalendarPermisson(models.Model):
+    
+    

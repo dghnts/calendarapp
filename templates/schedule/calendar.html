@@ -11,6 +11,8 @@
     //　特殊文字("<",">","'",etc...)をエスケープしないための処理
     {% autoescape off %}
       let events = {{ events }}
+      let edit_event = "{% url 'schedule:edit_event' 0%}"
+      let delete_event = "{% url 'schedule:delete_event' 0%}"
     {% endautoescape %} 
   </script>
 {% endblock  %}
@@ -32,7 +34,7 @@
             <div>{{ event.id }}</div>
             <div>期間:{{event.start}} ~ {{event.end}}</div>
             <div>イベント名:{{ event.title }}</div>
-            <button type="button" id="edit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" >編集
+            <button type="button" id="edit_{{ event.id }}" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" >編集
             </button>
           </div>
         {% endfor %}
@@ -41,7 +43,7 @@
   </div>
   <!--モーダルダイアログの記述-->
   <!-- Button trigger modal -->
-  <button type="button" id="register" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="display:none">
+  <button type="button" id="edit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="display:none">
   </button>
   <div class="modal" id="staticBackdrop" data-bs-backdrop="static" tabindex="-1">
     <div class="modal-dialog">
@@ -52,7 +54,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form action="{% url 'schedule:register_event' %}" name="event" method="post" id="register_event">
+          <form action="" name="edit_event" method="post" id="edit_event">
             {% csrf_token %}
             <div>
               <label for="content" class="form-label">イベントの内容</label>
@@ -75,7 +77,7 @@
           </form>
         </div>
         <div class="modal-footer">
-               <button type="submit" class="btn btn-primary" form="register_event">保存</button>
+               <button type="submit" class="btn btn-primary" form="edit_event">保存</button>
                <form action="" name="delete_event" method="post">
                 {% csrf_token %}
                 <input type="submit" value="削除">

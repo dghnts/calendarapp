@@ -53,16 +53,14 @@ class CalendarView(View):
 calendar = CalendarView.as_view()
 
 # イベント登録フォーム用のview
-class ReigsterEventView(View):
-    def get(self, request, pk, *args, **keargs):
-        # contextに日付の情報を渡す
-        context = {}
-        context["event_date"] = pk
-        return render(request, "schedule/register_event.html", context)
-    
-    def post(self, request, *args, **kwargs):
-        form = EventForm(request.POST)
-        
+class EditEventView(View):
+    def post(self, request, pk, *args, **kwargs):
+        if pk == 0:
+            form = EventForm(request.POST)
+            success = "イベントの登録に成功しました"
+        else:
+            form = EventForm(request.POST, instance=Event.objects.filter(id=pk).first())
+            success = "イベントの編集に成功しました"
         # バリデーションチェック
         if not form.is_valid():
             # バリデーションエラーの場合の処理
@@ -78,24 +76,13 @@ class ReigsterEventView(View):
             return redirect("schedule:calendar")
         
         #　バリデーションOK
-        messages.info(request, "イベントの登録に成功しました")
+        messages.info(request, success)
         form.save()
+        print("イベントの編集に成功")
         
         return redirect("schedule:calendar")
         
-register_event = ReigsterEventView.as_view()
-
-
-# イベント登録フォーム用のview
-class EventView(View):
-    def get(self, request, pk, *args, **keargs):
-        # 詳細を表示したいイベントをidから取得する
-        event = Event.objects.filter(id=pk).first()
-        context = {"event": event}
-        return render(request, "schedule/event.html",context)
-    
-            
-event = EventView.as_view()
+edit_event = EditEventView.as_view()
 
 # イベント削除用のview
 class DeleteEventView(View):
