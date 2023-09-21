@@ -63,17 +63,10 @@ window.addEventListener("load" , function (){
             document.getElementById("register").click();
         },
 
-        /*dateClick: function(info) {
+        dateClick: function(info) {
             // 時間のセット
-            info.date.setHours( info.date.getHours() + today.getHours() );
-            config_dt.defaultDate = info.date;
-
-            console.log(config_dt.defaultDate);
-            flatpickr("[name='end']", config_dt);
-            flatpickr("[name='start']", config_dt);
-
-            document.getElementById("register").click();
-        },*/
+            console.log(info.date);
+        },
 
         events: events,
         //イベントをクリックしたときの処理
@@ -102,29 +95,5 @@ window.addEventListener("load" , function (){
         dayMaxEvents: true,
     });
     calendar.render();
-   
-    // カレンダーの要素を取得
-    var list_eventsEl = document.getElementById('list_events');
-     // オブジェクトを作成 Fullcalendarを実行。引数は要素と表示するカレンダーの設定
-    var list_events = new FullCalendar.Calendar(list_eventsEl,{
-        headerToolbar: {
-            left: 'prev,today,next',
-            center: 'title',
-            right: 'listMonth,listWeek,listDay'
-        },
-        // 表示言語の設定
-        locale: "ja",
-        buttonIcons: true,
-        initialView: "listWeek",
-        events: events,
-        //イベントをクリックしたときの処理
-        eventClick: function(info) {
-            id = info.event.id
-            console.log(id);
-            //イベント詳細ページへ移動する
-            //window.location.href = "http://127.0.0.1:8000/event/"+id
-        },
-    });
 
-    list_events.render();
 });

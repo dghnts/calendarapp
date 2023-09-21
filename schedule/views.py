@@ -33,8 +33,9 @@ class CalendarView(View):
     def get(self, request, *args, **kwargs):
         context = {}
         event_list = []
+        eventsobj = Event.objects.all()
         # 全ての登録されたスケジュールに対して以下の処理を実行する
-        for event in Event.objects.all():
+        for event in eventsobj:
             # スケジュールの詳細を保存する辞書を作成
             details = {}
             # jsでイベントを操作するときに利用するid(schedulemodelのidを利用できる)
@@ -46,6 +47,7 @@ class CalendarView(View):
         print(event_list)
         
         context["events"] = dumps(event_list)
+        context["eventsobj"] = eventsobj
         return render(request,"schedule/calendar.html",context)
 
 calendar = CalendarView.as_view()
