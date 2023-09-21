@@ -1,5 +1,4 @@
 #データベース関連
-*/migrations
 */__pycache__
 *.sqlite3
 
