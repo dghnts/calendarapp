@@ -8,8 +8,9 @@ from schedule.forms import CalendarForm, CalendarPermissionForm
 class UsersIndexView(View):
     def get(self, request, *args, **kwargs):
         context = {}
-        context["calendars"] = Calendar.objects.all()
-        print("OK")
+        print(request.user.is_anonymous)
+        if not request.user.is_anonymous:
+            context["calendars"] = Calendar.objects.filter(user=request.user)
         print(context)
         return render(request, "users/user_index.html",context)
     
@@ -31,7 +32,7 @@ class UsersIndexView(View):
          # 保存したカレンダーのデータをとる
          calendar   = form.save()
          
-         # ｔカレンとーの投稿者自身に全権限を付与
+         # カレンダーの投稿者自身に全権限を付与
          dic                = {}
          dic["calendar"]    = calendar
          dic["user"]        = request.user

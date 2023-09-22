@@ -34,13 +34,15 @@ class IndexView(View):
 
 index = IndexView.as_view()
 
-# Create your views here.
+'''
 class UsersIndexView(View):
     def get(self, request, *args, **kwargs):
         context = {}
-        context["calendars"] = Calendar.objects.all()
-        print("OK")
-        print(context)
+        if request.user !="":
+            context["calendars"] = Calendar.objects.filter(user=request.user)
+        print(request.user)
+        print("こんにちは")
+        #print(context)
         return render(request, "users/user_index.html",context)
     
     def post(self, request, *args, **kwargs):
@@ -78,7 +80,7 @@ class UsersIndexView(View):
          return redirect("users:user_index")
      
 user_index = UsersIndexView.as_view()
-
+'''
 # カレンダーを表示させるview
 class CalendarView(View):
     def get(self, request, pk, *args, **kwargs):
