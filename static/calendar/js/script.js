@@ -32,7 +32,6 @@ window.addEventListener("load" , function (){
     //flatpickr("[name='start_dt']", config_dt);
     
      // カレンダーに関する設定 ///////////////////////////////////////////////////////////////////
-
     // カレンダーの要素を取得
     var calendarEl = document.getElementById('calendar');
     let delete_event_form = document.delete_event
@@ -78,7 +77,7 @@ window.addEventListener("load" , function (){
             // 時間のセット
             //console.log(info.date);
         },
-
+        
         events: events,
         //イベントをクリックしたときの処理
         eventClick: function(info) {
