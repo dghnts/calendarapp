@@ -2,4 +2,8 @@ from django.shortcuts import render,redirect
 from django.views import View
 
 # Create your views here.
-class Loginview(View):
+class UsersIndexView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, "users/user_index.html")
+    
+user_index = UsersIndexView.as_view()
