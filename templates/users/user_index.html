@@ -9,4 +9,36 @@
 
 {% block main %}
 
+<h2>カレンダー一覧</h2>
+{% for calendar in calendars %}
+<div>
+    <a href="{% url 'schedule:calendar' calendar.id %}">{{ calendar.name }}</a>
+</div>
+{% endfor %}
+
+<h2>カレンダー新規作成</h2>
+
+<form action="" method="post">
+    {% csrf_token %}
+    <input type="text" name="name">
+    <input type="submit" value="新規作成">
+
+    {# TODO: メールアドレスを指定、ユーザーを選び、そのユーザーに対する権限を指定する。#} 
+    
+    {% comment %}
+    ユーザーの指定方法1: Ajaxを使ってメールアドレスを入力、サーバー側にユーザー検索をしてもらい、ヒットしたユーザーを選択する。(難しい)
+    ユーザーの指定方法2: メールアドレスを入力。カレンダー作成のフォームを投稿する。ビュー側でメールアドレスを元にuserを指定する。
+    {% endcomment %}
+
+    {# TODO:この一人分の権限のフォームはJavaScriptで増やせるようにする。 #} 
+
+
+
+    <div id="permission_form_area">
+        <input id="permission_form_add" type="button" value="+ 追加">
+    </div>
+
+
+</form>
+
 {% endblock %}

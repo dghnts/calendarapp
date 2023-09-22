@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from .forms import EventForm
-from .models import Event
+from .models import Event,Calendar
 
 from django.contrib import messages
 
@@ -28,18 +28,65 @@ def get_fields_name(models):
     return fields
 '''
 
-class UserIndexView(View):
+class IndexView(View):
     def get(self, request, *args, **kwargs):
         return render(request, "schedule/index.html")
 
-index = UserIndexView.as_view()
+index = IndexView.as_view()
+
+# Create your views here.
+class UsersIndexView(View):
+    def get(self, request, *args, **kwargs):
+        context = {}
+        context["calendars"] = Calendar.objects.all()
+        print("OK")
+        print(context)
+        return render(request, "users/user_index.html",context)
+    
+    def post(self, request, *args, **kwargs):
+         # TODO:カレンダーの新規作成
+         
+         # request.POSTを編集するためにコピーする
+         copied         = request.POST.copy()
+         
+         # "user"属性を付与して現在ログイン中のユーザーを設定
+         copied["user"] = request.user
+         
+         form   = CalendarForm(copied)
+         
+         if not form.is_valid():
+             print(form.errors)
+             return redirect("users:user_index")
+         
+         # 保存したカレンダーのデータをとる
+         calendar   = form.save()
+         
+         # ｔカレンとーの投稿者自身に全権限を付与
+         dic                = {}
+         dic["calendar"]    = calendar
+         dic["user"]        = request.user
+         dic["read"]        = True
+         dic["write"]       = True
+         dic["chat"]        = True
+         
+         form   = CalendarPermissionForm(dic)
+         
+         if form.is_valid():
+            form.save()
+         
+         
+         return redirect("users:user_index")
+     
+user_index = UsersIndexView.as_view()
 
 # カレンダーを表示させるview
 class CalendarView(View):
-    def get(self, request, *args, **kwargs):
+    def get(self, request, pk, *args, **kwargs):
         context = {}
         event_list = []
         eventsobj = Event.objects.all()
+        # 現在表示しているカレンダーのオブジェクトを取得
+        calendarobj = Calendar.objects.filter(id=pk).first()
         # 全ての登録されたスケジュールに対して以下の処理を実行する
         for event in eventsobj:
             # スケジュールの詳細を保存する辞書を作成
@@ -52,23 +99,22 @@ class CalendarView(View):
             event_list.append(details)
         print(event_list)
         
-        context["events"] = dumps(event_list)
-        context["eventsobj"] = eventsobj
+        context["events"]       = dumps(event_list)
+        context["eventsobj"]    = eventsobj
+        context["calendar"]     = calendarobj
         return render(request,"schedule/calendar.html",context)
 
 calendar = CalendarView.as_view()
 
 # イベント登録フォーム用のview
-class ReigsterEventView(View):
-    def get(self, request, pk, *args, **keargs):
-        # contextに日付の情報を渡す
-        context = {}
-        context["event_date"] = pk
-        return render(request, "schedule/register_event.html", context)
-    
-    def post(self, request, *args, **kwargs):
-        form = EventForm(request.POST)
-        
+class EditEventView(View):
+    def post(self, request, pk, *args, **kwargs):
+        if pk == 0:
+            form = EventForm(request.POST)
+            success = "イベントの登録に成功しました"
+        else:
+            form = EventForm(request.POST, instance=Event.objects.filter(id=pk).first())
+            success = "イベントの編集に成功しました"
         # バリデーションチェック
         if not form.is_valid():
             # バリデーションエラーの場合の処理
@@ -80,28 +126,18 @@ class ReigsterEventView(View):
             for error in errors:
                 for e in error:
                     messages.error(request, e["message"])
-                    
-            return redirect("schedule:calendar")
+            
+            # pkで表示しているカレンダーのidをurlに渡す
+            return redirect("schedule:calendar",pk=pk)
         
         #　バリデーションOK
-        messages.info(request, "イベントの登録に成功しました")
+        messages.info(request, success)
         form.save()
         
-        return redirect("schedule:calendar")
+        # pkで表示しているカレンダーのidをurlに渡す
+        return redirect("schedule:calendar",pk=pk)
         
-register_event = ReigsterEventView.as_view()
-
-
-# イベント登録フォーム用のview
-class EventView(View):
-    def get(self, request, pk, *args, **keargs):
-        # 詳細を表示したいイベントをidから取得する
-        event = Event.objects.filter(id=pk).first()
-        context = {"event": event}
-        return render(request, "schedule/event.html",context)
-    
-            
-event = EventView.as_view()
+edit_event = EditEventView.as_view()
 
 # イベント削除用のview
 class DeleteEventView(View):
@@ -113,6 +149,6 @@ class DeleteEventView(View):
         
         #削除完了メッセージをcalendarｄのページで表示する
         messages.info(request,"イベントを削除しました")
-        return redirect("schedule:calendar")
+        return redirect("schedule:calendar",pk=pk)
             
 delete_event = DeleteEventView.as_view()

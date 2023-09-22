@@ -1,5 +1,5 @@
 from django import forms
-from .models import Calendar,Event
+from .models import Calendar,Event,CalendarPermission
 
 class CalendarForm(forms.ModelForm):
     
@@ -26,3 +26,10 @@ class EventForm(forms.ModelForm):
                    'required': "イベントの内容を入力してください",
             },
         }
+
+class CalendarPermissionForm(forms.ModelForm):
+    class Meta:
+        model   = CalendarPermission
+        fields  = [ "calendar","user","read","write","chat" ] 
+
+
