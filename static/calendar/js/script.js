@@ -29,7 +29,11 @@ window.addEventListener("load" , function (){
     //        ↓発動させたい要素       　↓設定
     //flatpickr("[name='end_dt']", config_dt);
     //flatpickr("[name='start_dt']", config_dt);
-
+    
+    if(typeof Fullcalendar != "function"){
+        return 0;
+    };
+    
     // カレンダーの要素を取得
     var calendarEl = document.getElementById('calendar');
  

@@ -14,8 +14,22 @@ class Calendar(models.Model):
     name = models.CharField(verbose_name="カレンダー", max_length=100)
     
     # カレンダーを共有するユーザー名の指定
-    share = models.ManyToManyField(CustomUser,verbose_name="公開範囲", related_name="share_calendar")
+    #share = models.ManyToManyField(CustomUser,verbose_name="公開範囲", related_name="share_calendar")
+    
+    permission = models.ManyToManyField(CustomUser, verbose_name="公開範囲", through="CalendarPermission" ,related_name="calendar_permission", blank=True)
 
+class CalendarPermission(models.Model):
+    
+    calendar    = models.ForeignKey(Calendar, verbose_name="カレンダー", on_delete=models.CASCADE)
+    user        = models.ForeignKey(CustomUser, verbose_name="対象ユーザー", on_delete=models.CASCADE)
+    
+    read        = models.BooleanField(verbose_name="読み込み権限", default=False)
+    write        = models.BooleanField(verbose_name="書き込み権限", default=False)
+    chat        = models.BooleanField(verbose_name="チャット権限", default=False)
+    
+    def __str__(self):
+        return self.calendar.name
+    
 # スケジュールモデル
 class Event(models.Model):
     ###############################################################

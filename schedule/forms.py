@@ -5,7 +5,7 @@ class CalendarForm(forms.ModelForm):
     
     class Meta:
         model = Calendar
-        fields = ["user", "name", "share"]
+        fields = ["user", "name", "permission"]
         
 class EventForm(forms.ModelForm):
     

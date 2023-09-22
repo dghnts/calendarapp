@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -24,11 +25,33 @@
     {% block extra_head %}
     {% endblock  %}
 </head>
-<main>
-    {% block main %}
-    {% endblock %}
-</main>
 <body>
-    
+    <header>
+        {% if user.is_active %}
+            <div class="px-1">
+                <a href="">{{ user }}</a>
+            </div>
+            <form method="post" action="{% url 'account_logout' %}">
+                {% csrf_token %}
+                {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                {% endif %}
+                <button type="submit">{% trans 'Sign Out' %}</button>
+            </form>
+        {% else %}
+            <form class="login" method="POST" action="{% url 'account_login' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                {% endif %}
+                <button class="primaryAction" type="submit">{% trans "Sign In" %}</button>
+            </form>
+        {% endif %}
+    </header>
+    <main>
+        {% block main %}
+        {% endblock %}
+    </main>    
 </body>
 </html>

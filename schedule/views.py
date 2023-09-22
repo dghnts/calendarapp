@@ -28,6 +28,12 @@ def get_fields_name(models):
     return fields
 '''
 
+class UserIndexView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, "schedule/index.html")
+
+index = UserIndexView.as_view()
+
 # カレンダーを表示させるview
 class CalendarView(View):
     def get(self, request, *args, **kwargs):
