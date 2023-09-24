@@ -8,10 +8,10 @@ from schedule.forms import CalendarForm, CalendarPermissionForm
 class UsersIndexView(View):
     def get(self, request, *args, **kwargs):
         context = {}
-        print(request.user.is_anonymous)
+        #print(request.user.is_anonymous)
         if not request.user.is_anonymous:
             context["calendars"] = Calendar.objects.filter(user=request.user)
-        print(context)
+        #print(context)
         return render(request, "users/user_index.html",context)
     
     def post(self, request, *args, **kwargs):

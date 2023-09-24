@@ -1,5 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm
-from allauth.account.forms import SignupForm, LoginForm
+from allauth.account.forms import SignupForm
 
 from .models import CustomUser
 
