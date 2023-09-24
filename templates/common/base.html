@@ -19,31 +19,80 @@
 </head>
 <body>
     <header>
-        {% if user.is_active %}
-            <div class="px-1">
-                <a href="">{{ user }}</a>
+        <!--　ナビゲーションの設置 -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">カレンダーアプリ</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <!--
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Link</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Dropdown
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                        </li>
+                    </ul>
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                    -->
+                    <div class="d-flex justify-content-end">
+                        {% if user.is_active %}
+                            <a class="px-1" href="">{{ user }}</a>
+                            <form class="logout" method="post" action="{% url 'account_logout' %}">
+                                {% csrf_token %}
+                                {% if redirect_field_value %}
+                                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                                {% endif %}
+                                <button type="submit">{% trans 'Sign Out' %}</button>
+                            </form>
+                        {% else %}
+                            <form class="login" method="POST" action="{% url 'account_login' %}">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                {% if redirect_field_value %}
+                                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                                {% endif %}
+                                <button class="primaryAction" type="submit">{% trans "Sign In" %}</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-            <form method="post" action="{% url 'account_logout' %}">
-                {% csrf_token %}
-                {% if redirect_field_value %}
-                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
-                {% endif %}
-                <button type="submit">{% trans 'Sign Out' %}</button>
-            </form>
-        {% else %}
-            <form class="login" method="POST" action="{% url 'account_login' %}">
-                {% csrf_token %}
-                {{ form.as_p }}
-                {% if redirect_field_value %}
-                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-                {% endif %}
-                <button class="primaryAction" type="submit">{% trans "Sign In" %}</button>
-            </form>
-        {% endif %}
+        </nav>
+                
     </header>
     <main>
+        {% if messages %}
+            <div>
+              <ul style="list-style:none">
+                {% for message in messages %}
+                <li>{{message}}</li>
+                {% endfor %}
+              </ul>
+            </div>
+        {% endif %}        
         {% block main %}
         {% endblock %}
-    </main>    
-</body>
-</html>
+    </main>            
+</body>     
+</html>     

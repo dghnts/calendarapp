@@ -133,7 +133,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SITE_ID = 1
 #django-allauthログイン時とログアウト時のリダイレクトURL
-LOGIN_REDIRECT_URL = '/'
+# ログイン後ユーザーの個別ページに遷移する
+LOGIN_REDIRECT_URL = '/users'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'users.CustomUser'
