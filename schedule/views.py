@@ -106,10 +106,6 @@ class CalendarView(View):
         context["calendar"]     = calendarobj
         return render(request,"schedule/calendar.html",context)
 
-calendar = CalendarView.as_view()
-
-# イベント登録フォーム用のview
-class EditEventView(View):
     def post(self, request, pk, *args, **kwargs):
         if pk == 0:
             form = EventForm(request.POST)
@@ -138,8 +134,8 @@ class EditEventView(View):
         
         # pkで表示しているカレンダーのidをurlに渡す
         return redirect("schedule:calendar",pk=pk)
-        
-edit_event = EditEventView.as_view()
+
+calendar = CalendarView.as_view()        
 
 # イベント削除用のview
 class DeleteEventView(View):

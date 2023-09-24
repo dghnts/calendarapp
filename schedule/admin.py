@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Calendar,Event
+from .models import Calendar, Event, CalendarPermission
 
 class CalendarAdmin(admin.ModelAdmin):
     # 指定したフィールドを表示する
@@ -34,6 +34,12 @@ class EventAdmin(admin.ModelAdmin):
     list_per_page = 10
     # 全権表示を許容する最大件数（目安1000~5000）
     list_max_show_all = 2000
+
+class CalendarPermissionAdmin(admin.ModelAdmin):
+     # 指定したフィールドを表示する
+    list_display = ["calendar","user","read","write","chat"]
+    
 # カレンダーテーブルの管理画面を登録    
-admin.site.register(Calendar,CalendarAdmin)
-admin.site.register(Event,EventAdmin)
+admin.site.register(Calendar, CalendarAdmin)
+admin.site.register(Event, EventAdmin)
+admin.site.register(CalendarPermission, CalendarPermissionAdmin)

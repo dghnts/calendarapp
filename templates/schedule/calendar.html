@@ -8,7 +8,7 @@
   <!-- fullcalendar -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1/index.global.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/locales-all.global.min.js"></script>
-  <script src="{% static 'calendar/js/script.js' %}"></script>
+  <script src="{% static 'schedule/js/script.js' %}"></script>
 
   <!-- flatpckr -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -22,7 +22,7 @@
     //　特殊文字("<",">","'",etc...)をエスケープしないための処理
     {% autoescape off %}
       let events = {{ events }}
-      let edit_event = "{% url 'schedule:edit_event' 0%}"
+      let edit_event = "{% url 'schedule:calendar' 0%}"
       let delete_event = "{% url 'schedule:delete_event' 0%}"
     {% endautoescape %} 
   </script>

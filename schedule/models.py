@@ -17,7 +17,10 @@ class Calendar(models.Model):
     #share = models.ManyToManyField(CustomUser,verbose_name="公開範囲", related_name="share_calendar")
     
     permission = models.ManyToManyField(CustomUser, verbose_name="公開範囲", through="CalendarPermission" ,related_name="calendar_permission", blank=True)
-
+    
+    def __str__(self):
+        return self.name
+    
 class CalendarPermission(models.Model):
     
     calendar    = models.ForeignKey(Calendar, verbose_name="カレンダー", on_delete=models.CASCADE)

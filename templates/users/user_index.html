@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block extra_head %}
+<script src="{% static 'users/js/add_permission.js' %}"></script>
 {% endblock  %}
 
 {% block main %}
@@ -35,8 +36,9 @@
     <div id="permission_form_area">
         <input id="permission_form_add" type="button" value="+ 追加">
     </div>
-
-
 </form>
+
+{% include 'users/permission_form.html' %}
+
 
 {% endblock %}
