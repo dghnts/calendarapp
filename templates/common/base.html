@@ -81,7 +81,16 @@
         </nav>
                 
     </header>
-    <main>      
+    <main>
+        {% if messages %}
+            <div>
+              <ul style="list-style:none">
+                {% for message in messages %}
+                <li>{{message}}</li>
+                {% endfor %}
+              </ul>
+            </div>
+        {% endif %}        
         {% block main %}
         {% endblock %}
     </main>            
