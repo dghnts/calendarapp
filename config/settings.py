@@ -131,6 +131,10 @@ STATICFILES_DIRS = [ BASE_DIR / "static" ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+ACCOUNT_USERNAME_REQUIRED = True
+#ユーザー登録画面でメールアドレス入力を要求する(True)
+ACCOUNT_EMAIL_REQUIRED      = True
+
 SITE_ID = 1
 #django-allauthログイン時とログアウト時のリダイレクトURL
 # ログイン後ユーザーの個別ページに遷移する
