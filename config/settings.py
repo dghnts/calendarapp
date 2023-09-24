@@ -131,9 +131,45 @@ STATICFILES_DIRS = [ BASE_DIR / "static" ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ACCOUNT_USERNAME_REQUIRED = True
+#################django-allauthでのメール認証設定ここから###################
+
+#djangoallauthでメールでユーザー認証する際に必要になる認証バックエンド
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+#ログイン時の認証方法はemailとパスワードとする
+ACCOUNT_AUTHENTICATION_METHOD   = "email"
+
+#ユーザー登録画面でユーザー名(ユーザーID)を入力する
+ACCOUNT_USERNAME_REQUIRED       = True
+
+#ユーザー登録時に入力したメールアドレスに、確認メールを送信する事を必須(mandatory)とする
+ACCOUNT_EMAIL_VARIFICATION  = "mandatory"
+
 #ユーザー登録画面でメールアドレス入力を要求する(True)
 ACCOUNT_EMAIL_REQUIRED      = True
+
+
+#DEBUGがTrueのとき、メールの内容は全て端末に表示させる
+if DEBUG:
+    EMAIL_BACKEND   = "django.core.mail.backends.console.EmailBackend"
+
+else:
+    #ここにメール送信設定を入力する(Sendgridを使用する場合)
+    EMAIL_BACKEND   = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST      = 'ここにメールのホストを書く'
+
+    #メールを暗号化する
+    EMAIL_USE_TLS   = True
+    EMAIL_PORT      = 587
+
+    #【重要】メールのパスワードとメールアドレスの入力後、GitHubへのプッシュは厳禁
+    EMAIL_HOST_USER     = ''
+    EMAIL_HOST_PASSWORD = ''
+
+#################django-allauthでのメール認証設定ここまで###################
 
 SITE_ID = 1
 #django-allauthログイン時とログアウト時のリダイレクトURL
@@ -143,3 +179,5 @@ ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'users.CustomUser'
 ACCOUNT_FORMS   = { "signup":"users.forms.SignupForm"}
+
+ACCOUNT_USERNAME_REQUIRED = True
