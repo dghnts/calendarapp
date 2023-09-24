@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from .forms import EventForm
-from .models import Event,Calendar
+from .models import Event, Calendar, CalendarPermission
+from .forms import EventForm, CalendarForm, CalendarPermissionForm
 
 from django.contrib import messages
 
@@ -34,57 +35,20 @@ class IndexView(View):
 
 index = IndexView.as_view()
 
-'''
-class UsersIndexView(View):
-    def get(self, request, *args, **kwargs):
-        context = {}
-        if request.user !="":
-            context["calendars"] = Calendar.objects.filter(user=request.user)
-        print(request.user)
-        print("こんにちは")
-        #print(context)
-        return render(request, "users/user_index.html",context)
-    
-    def post(self, request, *args, **kwargs):
-         # TODO:カレンダーの新規作成
-         
-         # request.POSTを編集するためにコピーする
-         copied         = request.POST.copy()
-         
-         # "user"属性を付与して現在ログイン中のユーザーを設定
-         copied["user"] = request.user
-         
-         form   = CalendarForm(copied)
-         
-         if not form.is_valid():
-             print(form.errors)
-             return redirect("users:user_index")
-         
-         # 保存したカレンダーのデータをとる
-         calendar   = form.save()
-         
-         # ｔカレンとーの投稿者自身に全権限を付与
-         dic                = {}
-         dic["calendar"]    = calendar
-         dic["user"]        = request.user
-         dic["read"]        = True
-         dic["write"]       = True
-         dic["chat"]        = True
-         
-         form   = CalendarPermissionForm(dic)
-         
-         if form.is_valid():
-            form.save()
-         
-         
-         return redirect("users:user_index")
-     
-user_index = UsersIndexView.as_view()
-'''
 # カレンダーを表示させるview
 class CalendarView(View):
     def get(self, request, pk, *args, **kwargs):
         context = {}
+        #print(CalendarPermission.objects.all())
+        if not CalendarPermission.objects.filter(id=pk, user=request.user ,read=True).exists():
+            messages.error(request, "あなたにはこのカレンダーへのアクセス権（読み込み権限）がありません")
+            return redirect("users:user_index")
+        print("読み込み権限の確認")
+        
+        if not CalendarPermission.objects.filter(id=pk, user=request.user, write=True).exists():
+            context["write"] = False
+        
+
         event_list = []
         eventsobj = Event.objects.all()
         # 現在表示しているカレンダーのオブジェクトを取得
@@ -107,6 +71,7 @@ class CalendarView(View):
         return render(request,"schedule/calendar.html",context)
 
     def post(self, request, pk, *args, **kwargs):
+        
         if pk == 0:
             form = EventForm(request.POST)
             success = "イベントの登録に成功しました"
