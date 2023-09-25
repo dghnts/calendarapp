@@ -27,7 +27,7 @@ class CalendarPermission(models.Model):
     user        = models.ForeignKey(CustomUser, verbose_name="対象ユーザー", on_delete=models.CASCADE)
     
     read        = models.BooleanField(verbose_name="読み込み権限", default=False)
-    write        = models.BooleanField(verbose_name="書き込み権限", default=False)
+    write       = models.BooleanField(verbose_name="書き込み権限", default=False)
     chat        = models.BooleanField(verbose_name="チャット権限", default=False)
     
     def __str__(self):
