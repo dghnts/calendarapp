@@ -56,28 +56,9 @@
                         <button class="btn btn-outline-success" type="submit">Search</button>
                     </form>
                     -->
-                    <div class="nav-item d-flex justify-content-end">
-                        {% if user.is_active %}
-                            <a class="px-1" href="{% url 'users:user_index' %}">{{ user }}</a>
-                            <!-- 設定ボタン（共有権限のｓ編集などに使用する）-->
-                            <i class="fa-solid fa-gear p-2" style="color:white;" href=""></i>
-                            <form class="logout" method="post" action="{% url 'account_logout' %}">
-                                {% csrf_token %}
-                                {% if redirect_field_value %}
-                                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
-                                {% endif %}
-                                <button type="submit">{% trans 'Sign Out' %}</button>
-                            </form>
-                        {% else %}
-                            <form class="login" method="POST" action="{% url 'account_login' %}">
-                                {% csrf_token %}
-                                {{ form.as_p }}
-                                {% if redirect_field_value %}
-                                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-                                {% endif %}
-                                <button class="primaryAction" type="submit">{% trans "Sign In" %}</button>
-                            </form>
-                        {% endif %}
+                    <div class="navbar-nav d-flex justify-content-end">
+                        {% block extra_navbar %}
+                        {% endblock %}
                     </div>
                 </div>
 

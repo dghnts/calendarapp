@@ -7,7 +7,25 @@
 
 {% block extra_head %}
 <script src="{% static 'users/js/add_permission.js' %}"></script>
+<script> 
+    //　特殊文字("<",">","'",etc...)をエスケープしないための処理
+    {% autoescape off %}
+      let edit_permission = "{% url 'schedule:calendar_permission' 0%}"
+    {% endautoescape %} 
+</script>
 {% endblock  %}
+
+{% block extra_navbar %}
+<li class="nav-item">
+    <form class="logout nav-link" method="post" action="{% url 'account_logout' %}">
+        {% csrf_token %}
+        {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+        {% endif %}
+        <button class="btn btn-dark" type="submit">Sign Out</button>
+    </form>
+</li>
+{% endblock %}
 
 {% block main %}
 

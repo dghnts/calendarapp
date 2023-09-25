@@ -100,8 +100,55 @@ class CalendarView(View):
         # pkで表示しているカレンダーのidをurlに渡す
         return redirect("schedule:calendar",pk=pk)
 
-calendar = CalendarView.as_view()        
+calendar = CalendarView.as_view()
 
+class CalendarPermissionView(View):
+
+    # pkは対象のカレンダー
+    def post(self, request, pk, *args, **kwargs):
+        # ここでカレンダーの権限の投稿・編集を受け付ける。
+        
+        ids     = request.POST.getlist("id")
+        emails  = request.POST.getlist("email")
+        reads   = request.POST.getlist("read")
+        writes  = request.POST.getlist("write")
+        chats   = request.POST.getlist("chat")
+
+        for id,email,read,write,chat in zip(ids,emails,reads,writes,chats) :
+            
+            dic             = {}
+            dic["calendar"] = pk
+            dic["user"]     = CustomUser.objects.filter(email=email).first()
+            dic["read"]     = read
+            dic["write"]    = write
+            dic["chat"]     = chat
+            
+            print(dic)
+
+            if id != "":
+                # 編集対象がある場合はそちらを指定する(新規作成の場合はinstanceがNoneになるので、編集と新規作成を両立できる。)
+                calendar_permission = CalendarPermission.objects.filter(id=id).first()
+            else:
+                calendar_permission = None
+
+            # instanceがNone → 新規作成
+            # instanceがNoneではない → 対象を編集する
+            form    = CalendarPermissionForm(dic, instance=calendar_permission)
+
+            if form.is_valid():
+                print("編集完了")
+                calendar_permission = form.save()
+                print(calendar_permission)
+            else:
+                print(form.errors)
+
+
+        return redirect("scheduler:calendar", pk)
+
+
+calendar_permission = CalendarPermissionView.as_view()
+
+   
 # イベント削除用のview
 class DeleteEventView(View):
     def post(self, request, pk, *args, **keargs):
