@@ -23,11 +23,12 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <a class="navbar-brand" href="{% url 'schedule:index' %}">カレンダーアプリ</a>
+                <!--
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!--
+                    
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="#">Home</a>
@@ -55,9 +56,11 @@
                         <button class="btn btn-outline-success" type="submit">Search</button>
                     </form>
                     -->
-                    <div class="d-flex justify-content-end">
+                    <div class="nav-item d-flex justify-content-end">
                         {% if user.is_active %}
-                        <a class="px-1" href="{% url 'users:user_index' %}">{{ user }}</a>
+                            <a class="px-1" href="{% url 'users:user_index' %}">{{ user }}</a>
+                            <!-- 設定ボタン（共有権限のｓ編集などに使用する）-->
+                            <i class="fa-solid fa-gear p-2" style="color:white;" href=""></i>
                             <form class="logout" method="post" action="{% url 'account_logout' %}">
                                 {% csrf_token %}
                                 {% if redirect_field_value %}
@@ -77,9 +80,11 @@
                         {% endif %}
                     </div>
                 </div>
+
             </div>
         </nav>
-                
+        {% block extra_header %}
+        {% endblock %}
     </header>
     <main>
         {% if messages %}
