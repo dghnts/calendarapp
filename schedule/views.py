@@ -110,18 +110,28 @@ class CalendarPermissionView(View):
         
         ids     = request.POST.getlist("id")
         emails  = request.POST.getlist("email")
+        '''
         reads   = request.POST.getlist("read")
         writes  = request.POST.getlist("write")
         chats   = request.POST.getlist("chat")
-
-        for id,email,read,write,chat in zip(ids,emails,reads,writes,chats) :
-            
+        '''
+        authorities = request.POST("authority")
+        
+        for id,email,authority in zip(ids,emails,authorities) :
+                
             dic             = {}
             dic["calendar"] = pk
             dic["user"]     = CustomUser.objects.filter(email=email).first()
-            dic["read"]     = read
-            dic["write"]    = write
-            dic["chat"]     = chat
+            dic["read"]     = True
+            dic["write"]    = False
+            dic["chat"]     = False
+            print(authority)
+            if authority == "all" or authority=="read and write":
+                dic["write"]    = True
+
+            
+            if authority == "all" or authority=="read and chat":
+                dic["chat"]     = True
             
             print(dic)
 

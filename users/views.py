@@ -48,15 +48,16 @@ class UsersIndexView(View):
          
         if form.is_valid():
             form.save()
-         
+            
+        print(request.POST)
+
         # TODO:カレンダーに紐づく権限を付与。
 
         emails  = request.POST.getlist("email")
-        reads   = request.POST.getlist("read")
-        writes  = request.POST.getlist("write")
-        chats   = request.POST.getlist("chat")
+        authorities = request.POST.getlist("authority")
+        
 
-        for email,read,write,chat in zip(emails,reads,writes,chats) :
+        for email,authority in zip(emails,authorities) :
             
             dic             = {}
             dic["calendar"] = calendar
@@ -66,15 +67,24 @@ class UsersIndexView(View):
 
             print( CustomUser.objects.filter(email=email).first() )
             dic["user"]     = CustomUser.objects.filter(email=email).first()
-            dic["read"]     = read
-            dic["write"]    = write
-            dic["chat"]     = chat
+            dic["read"]     = True
+            dic["write"]    = False
+            dic["chat"]     = False
+            
+            print(authority)
+            if authority == "all" or authority=="read and write":
+                dic["write"]    = True
 
+            
+            if authority == "all" or authority=="read and chat":
+                dic["chat"]     = True
+                
+            print(dic)
             form    = CalendarPermissionForm(dic)
 
             if form.is_valid():
                 form.save()
-
+                print("成功")
             else:
                 print(form.errors)
                          

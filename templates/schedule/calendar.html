@@ -34,18 +34,14 @@
 {% block extra_navbar %}
 <!-- 設定ボタン（共有権限の編集などに使用する）-->
 <!-- <i class="fa-solid fa-gear p-2" style="color:white;" href=""></i> -->
-<li class="nav-item">
   {% include 'users/permission_edit.html' %}
-</li>
-<li class="nav-item">
-  <form class="logout" method="post" action="{% url 'account_logout' %}">
+  <form class="logout d-flex me-2" method="post" action="{% url 'account_logout' %}">
       {% csrf_token %}
       {% if redirect_field_value %}
-          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+          <input class="form-control me-2" type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
       {% endif %}
-      <button class="btn btn-dark" type="submit">Sign Out</button>
+      <button class="btn nav_btn me-2" type="submit">Sign Out</button>
   </form>
-</li>
 {% endblock %}
 
 {% block main %}
