@@ -4,6 +4,8 @@ from .forms import EventForm
 from .models import Event, Calendar, CalendarPermission
 from .forms import EventForm, CalendarForm, CalendarPermissionForm
 
+from config import settings
+
 from django.contrib import messages
 
 from json import dumps
@@ -63,11 +65,13 @@ class CalendarView(View):
             details["start"] = localtime(event.start).strftime('%Y-%m-%d')
             details["end"] = localtime(event.end).strftime('%Y-%m-%d')
             event_list.append(details)
-        print(event_list)
+        #print(event_list)
         
         context["events"]       = dumps(event_list)
         context["eventsobj"]    = eventsobj
         context["calendar"]     = calendarobj
+        context["permissions"]  = CalendarPermission.objects.filter(calendar=pk)
+
         return render(request,"schedule/calendar.html",context)
 
     def post(self, request, pk, *args, **kwargs):
@@ -103,11 +107,10 @@ class CalendarView(View):
 calendar = CalendarView.as_view()
 
 class CalendarPermissionView(View):
-
+    
     # pkは対象のカレンダー
     def post(self, request, pk, *args, **kwargs):
         # ここでカレンダーの権限の投稿・編集を受け付ける。
-        
         ids     = request.POST.getlist("id")
         emails  = request.POST.getlist("email")
         '''
@@ -115,17 +118,19 @@ class CalendarPermissionView(View):
         writes  = request.POST.getlist("write")
         chats   = request.POST.getlist("chat")
         '''
-        authorities = request.POST("authority")
-        
-        for id,email,authority in zip(ids,emails,authorities) :
-                
+        authorities = request.POST.getlist("authority")
+        print(request.POST)
+        for id,email,authority in zip(ids,emails,authorities):
             dic             = {}
             dic["calendar"] = pk
-            dic["user"]     = CustomUser.objects.filter(email=email).first()
-            dic["read"]     = True
+            dic["user"]     = settings.AUTH_USER_MODEL.objects.filter(email=email).first()
+            dic["read"]     = False
             dic["write"]    = False
             dic["chat"]     = False
-            print(authority)
+            
+            if not authority == "none":
+                dic["read"]    = True
+                
             if authority == "all" or authority=="read and write":
                 dic["write"]    = True
 
@@ -148,13 +153,11 @@ class CalendarPermissionView(View):
             if form.is_valid():
                 print("編集完了")
                 calendar_permission = form.save()
-                print(calendar_permission)
             else:
                 print(form.errors)
 
 
-        return redirect("scheduler:calendar", pk)
-
+        return redirect("schedule:calendar", pk)
 
 calendar_permission = CalendarPermissionView.as_view()
 

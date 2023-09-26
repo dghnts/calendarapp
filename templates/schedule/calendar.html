@@ -1,7 +1,7 @@
 {% extends "common/base.html"%}
 {% load static %}
 {% block page_title %}
-カレンダー{{calendar.id}}
+カレンダー{{calendar.name}}
 {% endblock %}
 
 {% block extra_head %}
@@ -21,6 +21,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
   <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
+  <script src="{% static 'users/js/add_permission.js' %}"></script>
+
   <script> 
     //　特殊文字("<",">","'",etc...)をエスケープしないための処理
     {% autoescape off %}
@@ -34,7 +36,7 @@
 {% block extra_navbar %}
 <!-- 設定ボタン（共有権限の編集などに使用する）-->
 <!-- <i class="fa-solid fa-gear p-2" style="color:white;" href=""></i> -->
-  {% include 'users/permission_edit.html' %}
+  {% include 'schedule/permission_edit.html' %}
   <form class="logout d-flex me-2" method="post" action="{% url 'account_logout' %}">
       {% csrf_token %}
       {% if redirect_field_value %}
