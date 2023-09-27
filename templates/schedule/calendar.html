@@ -86,6 +86,7 @@
         <div class="modal-body">
           <form action="" name="edit_event" method="post" id="edit_event">
             {% csrf_token %}
+            <input type="hidden" name="calendar" value="{{ calendar.id }}">
             <div>
               <label for="content" class="form-label">イベントの内容</label>
               <input type="text" class="form-control" name="title" placeholder="イベントの内容">

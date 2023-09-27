@@ -4,7 +4,7 @@ from django.views import View
 from schedule.forms import Calendar, CalendarPermission
 from schedule.forms import CalendarForm, CalendarPermissionForm
 
-from config import settings
+from users.models import CustomUser
 
 # Create your views here.
 class UsersIndexView(View):
@@ -65,8 +65,8 @@ class UsersIndexView(View):
             #TODO: カスタムユーザーモデルを使って検索
             print(email)
 
-            print( settings.AUTH_USER_MODEL.objects.filter(email=email).first() )
-            dic["user"]     = settings.AUTH_USER_MODEL.objects.filter(email=email).first()
+            print( CustomUser.objects.filter(email=email).first() )
+            dic["user"]     = CustomUser.objects.filter(email=email).first()
             dic["read"]     = False
             dic["write"]    = False
             dic["chat"]     = False

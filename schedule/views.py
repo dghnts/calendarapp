@@ -4,7 +4,7 @@ from .forms import EventForm
 from .models import Event, Calendar, CalendarPermission
 from .forms import EventForm, CalendarForm, CalendarPermissionForm
 
-from config import settings
+from users.models import CustomUser
 
 from django.contrib import messages
 
@@ -47,9 +47,10 @@ class CalendarView(View):
             return redirect("users:user_index")
         print("読み込み権限の確認")
         
+        context["write"] = True
+        # 書き込み権限がない場合は編集writeをFalseに変更する
         if not CalendarPermission.objects.filter(calendar=pk, user=request.user, write=True).exists():
             context["write"] = False
-        
 
         event_list = []
         eventsobj = Event.objects.all()
@@ -71,11 +72,13 @@ class CalendarView(View):
         context["eventsobj"]    = eventsobj
         context["calendar"]     = calendarobj
         context["permissions"]  = CalendarPermission.objects.filter(calendar=pk)
-
+        
+        print(context)
         return render(request,"schedule/calendar.html",context)
 
     def post(self, request, pk, *args, **kwargs):
-        
+        print(request.POST["calendar"])
+        calendar_id = request.POST["calendar"]
         if pk == 0:
             form = EventForm(request.POST)
             success = "イベントの登録に成功しました"
@@ -95,14 +98,14 @@ class CalendarView(View):
                     messages.error(request, e["message"])
             
             # pkで表示しているカレンダーのidをurlに渡す
-            return redirect("schedule:calendar",pk=pk)
+            return redirect("schedule:calendar",pk=calendar_id)
         
         #　バリデーションOK
         messages.info(request, success)
         form.save()
         
         # pkで表示しているカレンダーのidをurlに渡す
-        return redirect("schedule:calendar",pk=pk)
+        return redirect("schedule:calendar",pk=calendar_id)
 
 calendar = CalendarView.as_view()
 
@@ -123,7 +126,7 @@ class CalendarPermissionView(View):
         for id,email,authority in zip(ids,emails,authorities):
             dic             = {}
             dic["calendar"] = pk
-            dic["user"]     = settings.AUTH_USER_MODEL.objects.filter(email=email).first()
+            dic["user"]     = CustomUser.objects.filter(email=email).first()
             dic["read"]     = False
             dic["write"]    = False
             dic["chat"]     = False
@@ -168,10 +171,13 @@ class DeleteEventView(View):
         
         # 削除したいイベントを取得
         event = Event.objects.filter(id=pk).first()
+        #　イベントを登録しているカレンダーのidを取得する
+        calendar_id = event.calendar.id
+        # イベントの削除
         event.delete()
         
-        #削除完了メッセージをcalendarｄのページで表示する
+        #削除完了メッセージをcalendarのページで表示する
         messages.info(request,"イベントを削除しました")
-        return redirect("schedule:calendar",pk=pk)
+        return redirect("schedule:calendar",pk=calendar_id)
             
 delete_event = DeleteEventView.as_view()

@@ -17,7 +17,7 @@ class CalendarAdmin(admin.ModelAdmin):
 class EventAdmin(admin.ModelAdmin):
     # 指定したフィールドを表示する
     list_display = ["id", 
-                    # "calendar",i 
+                    "calendar",
                     "start", 
                     "end", 
                     "title", 

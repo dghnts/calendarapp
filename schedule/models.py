@@ -41,8 +41,8 @@ class Event(models.Model):
     ###############################################################
     
     #スケジュールを登録するカレンダー
-    #カレンダー額削除されると同時にスケジュールも削除される    
-    # calendar = models.ForeignKey(Calendar, verbose_name="スケジュール", on_delete=models.CASCADE)
+    #カレンダーが削除されると同時にスケジュールも削除される    
+    calendar = models.ForeignKey(Calendar, verbose_name="スケジュール", on_delete=models.CASCADE)
     
     # スケジュールの開始日
     # 日時はユーザーが指定するから，auto_now,auto_now_addはFalse

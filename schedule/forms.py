@@ -11,7 +11,7 @@ class EventForm(forms.ModelForm):
     
     class Meta:
         model = Event
-        fields = [#"calendar"#,
+        fields = ["calendar",
                   "start", 
                   "end", 
                   "title", 
