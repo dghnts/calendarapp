@@ -14,7 +14,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form action="{%url 'schedule:calendar_permission' calendar.id %}" name="calendar_permission" method="post" id="calendar_permission">
+          <form action="{%url 'schedule:calendar_permission' calendar.id %}" name="calendar_permission" method="post" id="permission_form">
             {% csrf_token %}
             <div id="permission_form_area">
               <input id="permission_form_add" class="mb-2" type="button" value="共有するユーザーの追加">
@@ -24,17 +24,15 @@
                     <input type="hidden" name="id" value="{{ permission.id }}">
                     <input type="text" name="email" value="{{ permission.user.email}}">
                     <select name="authority">
-                        <option hidden>
-                          {% if permission.write and permission.chat %}
-                            編集者
-                          {% elif permission.write %}
-                            編集者（チャット禁止）
-                          {% elif permission.chat %}
-                            閲覧者（書き込み禁止）
-                          {% else %}
-                            閲覧者
-                          {% endif %}
-                        </option>
+                        {% if permission.write and permission.chat %}
+                          <option hidden value="all">編集者</option>
+                        {% elif permission.write %}
+                          <option hidden value="readonly"> 編集者（チャット禁止）</option>
+                        {% elif permission.chat %}
+                          <option hidden value="read and write"> 閲覧者（書き込み禁止）</option>
+                        {% else %}
+                          <option hidden value="read and chat"> 閲覧者 </option>
+                        {% endif %}
                         <option value="all">編集者</option>
                         <option value="readonly">閲覧者</option>
                         <option value="read and write">編集者（チャット禁止）</option>
@@ -43,25 +41,26 @@
                 </div>
               {% endfor %}
             </div>
-            
-            <!-- 共有権限追加のひな型 -->
-            <div id="permission_form_init_area" style="display:none;">
-              <div>
-                  <label>対象ユーザーのEmail:</label>
-                  <input type="text" name="email">
-                  <select name="authority">
-                      <option value="none">選択してください</option>
-                      <option value="all">編集者</option>
-                      <option value="readonly">閲覧者</option>
-                      <option value="read and write">編集者（チャット禁止）</option>
-                      <option value="read and chat">閲覧者（書き込み禁止）</option>
-                  </select>
-              </div>    
-            </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary" form="calendar_permission">保存</button>
+          <button type="submit" class="btn btn-primary" form="permission_form">保存</button>
+        </div>
+        
+        <!-- 共有権限追加のひな型 -->
+        <div id="permission_form_init_area" style="display:none;">
+          <div>
+              <input type="hidden" name="id" value="">
+              <label>対象ユーザーのEmail:</label>
+              <input type="text" name="email">
+              <select name="authority">
+                  <option value="none">選択してください</option>
+                  <option value="all">編集者</option>
+                  <option value="readonly">閲覧者</option>
+                  <option value="read and write">編集者（チャット禁止）</option>
+                  <option value="read and chat">閲覧者（書き込み禁止）</option>
+              </select>
+          </div>    
         </div>
       </div>
     </div>

@@ -122,7 +122,7 @@ class CalendarPermissionView(View):
         chats   = request.POST.getlist("chat")
         '''
         authorities = request.POST.getlist("authority")
-        print(request.POST)
+        
         for id,email,authority in zip(ids,emails,authorities):
             dic             = {}
             dic["calendar"] = pk
@@ -130,6 +130,8 @@ class CalendarPermissionView(View):
             dic["read"]     = False
             dic["write"]    = False
             dic["chat"]     = False
+            
+            #print("権限",authority)
             
             if not authority == "none":
                 dic["read"]    = True
