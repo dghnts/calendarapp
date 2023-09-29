@@ -53,35 +53,29 @@ class UsersIndexView(View):
 
         # TODO:カレンダーに紐づく権限を付与。
 
-        emails  = request.POST.getlist("email")
+        emails      = request.POST.getlist("email")
         authorities = request.POST.getlist("authority")
         
-
-        for email,authority in zip(emails,authorities) :
+        reads       = request.POST.getlist("read") 
+        writes      = request.POST.getlist("write")        
+        chats       = request.POST.getlist("chat")
+        
+        for email,authority in zip(emails,authorities):
             
             dic             = {}
             dic["calendar"] = calendar
 
             #TODO: カスタムユーザーモデルを使って検索
             print(email)
-
+            
             print( CustomUser.objects.filter(email=email).first() )
             dic["user"]     = CustomUser.objects.filter(email=email).first()
-            dic["read"]     = False
-            dic["write"]    = False
-            dic["chat"]     = False
             
-            if not authority == "":
-                dic["read"] = True
+            # ↓参照: https://note.nkmk.me/python-if-conditional-expressions/
+            dic["read"]     = True if authority in reads else False
+            dic["write"]    = True if authority in writes else False
+            dic["chat"]     = True if authority in chats else False
             
-            if authority == "all" or authority=="read and write":
-                dic["write"]    = True
-
-            
-            if authority == "all" or authority=="read and chat":
-                dic["chat"]     = True
-                
-            print(dic)
             form    = CalendarPermissionForm(dic)
 
             if form.is_valid():

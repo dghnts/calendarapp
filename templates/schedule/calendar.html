@@ -21,7 +21,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
   <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-  <script src="{% static 'users/js/add_permission.js' %}"></script>
+  {# <script src="{% static 'users/js/add_permission.js' %}"></script>  #}
+  <script src="{% static 'schedule/js/delete_permission.js' %}"></script>
 
   <script> 
     //　特殊文字("<",">","'",etc...)をエスケープしないための処理
@@ -52,10 +53,10 @@
       <div class="col-md-6">
         <div id='calendar'></div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-3">
+        <h2>予定リスト</h2>
         {% for event in eventsobj %}
           <div id="event" class="border">
-            <div>{{ event.id }}</div>
             <div>期間:{{event.start}} ~ {{event.end}}</div>
             <div>イベント名:{{ event.title }}</div>
             <!-- 書き込み権限がある場合のみ編集ボタンを表示 -->
@@ -66,6 +67,9 @@
             {% endif %}
           </div>
         {% endfor %}
+      </div>
+      <div class="col-md-3">
+        <h2>チャット</h2>
       </div>
     </div>
   </div>

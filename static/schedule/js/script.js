@@ -16,6 +16,7 @@ window.addEventListener("load" , function (){
         enableTime: true,
         dateFormat: "Y-m-d H:i",
         locale: "ja",
+        position: "center",
         defaultDate: dt,
     };
 
@@ -24,6 +25,7 @@ window.addEventListener("load" , function (){
         enableTime: true,
         dateFormat: "Y-m-d H:i",
         locale: "ja",
+        position: "above center",
         defaultDate: dt,
     };
 
@@ -50,14 +52,17 @@ window.addEventListener("load" , function (){
         //日付の（複数）選択を可能にする
         selectable: true,
         select: function(info) {
+            console.log(info.end)
+            console.log(info.start)
             // 開始日を指定する（時間は現在時刻）
             info.start.setHours(info.start.getHours() + today.getHours() );
 
             // 終了日を指定する（デフォルトは選択範囲の最終日）
-            info.end.setDate(info.end.getDate()-1);
+            info.end.setDate(info.end.getDate());
             info.end.setHours(info.end.getHours()+today.getHours());
             config_start_dt.defaultDate = info.start;
             config_end_dt.defaultDate = info.end;
+
             // イベントの開始日と終了日をflatpickrで設定できるようにする
             flatpickr("[name='start']", config_start_dt);
             flatpickr("[name='end']", config_end_dt);

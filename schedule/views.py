@@ -71,9 +71,18 @@ class CalendarView(View):
         context["events"]       = dumps(event_list)
         context["eventsobj"]    = eventsobj
         context["calendar"]     = calendarobj
-        context["permissions"]  = CalendarPermission.objects.filter(calendar=pk)
+        permissions             = CalendarPermission.objects.filter(calendar=pk)
+                
+        for permission in permissions:
+            # value_sum
+            # read = True -> 0
+            # read = True -> +1
+            # read = true -> +2 
+            value_sum   =   (permission.read*0 + permission.write*1 + permission.chat*2)
+            permission.select = value_sum
+                
+        context["permissions"]  = permissions
         
-        print(context)
         return render(request,"schedule/calendar.html",context)
 
     def post(self, request, pk, *args, **kwargs):
@@ -116,35 +125,26 @@ class CalendarPermissionView(View):
         # ここでカレンダーの権限の投稿・編集を受け付ける。
         ids     = request.POST.getlist("id")
         emails  = request.POST.getlist("email")
-        '''
+        authorities = request.POST.getlist("authority")
+        
         reads   = request.POST.getlist("read")
         writes  = request.POST.getlist("write")
         chats   = request.POST.getlist("chat")
-        '''
-        authorities = request.POST.getlist("authority")
         
+        # 現在登録されているpermissionでidsにidがないものは権限を削除する
+        for permission in CalendarPermission.objects.filter(calendar=pk):
+            if not permission.id in ids:
+                permission.delete()
+         
         for id,email,authority in zip(ids,emails,authorities):
             dic             = {}
             dic["calendar"] = pk
             dic["user"]     = CustomUser.objects.filter(email=email).first()
-            dic["read"]     = False
-            dic["write"]    = False
-            dic["chat"]     = False
             
-            #print("権限",authority)
-            
-            if not authority == "none":
-                dic["read"]    = True
-                
-            if authority == "all" or authority=="read and write":
-                dic["write"]    = True
-
-            
-            if authority == "all" or authority=="read and chat":
-                dic["chat"]     = True
-            
+            dic["read"]     = True if authority in reads else False 
+            dic["write"]    = True if authority in writes else False
+            dic["chat"]     = True if authority in chats else False
             print(dic)
-
             if id != "":
                 # 編集対象がある場合はそちらを指定する(新規作成の場合はinstanceがNoneになるので、編集と新規作成を両立できる。)
                 calendar_permission = CalendarPermission.objects.filter(id=id).first()

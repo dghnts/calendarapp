@@ -3,15 +3,20 @@
     display:noneで非表示にしておく
     {% endcomment %}
     <div id="permission_form_init_area" style="display:none;">
-        <div>
+        <div class="permission_form mb-2">
             <label>対象ユーザーのEmail:</label>
             <input type="text" name="email">
-            <select name="authority">
+            <select class="btn btn-primary">
                 <option value="none">選択してください</option>
-                <option value="all">編集者</option>
-                <option value="readonly">閲覧者</option>
-                <option value="read and write">編集者（チャット禁止）</option>
-                <option value="read and chat">閲覧者（書き込み禁止）</option>
+                <option value="3">編集者</option>
+                <option value="0">閲覧者</option>
+                <option value="1">編集者（チャット禁止）</option>
+                <option value="2">閲覧者（書き込み禁止）</option>
             </select>
-        </div>    
+            <input type="hidden" name="authority" value="1">
+            <input type="checkbox" style="display:none;" name="read" value="1">
+            <input type="checkbox" style="display:none;" name="write" value="1">
+            <input type="checkbox" style="display:none;" name="chat" value="1">
+            <input type="button" class="btn btn-danger" name="delete_btn" value="削除">
+        </div>
     </div>
