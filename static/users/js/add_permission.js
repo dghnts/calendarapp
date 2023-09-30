@@ -3,7 +3,6 @@ window.addEventListener('load', function (){
     const permission_form_area  = document.querySelector('#permission_form_area');
 
     permission_form_add.addEventListener("click", () => {
-        
         const value                     = permission_form_area.querySelectorAll(".permission_form").length + 1;
 
         // permission_formをコピー
@@ -18,42 +17,23 @@ window.addEventListener('load', function (){
         permission_form_area.appendChild(permission_form_init_area);
 
         // 追加したformにクリック時の処理を追加する
-        const permission_form     =   permission_form_area.lastElementChild;
+        const permission_form   =   permission_form_area.lastElementChild;
 
         // select要素を取得
-        const select          =   permission_form.querySelector("select");
-        
+        const select            =   permission_form.querySelector("select");
+
         select.addEventListener("change", function(){
-            let value   = select.value
-            let read    = permission_form.querySelector("[name='read']");
-            let write   = permission_form.querySelector("[name='write']");
-            let chat    = permission_form.querySelector("[name='chat']");
-    
-            //console.log(permission_form);
-            console.log(value);
-            switch(value){
-                case "3":
-                    read.checked    = true;
-                    write.checked   = true;
-                    chat.checked    = true;
-                    break;
-                case "0":
-                    read.checked    = true;
-                    write.checked   = false;
-                    chat.checked    = false;
-                    break;
-                case "1":
-                    read.checked    = true;
-                    write.checked   = true;
-                    chat.checked    = false;
-                    break;
-                case "2":
-                    read.checked    = true;
-                    write.checked   = false;
-                    chat.checked    = true;
-                    break;
-            }
-        });
+                let value   = select.value
+                let read    = permission_form.querySelector("[name='read']");
+                let write   = permission_form.querySelector("[name='write']");
+                let chat    = permission_form.querySelector("[name='chat']");
+
+                // selectのvalue属性と同じvalueをもつ連想配列を取得する
+                const auth      = authority.find((obj) => obj["value"]==value); 
+                read.checked    = auth["read"];
+                write.checked   = auth["write"];
+                chat.checked    = auth["chat"];
+            });
 
         // 全ての入力フォームの削除ボタンを取得する
         delete_btns     =   permission_form.querySelectorAll("[name='delete_btn']");

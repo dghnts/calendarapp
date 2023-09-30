@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from .forms import EventForm
-from .models import Event, Calendar, CalendarPermission
-from .forms import EventForm, CalendarForm, CalendarPermissionForm
+from .models import Event, Calendar, CalendarPermission, CalendarMessage
+from .forms import EventForm, CalendarForm, CalendarPermissionForm, CalendarMessageForm
 
 from users.models import CustomUser
 
@@ -68,9 +68,10 @@ class CalendarView(View):
             event_list.append(details)
         #print(event_list)
         
-        context["events"]       = dumps(event_list)
-        context["eventsobj"]    = eventsobj
-        context["calendar"]     = calendarobj
+        context["events"]               = dumps(event_list)
+        context["eventsobj"]            = eventsobj
+        context["calendar"]             = calendarobj
+        context["calendar_messages"]    = CalendarMessage.objects.filter(calendar=pk)
         permissions             = CalendarPermission.objects.filter(calendar=pk)
                 
         for permission in permissions:
@@ -183,3 +184,38 @@ class DeleteEventView(View):
         return redirect("schedule:calendar",pk=calendar_id)
             
 delete_event = DeleteEventView.as_view()
+
+class CalendarMessageView(View):
+
+    # pkは対象のカレンダー
+    def post(self, request, pk, *args, **kwargs):
+        # ここでカレンダーのメッセージの投稿を受け付ける。
+        
+        # chat権限がないユーザーはcalendarにリダイレクトする
+        if not CalendarPermission.objects.filter(calendar=pk, user=request.user, chat=True).exists():
+            print("あなたにはこのカレンダーのチャット投稿権限がありません。")
+            return redirect("schedule:calendar", pk)
+
+        copied              = request.POST.copy()
+        copied["user"]      = request.user
+        copied["calendar"]  = pk
+
+        form    = CalendarMessageForm(copied)
+        
+        if form.is_valid():
+            form.save()
+        else:
+            # バリデーションエラーの場合の処理
+            #print("イベントの登録に失敗しました")
+            
+            #エラー内容をjdon形式で取得
+            errors = form.errors.get_json_data().values()
+            
+            for error in errors:
+                for e in error:
+                    messages.error(request, e["message"])
+
+        return redirect("schedule:calendar", pk)
+
+calendar_message    = CalendarMessageView.as_view()
+

@@ -22,7 +22,7 @@
   <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
   {# <script src="{% static 'users/js/add_permission.js' %}"></script>  #}
-  <script src="{% static 'schedule/js/delete_permission.js' %}"></script>
+  <script src="{% static 'schedule/js/permission_edit.js' %}"></script>
 
   <script> 
     //　特殊文字("<",">","'",etc...)をエスケープしないための処理
@@ -70,6 +70,21 @@
       </div>
       <div class="col-md-3">
         <h2>チャット</h2>
+
+            {# TODO:メッセージの投稿を表示 #}
+            {# TODO:contextprocessorを使って、ユーザーのアクセス権をコンテキストに与え、↓をif文で表示・非表示 ? #}
+            <form action="{% url 'schedule:calendar_message' calendar.id %}" method="POST">
+                {% csrf_token %}
+                <textarea class="form-control" name="content"></textarea>
+                <input class="form-control" type="submit" value="投稿">
+            </form>
+
+            {% for message in calendar_messages %}
+            <div class="border">
+                <div>{{ message.user }} : {{ message.dt }}</div>
+                <div>{{ message.content|linebreaksbr }}</div>
+            </div>
+          {% endfor %}
       </div>
     </div>
   </div>
