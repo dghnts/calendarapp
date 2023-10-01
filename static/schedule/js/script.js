@@ -127,7 +127,7 @@ window.addEventListener("load" , function (){
     });
     calendar.render();
     // 各イベントの編集ボタンの一覧を取得する
-    console.log(document.querySelectorAll('[id^="edit_"]'));
+    //console.log(document.querySelectorAll('[id^="edit_"]'));
     
     // 各ボタンに対してクリックイベント処理を追加
     document.querySelectorAll('[id^="edit_"]').forEach(function(event_btn) {

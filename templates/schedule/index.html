@@ -7,23 +7,28 @@
 
 {% block extra_head %}
 {% endblock  %}
+
 {% block extra_navbar %}
-    <form class="login me-2" method="POST" action="{% url 'account_login' %}">
+<li class="nav-item">
+    <form class="nav-link active d-flex justify-content-center mb-2 login" method="POST" action="{% url 'account_login' %}" aria-current="page">
         {% csrf_token %}
         {{ form.as_p }}
         {% if redirect_field_value %}
             <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
         {% endif %}
-        <button class="btn nav_btn me-2 primaryAction" type="submit">Sign In</button>
+        <button class="btn nav_btn text-white primaryAction" type="submit">Sign In</button>
     </form>
-    <form class="signup me-2" id="signup_form" method="post" action="{% url 'account_signup' %}">
+</li>
+<li class="nav-item">
+    <form class="nav-link d-flex justify-content-center mb-2 signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
         {% csrf_token %}
         {{ form.as_p }}
         {% if redirect_field_value %}
         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
         {% endif %}
-        <button class="btn nav_btn" type="submit">Sign Up</button>
+        <button class="btn nav_btn text-white" type="submit">Sign Up</button>
     </form>      
+</li>
 {% endblock %}
 
 {% block main %}

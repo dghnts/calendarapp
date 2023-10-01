@@ -41,6 +41,11 @@ index = IndexView.as_view()
 class CalendarView(View):
     def get(self, request, pk, *args, **kwargs):
         context = {}
+        
+        if not request.user.is_anonymous:
+            print(request.user)
+            #print(Calendar.objects.filter(calendarpermission=""))
+            context["calendars"] = Calendar.objects.filter(permission=request.user)
        
         if not CalendarPermission.objects.filter(calendar=pk, user=request.user ,read=True).exists():
             messages.error(request, "あなたにはこのカレンダーへのアクセス権（読み込み権限）がありません")
