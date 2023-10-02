@@ -21,7 +21,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
   <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-  {# <script src="{% static 'users/js/add_permission.js' %}"></script>  #}
+  <script src="{% static 'schedule/js/add_permission.js' %}"></script>
   <script src="{% static 'schedule/js/permission_edit.js' %}"></script>
 
   <script> 
@@ -34,9 +34,16 @@
   </script>
 {% endblock  %}
 
+{% block extra_navbr_brand %}
+  <label class="sidebar_label" for="sidebar_chk">
+    <i class="fa fa-bars"></i>
+  </label>
+{% endblock %}
+
 {% block header %}
   {% include 'schedule/permission_edit.html' %}
 {% endblock %}
+
 
 {% block extra_navbar %}
   <li class="nav-item mb-2">
@@ -97,7 +104,7 @@
 {% endblock %}
 
 {% block main %}
-  <div class="container">
+  <div class="container-fluid">
     <div class="row">
       <div class="col-md-6">
         <div id='calendar'></div>

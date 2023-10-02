@@ -28,9 +28,8 @@
             <div class="container-fluid">
                 <!--ハンバーガー メニューでサイドバーを操作する -->
                 <div class="navbar-brand">
-                    <label class="sidebar_label" for="sidebar_chk">
-                        <i class="fa fa-bars"></i>
-                    </label>
+                    {% block extra_navbr_brand %}
+                    {% endblock %}
                     スケジュールアプリ
                 </div>
                 {%block header %}
@@ -47,8 +46,11 @@
         </nav>
     </header>
     <main> 
+        <label class="sidebar_label" for="sidebar_chk">
+            <i class="fa fa-bars"></i>
+        </label>
         <input id="sidebar_chk" class="sidebar_chk" type="checkbox">
-        <div class="sidebar_area bg-dark">
+        <div class="sidebar_area p-3 bg-dark">
             <div class="sidear_content d-flex flex-column">
                 <hr>
                 <ul class="nav nav-pills flex-column mb-auto">
@@ -61,7 +63,7 @@
                     <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
                     <strong>mdo</strong>
                   </a>
-                  <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                  <ul class="dropdown-menu dropdown-menu-dark text-small" style="width:150px;">
                     <li><a class="dropdown-item" href="#">New project...</a></li>
                     <li><a class="dropdown-item" href="#">Settings</a></li>
                     <li><a class="dropdown-item" href="#">Profile</a></li>
@@ -70,7 +72,6 @@
                   </ul>
                 </div>
             </div>
-
         </div>
         <div class="calendar_area">
             <label class="sidebar_outlabel" for="sidebar_chk"></label>      

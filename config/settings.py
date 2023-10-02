@@ -176,7 +176,7 @@ else:
 SITE_ID = 1
 #django-allauthログイン時とログアウト時のリダイレクトURL
 # ログイン後ユーザーの個別ページに遷移する
-LOGIN_REDIRECT_URL = '/users'
+LOGIN_REDIRECT_URL = '/calendar/0'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'users.CustomUser'

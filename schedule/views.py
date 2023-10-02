@@ -43,13 +43,16 @@ class CalendarView(View):
         context = {}
         
         if not request.user.is_anonymous:
-            print(request.user)
             #print(Calendar.objects.filter(calendarpermission=""))
             context["calendars"] = Calendar.objects.filter(permission=request.user)
-       
+        
+        # カレンダーのidが0の時，pkをユーザーの読み込めるidに書き換える
+        if pk == 0:
+            pk = CalendarPermission.objects.filter(user=request.user ,read=True)[0].calendar.id
+
         if not CalendarPermission.objects.filter(calendar=pk, user=request.user ,read=True).exists():
             messages.error(request, "あなたにはこのカレンダーへのアクセス権（読み込み権限）がありません")
-            return redirect("users:user_index")
+            return redirect("schedule:index")
         print("読み込み権限の確認")
         
         context["write"] = True
