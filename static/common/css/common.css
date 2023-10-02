@@ -26,7 +26,6 @@ main {
     position: absolute;
     top:0;
     left:-300px;
-    transition:0.2s;
 
     height: 100%;
     background-color: black;
@@ -36,44 +35,11 @@ main {
     color:white;
 }
 
-.sidebar_label {
-    position:absolute;
-    top:0;
-    left:300px; /* ←ここのleft:300pxは .sidebar_areaの左上を起点とした300pxなので、 sidebar_areaが動くと、同時に動いてくれる。 */
-
-    /* 縦書きにする */
-    /* 英字は90度回転する*/
-    /* writing-mode:vertical-rl;*/
-
-    /*padding:2rem 0.25rem;*/
-    cursor:pointer;
-}
-
 /* サイドバーのラベルがクリックされた時、サイドバーを展開する */
 .sidebar_chk[type="checkbox"]:checked + .sidebar_area {
     left:0;
-    transition:0.2s;
-    color: white;
 }
 
-/* サイドバーのラベルがクリックされた時、サイドバーを展開する */
-.sidebar_chk[type="checkbox"]:checked + .sidebar_area label {
-    display: none;
-}
-
-/* サイドバー展開中、範囲外をクリックすると閉じる */
-.sidebar_out_area{
-    display:none;
-    position:fixed;
-    top:0;
-    left:300px;
-
-    width:100%;
-    height:100vh;
-
-    z-index:-1;
-    opacity:0.8;
-}
-.sidebar_chk[type="checkbox"]:checked ~ .sidebar_out_area {
-    display:block;
+.calendar_area,.sidebar_area{
+    transition: 0.5s;
 }

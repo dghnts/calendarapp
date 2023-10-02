@@ -35,13 +35,10 @@
 {% endblock  %}
 
 {% block header %}
-  <!-- 設定ボタン（共有権限の編集などに使用する）-->
-  <!-- <i class="fa-solid fa-gear p-2" style="color:white;" href=""></i> -->
   {% include 'schedule/permission_edit.html' %}
 {% endblock %}
 
 {% block extra_navbar %}
-
   <li class="nav-item mb-2">
     {% for calendar in calendars %}
     <div class="d-flex justify-content-center">
