@@ -1,3 +1,4 @@
+/*
 function delete_permission(n) {
     //フォームの数を取得
     const input_length = document.querySelectorAll("#permission_form_input").length;
@@ -16,14 +17,14 @@ function delete_permission(n) {
         //delete_form.remove();
         //console.log(document.querySelectorAll("#permission_form_input"))
     }
-}
+}*/
 
 window.addEventListener('load', function(){
-    const permission_form_add   = document.querySelector('#permission_form_add');
-    const permission_form_area  = document.querySelector('#permission_form_area');
+    const permission_form_edit_add   = document.querySelector('#permission_form_edit_add');
+    const permission_form_edit_area  = document.querySelector('#permission_form_edit_area');
 
-    // 登録済みのユーザー権限の一覧を取得
-    const permission_forms = permission_form_area.querySelectorAll(".permission_form");
+    // 登録済みの権限の一覧を取得
+    const permission_forms = permission_form_edit_area.querySelectorAll(".permission_form");
 
     // ユーザー権限の連想配列
     const authority = [
@@ -33,6 +34,7 @@ window.addEventListener('load', function(){
         {"value":"2", "read":true, "write":false, "chat":true}
     ]
     
+    // 全ての権限に対して以下の処理委を行う
     permission_forms.forEach((permission_form) => {
         let selecttag = permission_form.querySelector("select");
         selecttag.addEventListener("change", () =>{
@@ -50,7 +52,7 @@ window.addEventListener('load', function(){
         });
 
         // 全ての入力フォームの削除ボタンを取得する
-        delete_btns     =   permission_form.querySelectorAll(".delete_btn");
+        delete_btns     =   permission_form.querySelectorAll("[name='delete_btn']");
 
          // 削除ボタンに削除操作を実装する
         delete_btns.forEach(btn => {
@@ -61,12 +63,10 @@ window.addEventListener('load', function(){
         }); 
     });
 
-        
-   
 
-    permission_form_add.addEventListener("click", () => {
-        
-        const value                     = permission_form_area.querySelectorAll(".permission_form").length + 1;
+    permission_form_edit_add.addEventListener("click", () => {
+        console.log("hello")
+        const value                     = permission_form_edit_area.querySelectorAll(".permission_form").length + 1;
 
         // permission_formをコピー
         const permission_form_init_area = document.querySelector("#permission_form_init_area").children[0].cloneNode(true);
@@ -82,10 +82,10 @@ window.addEventListener('load', function(){
         permission_form_init_area.querySelector("[name='write']").checked   = true;
         permission_form_init_area.querySelector("[name='chat']").checked    = true;
         
-        permission_form_area.appendChild(permission_form_init_area);
+        permission_form_edit_area.appendChild(permission_form_init_area);
 
         // 追加したformにクリック時の処理を追加する
-        const permission_form_last     =   permission_form_area.lastElementChild;
+        const permission_form_last     =   permission_form_edit_area.lastElementChild;
 
         // select要素を取得
         const select          =   permission_form_last.querySelector("select");
@@ -105,7 +105,7 @@ window.addEventListener('load', function(){
         });
 
         // 全ての入力フォームの削除ボタンを取得する
-        delete_btns     =   permission_form_last.querySelectorAll(".delete_btn");
+        delete_btns     =   permission_form_last.querySelectorAll("[name='delete_btn']");
 
         // 削除ボタンに削除操作を実装する
         delete_btns.forEach(btn => {

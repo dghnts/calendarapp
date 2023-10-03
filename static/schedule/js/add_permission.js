@@ -1,13 +1,13 @@
 window.addEventListener('load', function (){
     const permission_form_add   = document.querySelector('#permission_form_add');
     const permission_form_area  = document.querySelector('#permission_form_area');
-
+    console.log(permission_form_add);
     permission_form_add.addEventListener("click", () => {
         const value                     = permission_form_area.querySelectorAll(".permission_form").length + 1;
-
         // permission_formをコピー
-        const permission_form_init_area = document.querySelector("#permission_form_init_area").children[0].cloneNode(true);
 
+        const permission_form_init_area = document.querySelector("#permission_form_init_area").children[0].cloneNode(true);
+        
         // 各valueの値を書き換える。
         permission_form_init_area.querySelector("[name='authority']").value = value;
         permission_form_init_area.querySelector("[name='read']").value      = value;

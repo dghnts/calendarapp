@@ -21,9 +21,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
   <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-  {# <script src="{% static 'users/js/add_permission.js' %}"></script>  #}
+  <script src="{% static 'schedule/js/add_permission.js' %}"></script>
   <script src="{% static 'schedule/js/permission_edit.js' %}"></script>
-
+  
   <script> 
     //　特殊文字("<",">","'",etc...)をエスケープしないための処理
     {% autoescape off %}
@@ -35,8 +35,11 @@
 {% endblock  %}
 
 {% block header %}
-  {% include 'schedule/permission_edit.html' %}
+  {% if  calendars %}
+    {% include 'schedule/permission_edit.html' %}
+  {% endif %}
 {% endblock %}
+
 
 {% block extra_navbar %}
   <li class="nav-item mb-2">
@@ -60,7 +63,7 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <form action="" method="post" id="create_calendar">
+                  <form action="{% url 'schedule:createcalendar' %}" method="post" id="create_calendar">
                       {% csrf_token %}
                       <input class="mb-2" type="text" name="name" placeholder="カレンダー名">
                   
@@ -95,46 +98,46 @@
       </form>
   </li>
 {% endblock %}
-
 {% block main %}
-  <div class="container">
+  <div class="container-fluid">
     <div class="row">
       <div class="col-md-6">
         <div id='calendar'></div>
       </div>
-      <div class="col-md-3">
-        <h2>予定リスト</h2>
-        {% for event in eventsobj %}
-          <div id="event" class="border">
-            <div>期間:{{event.start}} ~ {{event.end}}</div>
-            <div>イベント名:{{ event.title }}</div>
-            <!-- 書き込み権限がある場合のみ編集ボタンを表示 -->
-            {% if write %}
-              <button type="button" id="edit_{{event.id}}" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" >
-                編集
-              </button>
-            {% endif %}
-          </div>
-        {% endfor %}
-      </div>
-      <div class="col-md-3">
-        <h2>チャット</h2>
-
-            {# TODO:メッセージの投稿を表示 #}
-            {# TODO:contextprocessorを使って、ユーザーのアクセス権をコンテキストに与え、↓をif文で表示・非表示 ? #}
-            <form action="{% url 'schedule:calendar_message' calendar.id %}" method="POST">
-                {% csrf_token %}
-                <textarea class="form-control" name="content"></textarea>
-                <input class="form-control" type="submit" value="投稿">
-            </form>
-
-            {% for message in calendar_messages %}
-            <div class="border">
-                <div>{{ message.user }} : {{ message.dt }}</div>
-                <div>{{ message.content|linebreaksbr }}</div>
+      {% if calendars %}
+        <div class="col-md-3">
+          <h2>予定リスト</h2>
+          {% for event in eventsobj %}
+            <div id="event" class="border">
+              <div>期間:{{event.start}} ~ {{event.end}}</div>
+              <div>イベント名:{{ event.title }}</div>
+              <!-- 書き込み権限がある場合のみ編集ボタンを表示 -->
+              {% if write %}
+                <button type="button" id="edit_{{event.id}}" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" >
+                  編集
+                </button>
+              {% endif %}
             </div>
           {% endfor %}
-      </div>
+        </div>
+        <div class="col-md-3">
+            <h2>チャット</h2>
+              {# TODO:メッセージの投稿を表示 #}
+              {# TODO:contextprocessorを使って、ユーザーのアクセス権をコンテキストに与え、↓をif文で表示・非表示 ? #}
+              <form action="{% url 'schedule:calendar_message' calendar.id %}" method="POST">
+                  {% csrf_token %}
+                  <textarea class="form-control" name="content"></textarea>
+                  <input class="form-control" type="submit" value="投稿">
+              </form>
+            
+              {% for message in calendar_messages %}
+              <div class="border">
+                  <div>{{ message.user }} : {{ message.dt }}</div>
+                  <div>{{ message.content|linebreaksbr }}</div>
+              </div>
+              {% endfor %}
+        </div>
+      {% endif %}
     </div>
   </div>
   <!--モーダルダイアログの記述-->
@@ -186,4 +189,5 @@
     </div>
   </div>
   {% endif %}
+  {% include "schedule/permission_form.html" %}
 {% endblock %}
