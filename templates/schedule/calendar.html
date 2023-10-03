@@ -34,12 +34,6 @@
   </script>
 {% endblock  %}
 
-{% block extra_navbr_brand %}
-  <label class="sidebar_label" for="sidebar_chk">
-    <i class="fa fa-bars"></i>
-  </label>
-{% endblock %}
-
 {% block header %}
   {% include 'schedule/permission_edit.html' %}
 {% endblock %}
@@ -67,7 +61,7 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <form action="" method="post" id="create_calendar">
+                  <form action="{% url 'schedule:createcalendar' %}" method="post" id="create_calendar">
                       {% csrf_token %}
                       <input class="mb-2" type="text" name="name" placeholder="カレンダー名">
                   

@@ -41,14 +41,13 @@ index = IndexView.as_view()
 class CalendarView(View):
     def get(self, request, pk, *args, **kwargs):
         context = {}
-        
+        print(request.path)
+
         if not request.user.is_anonymous:
             #print(Calendar.objects.filter(calendarpermission=""))
             context["calendars"] = Calendar.objects.filter(permission=request.user)
-        
-        # カレンダーのidが0の時，pkをユーザーの読み込めるidに書き換える
-        if pk == 0:
-            pk = CalendarPermission.objects.filter(user=request.user ,read=True)[0].calendar.id
+            # カレンダーのidが0の時，pkをユーザーの読み込めるidに書き換える
+            pk = Calendar.objects.filter(permission=request.user)[0].id
 
         if not CalendarPermission.objects.filter(calendar=pk, user=request.user ,read=True).exists():
             messages.error(request, "あなたにはこのカレンダーへのアクセス権（読み込み権限）がありません")
@@ -95,7 +94,7 @@ class CalendarView(View):
         return render(request,"schedule/calendar.html",context)
 
     def post(self, request, pk, *args, **kwargs):
-        print(request.POST["calendar"])
+        
         calendar_id = request.POST["calendar"]
         if pk == 0:
             form = EventForm(request.POST)
@@ -107,25 +106,91 @@ class CalendarView(View):
         if not form.is_valid():
             # バリデーションエラーの場合の処理
             #print("イベントの登録に失敗しました")
-            
+
             #エラー内容をjdon形式で取得
             errors = form.errors.get_json_data().values()
-            
+
             for error in errors:
                 for e in error:
                     messages.error(request, e["message"])
-            
+
             # pkで表示しているカレンダーのidをurlに渡す
             return redirect("schedule:calendar",pk=calendar_id)
-        
+
         #　バリデーションOK
         messages.info(request, success)
         form.save()
-        
+
         # pkで表示しているカレンダーのidをurlに渡す
-        return redirect("schedule:calendar",pk=calendar_id)
+        return redirect("schedule:calendar",pk=calendar_id)        
 
 calendar = CalendarView.as_view()
+
+class CreateCalendarView(View):
+    def post(self, request, *args, **kwargs):
+        # TODO:カレンダーの新規作成
+        # request.POSTを編集するためにコピーする
+        # name属性をもつ        -> カレンダーの新規作成
+        # name属性をもたない    -> 共有権限の編集
+        copied         = request.POST.copy()
+        
+        # "user"属性を付与して現在ログイン中のユーザーを設定
+        copied["user"] = request.user
+        
+        form   = CalendarForm(copied)
+        
+        if not form.is_valid():
+        
+            print(form.errors)
+        
+            return redirect("schedule:index")
+        
+        # 保存したカレンダーのデータをとる
+        
+        calendar   = form.save()
+        
+        # カレンダーの投稿者自身に全権限を付与
+        
+        dic                = {}
+        dic["calendar"]    = calendar
+        dic["user"]        = request.user
+        dic["read"]        = True
+        dic["write"]       = True
+        dic["chat"]        = True
+        
+        form   = CalendarPermissionForm(dic)
+        
+        if form.is_valid():
+        
+            form.save()
+        
+            # TODO:カレンダーに紐づく権限を付与。
+            emails      = request.POST.getlist("email")
+            authorities = request.POST.getlist("authority")
+            reads       = request.POST.getlist("read") 
+            writes      = request.POST.getlist("write")        
+            chats       = request.POST.getlist("chat")
+            for email,authority in zip(emails,authorities):
+                dic             = {}
+                dic["calendar"] = calendar
+                #TODO: カスタムユーザーモデルを使って検索
+                print(email)
+                print( CustomUser.objects.filter(email=email).first() )
+                dic["user"]     = CustomUser.objects.filter(email=email).first()
+                # ↓参照: https://note.nkmk.me/python-if-conditional-expressions/
+                dic["read"]     = True if authority in reads else False
+                dic["write"]    = True if authority in writes else False
+                dic["chat"]     = True if authority in chats else False
+                form    = CalendarPermissionForm(dic)
+                if form.is_valid():
+                    form.save()
+                    print("成功")
+                else:
+                    print(form.errors)
+                    
+            return redirect("schedule:calendar",0)
+
+createcalendar = CreateCalendarView.as_view()
 
 class CalendarPermissionView(View):
     
