@@ -182,6 +182,8 @@ ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 AUTH_USER_MODEL = 'users.CustomUser'
 ACCOUNT_FORMS   = { "signup":"users.forms.SignupForm"}
 
+ACCOUNT_ADAPTER = 'account.customadapter.CustomAdapter'
+
 ACCOUNT_USERNAME_REQUIRED = True
 
 # messagetemplateの装飾

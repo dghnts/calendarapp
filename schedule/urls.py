@@ -5,6 +5,7 @@ app_name="schedule"
 
 urlpatterns = [
     path("",views.index, name="index"),
+    path("calendar/", views.calendar, name="calendar_index"),
     path("calendar/<int:pk>", views.calendar, name="calendar"),
     path("create_calendar", views.createcalendar, name="createcalendar"),
     # 編集権限の変更用url

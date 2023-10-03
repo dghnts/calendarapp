@@ -33,8 +33,6 @@
                     </label>
                     スケジュールアプリ
                 </div>
-                {%block header %}
-                {% endblock %}
                 {% if messages %}
                 {% for message in messages %}
                 <div {% if message.tags %} class="{{ message.tags }} alert-dismissible" {% endif %}% >
@@ -42,14 +40,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 {% endfor %}
-                {% endif %} 
+                {% endif %}
+                {%block header %}
+                {% endblock %} 
             </div>
         </nav>
     </header>
     <main> 
-        <label class="sidebar_label" for="sidebar_chk">
-            <i class="fa fa-bars"></i>
-        </label>
         <input id="sidebar_chk" class="sidebar_chk" type="checkbox">
         <div class="sidebar_area p-3 bg-dark">
             <div class="sidear_content d-flex flex-column">
@@ -61,8 +58,6 @@
                 <hr>
                 <div class="dropdown">
                   <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-                    <strong>mdo</strong>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-dark text-small" style="width:150px;">
                     <li><a class="dropdown-item" href="#">New project...</a></li>

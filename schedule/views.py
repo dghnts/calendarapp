@@ -39,59 +39,65 @@ index = IndexView.as_view()
 
 # カレンダーを表示させるview
 class CalendarView(View):
-    def get(self, request, pk, *args, **kwargs):
+    def get(self, request,*args, **kwargs):
         context = {}
-        print(request.path)
-
         if not request.user.is_anonymous:
             #print(Calendar.objects.filter(calendarpermission=""))
             context["calendars"] = Calendar.objects.filter(permission=request.user)
             # カレンダーのidが0の時，pkをユーザーの読み込めるidに書き換える
-            pk = Calendar.objects.filter(permission=request.user)[0].id
+            #pk = Calendar.objects.filter(permission=request.user)[0].id
 
-        if not CalendarPermission.objects.filter(calendar=pk, user=request.user ,read=True).exists():
-            messages.error(request, "あなたにはこのカレンダーへのアクセス権（読み込み権限）がありません")
-            return redirect("schedule:index")
-        print("読み込み権限の確認")
-        
-        context["write"] = True
-        # 書き込み権限がない場合は編集writeをFalseに変更する
-        if not CalendarPermission.objects.filter(calendar=pk, user=request.user, write=True).exists():
-            context["write"] = False
 
-        event_list = []
-        eventsobj = Event.objects.all()
-        # 現在表示しているカレンダーのオブジェクトを取得
-        calendarobj = Calendar.objects.filter(id=pk).first()
-        # 全ての登録されたスケジュールに対して以下の処理を実行する
-        for event in eventsobj:
-            # スケジュールの詳細を保存する辞書を作成
-            details = {}
-            # jsでイベントを操作するときに利用するid(schedulemodelのidを利用できる)
-            details["id"] = event.id
-            details["title"] = event.title
-            details["start"] = localtime(event.start).strftime('%Y-%m-%d')
-            details["end"] = localtime(event.end).strftime('%Y-%m-%d')
-            event_list.append(details)
-        #print(event_list)
+
         
-        context["events"]               = dumps(event_list)
-        context["eventsobj"]            = eventsobj
-        context["calendar"]             = calendarobj
-        context["calendar_messages"]    = CalendarMessage.objects.filter(calendar=pk)
-        permissions             = CalendarPermission.objects.filter(calendar=pk)
-                
-        for permission in permissions:
-            # value_sum
-            # read = True -> 0
-            # read = True -> +1
-            # read = true -> +2 
-            value_sum   =   (permission.read*0 + permission.write*1 + permission.chat*2)
-            permission.select = value_sum
-                
-        context["permissions"]  = permissions
+        if not "pk" in kwargs.keys():
+            return render(request,"schedule/calendar.html")
+        else:
+            pk = kwargs["pk"]
+            if not CalendarPermission.objects.filter(calendar=pk, user=request.user ,read=True).exists():
+                messages.error(request, "あなたにはこのカレンダーへのアクセス権（読み込み権限）がありません")
+                return redirect("schedule:index")
+            print("読み込み権限の確認")            
+            
+            context["write"] = True
+            # 書き込み権限がない場合は編集writeをFalseに変更する
+            if not CalendarPermission.objects.filter(calendar=pk, user=request.user, write=True).exists():
+                context["write"] = False
+    
+            event_list = []
+            # 現在表示しているカレンダーのオブジェクトを取得
+            calendarobj = Calendar.objects.filter(id=pk).first()
+            # 現在表示しているカレンダーに紐づいているイベントをすべて取得
+            eventsobj = Event.objects.filter(calendar=calendarobj)
+            # 全ての登録されたスケジュールに対して以下の処理を実行する
+            for event in eventsobj:
+                # スケジュールの詳細を保存する辞書を作成
+                details = {}
+                # jsでイベントを操作するときに利用するid(schedulemodelのidを利用できる)
+                details["id"] = event.id
+                details["title"] = event.title
+                details["start"] = localtime(event.start).strftime('%Y-%m-%d')
+                details["end"] = localtime(event.end).strftime('%Y-%m-%d')
+                event_list.append(details)
+            #print(event_list)
+            
+            context["events"]               = dumps(event_list)
+            context["eventsobj"]            = eventsobj
+            context["calendar"]             = calendarobj
+            context["calendar_messages"]    = CalendarMessage.objects.filter(calendar=pk)
+            permissions             = CalendarPermission.objects.filter(calendar=pk)
+                    
+            for permission in permissions:
+                # value_sum
+                # read = True -> 0
+                # read = True -> +1
+                # read = true -> +2 
+                value_sum   =   (permission.read*0 + permission.write*1 + permission.chat*2)
+                permission.select = value_sum
+                    
+            context["permissions"]  = permissions
         
-        return render(request,"schedule/calendar.html",context)
+            return render(request,"schedule/calendar.html",context)
 
     def post(self, request, pk, *args, **kwargs):
         
@@ -164,7 +170,7 @@ class CreateCalendarView(View):
         
             form.save()
         
-            # TODO:カレンダーに紐づく権限を付与。
+        # TODO:カレンダーに紐づく権限を付与。
             emails      = request.POST.getlist("email")
             authorities = request.POST.getlist("authority")
             reads       = request.POST.getlist("read") 
@@ -187,8 +193,9 @@ class CreateCalendarView(View):
                     print("成功")
                 else:
                     print(form.errors)
-                    
-            return redirect("schedule:calendar",0)
+        
+        #　新規作成したカレンダーのページへリダイレクトする  
+        return redirect("schedule:calendar",calendar.id)
 
 createcalendar = CreateCalendarView.as_view()
 
