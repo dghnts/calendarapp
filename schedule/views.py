@@ -11,26 +11,6 @@ from django.contrib import messages
 from json import dumps
 from django.utils.timezone import localtime
 
-'''
-# modelのフィールド一覧を取得するための関数
-def get_fields_name(models):
-    # 各フィールドのmeta情報を取得
-    meta_fields = models._meta.get_fields()
-    
-    #for data in meta_fields:
-    #    print(type(data))
-    
-    fields = list()
-    
-    # enumerate型を利用して各フィールドの名前を取得
-    for i, meta_field in enumerate(meta_fields):
-        # id以外のすべてのフィールドを取得
-        if i > 0:
-            fields.append(meta_field.name)
-            
-    return fields
-'''
-
 class IndexView(View):
     def get(self, request, *args, **kwargs):
         return render(request, "schedule/index.html")
@@ -44,12 +24,8 @@ class CalendarView(View):
         if not request.user.is_anonymous:
             #print(Calendar.objects.filter(calendarpermission=""))
             context["calendars"] = Calendar.objects.filter(permission=request.user)
-            # カレンダーのidが0の時，pkをユーザーの読み込めるidに書き換える
-            #pk = Calendar.objects.filter(permission=request.user)[0].id
-
-
-
-        
+        print(request.path)
+        print("pk" in kwargs.keys())
         if not "pk" in kwargs.keys():
             return render(request,"schedule/calendar.html")
         else:

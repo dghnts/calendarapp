@@ -24,6 +24,14 @@
 </head>
 <body>
     <header>
+        {% if messages %}
+        {% for message in messages %}
+        <div {% if message.tags %} class="{{ message.tags }} alert-dismissible" {% endif %}% >
+            {{message}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
         <nav class="navbar bg-body-tertiary">
             <div class="container-fluid">
                 <!--ハンバーガー メニューでサイドバーを操作する -->
@@ -33,14 +41,6 @@
                     </label>
                     スケジュールアプリ
                 </div>
-                {% if messages %}
-                {% for message in messages %}
-                <div {% if message.tags %} class="{{ message.tags }} alert-dismissible" {% endif %}% >
-                    {{message}}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                {% endfor %}
-                {% endif %}
                 {%block header %}
                 {% endblock %} 
             </div>
