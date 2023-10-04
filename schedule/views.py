@@ -192,7 +192,7 @@ class CalendarPermissionView(View):
         for permission in CalendarPermission.objects.filter(calendar=pk):
             if not permission.id in ids:
                 permission.delete()
-         
+        print(ids)
         for id,email,authority in zip(ids,emails,authorities):
             dic             = {}
             dic["calendar"] = pk
@@ -201,6 +201,7 @@ class CalendarPermissionView(View):
             dic["read"]     = True if authority in reads else False 
             dic["write"]    = True if authority in writes else False
             dic["chat"]     = True if authority in chats else False
+            
             print(dic)
             if id != "":
                 # 編集対象がある場合はそちらを指定する(新規作成の場合はinstanceがNoneになるので、編集と新規作成を両立できる。)
@@ -213,12 +214,12 @@ class CalendarPermissionView(View):
             form    = CalendarPermissionForm(dic, instance=calendar_permission)
 
             if form.is_valid():
+                form.save()
                 print("編集完了")
-                calendar_permission = form.save()
             else:
                 print(form.errors)
-
-
+                
+        print("こんにちは")
         return redirect("schedule:calendar", pk)
 
 calendar_permission = CalendarPermissionView.as_view()
