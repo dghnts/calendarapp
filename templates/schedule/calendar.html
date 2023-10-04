@@ -43,16 +43,20 @@
 
 {% block extra_navbar %}
   <li class="nav-item mb-2">
+    <div class="text-center text-white">
+      <h5>カレンダー一覧</h5>
+    </div>
     {% for calendar in calendars %}
     <div class="d-flex justify-content-center">
         <a class="text-white" href="{% url 'schedule:calendar' calendar.id %}">{{ calendar.name }}</a>
     </div>
     {% endfor %}  
   </li>
+  <hr style="height:2px; background-color:white;">
   <li class="nav-item mb-2" >
       <div class="d-flex justify-content-center">
-          <button type="button" id="create" class="btn text-white" data-bs-toggle="modal" data-bs-target="#createcalendarBackdrop">
-              カレンダー新規作成
+          <button type="button" id="create" class="btn text-white p-0 m-0" data-bs-toggle="modal" data-bs-target="#createcalendarBackdrop">
+              <h5 class="mb-0">カレンダー新規作成</h5>
           </button>
           <div class="modal" id="createcalendarBackdrop" data-bs-backdrop="static" tabindex="-1">
             <div class="modal-dialog">
@@ -89,15 +93,38 @@
       </div>
   </li>
   <li class="nav-item">
-      <form class="nav-link active d-flex justify-content-center mb-2 logout" method="post" action="{% url 'account_logout' %}" aria-current="page">
+    <form class="d-flex justify-content-center mb-2 logout" method="post" action="{% url 'account_logout' %}" aria-current="page">
+        {% csrf_token %}
+        {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+        {% endif %}
+        <button class="btn text-white" type="submit">Sign Out</button>
+    </form>
+  </li>
+{% endblock %}
+
+{% block dropdown_menu %}
+<div class="dropdown">
+  <buttuon class="d-flex align-items-center text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="fa-solid fa-user me-2"></i>
+    {{user.username}}
+  </button>
+  <ul class=" dropdown-menu dropdown-menu-dark">
+    {% comment %}
+    <li class="dropdown-item">
+      <form class="d-flex justify-content-center mb-2 logout" method="post" action="{% url 'account_logout' %}" aria-current="page">
           {% csrf_token %}
           {% if redirect_field_value %}
               <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
           {% endif %}
-          <button class="btn nav_btn text-white" type="submit">Sign Out</button>
+          <button class="btn text-white" type="submit">Sign Out</button>
       </form>
-  </li>
+    </li>
+    {% endcomment %}
+  </ul>
+</div>
 {% endblock %}
+
 {% block main %}
   <div class="container-fluid">
     <div class="row">

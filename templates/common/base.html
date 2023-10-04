@@ -24,6 +24,14 @@
 </head>
 <body>
     <header>
+        {% if messages %}
+        {% for message in messages %}
+        <div {% if message.tags %} class="{{ message.tags }} alert-dismissible" {% endif %}% >
+            {{message}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
         <nav class="navbar bg-body-tertiary">
             <div class="container-fluid">
                 <!--ハンバーガー メニューでサイドバーを操作する -->
@@ -33,14 +41,6 @@
                     </label>
                     スケジュールアプリ
                 </div>
-                {% if messages %}
-                {% for message in messages %}
-                <div {% if message.tags %} class="{{ message.tags }} alert-dismissible" {% endif %}% >
-                    {{message}}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                {% endfor %}
-                {% endif %}
                 {%block header %}
                 {% endblock %} 
             </div>
@@ -48,25 +48,16 @@
     </header>
     <main> 
         <input id="sidebar_chk" class="sidebar_chk" type="checkbox">
-        <div class="sidebar_area p-3 bg-dark">
+        <div class="sidebar_area p-3 text-bg-dark">
             <div class="sidear_content d-flex flex-column">
-                <hr>
+                <hr style="height:2px; background-color:white;">
                 <ul class="nav nav-pills flex-column mb-auto">
                     {% block extra_navbar %}
                     {% endblock %}  
                 </ul>
-                <hr>
-                <div class="dropdown">
-                  <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                  </a>
-                  <ul class="dropdown-menu dropdown-menu-dark text-small" style="width:150px;">
-                    <li><a class="dropdown-item" href="#">New project...</a></li>
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#">Sign out</a></li>
-                  </ul>
-                </div>
+                <hr style="height:2px; background-color:white;">
+                {% block dropdown_menu %}
+                {% endblock %}
             </div>
         </div>
         <div class="calendar_area">
