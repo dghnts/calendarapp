@@ -62,7 +62,8 @@ class Event(models.Model):
     ## 繰り返しの初期値を7日間で設定
     # durationsfieldのdefault値はtimedeltaｓ型で指定する
     # repeat =  models.DurationField(verbose_name="繰り返し期間", default="", null=True, blank=True)
-    repeat =  models.DurationField(verbose_name="繰り返し期間", default=timedelta(days=7), null=True, blank=True)
+    #repeat =  models.DurationField(verbose_name="繰り返し期間", default=timedelta(days=7), null=True, blank=True)
+    repeat =  models.PositiveIntegerField(verbose_name="繰り返し期間", null=True, blank=True)
     
     # いつまで繰り返し処理を行うのかを指定する
     # Datetimefieldのdefault値はdatetimeｓ型でｓ

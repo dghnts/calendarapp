@@ -12,12 +12,12 @@ class EventForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ["calendar",
-                  "start", 
-                  "end", 
-                  "title", 
+                    "start", 
+                    "end", 
+                    "title", 
                   # "user",
-                  # "repeat",
-                  # "stop",
+                    "repeat",
+                    "stop",
                   ]
         
         # エラーメッセージ

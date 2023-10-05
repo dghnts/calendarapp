@@ -10,6 +10,9 @@ from django.contrib import messages
 
 from json import dumps
 from django.utils.timezone import localtime
+import datetime
+
+from copy import deepcopy
 
 class IndexView(View):
     def get(self, request, *args, **kwargs):
@@ -45,9 +48,37 @@ class CalendarView(View):
             calendarobj = Calendar.objects.filter(id=pk).first()
             # 現在表示しているカレンダーに紐づいているイベントをすべて取得
             eventsobj = Event.objects.filter(calendar=calendarobj)
+            
+            new_eventsobj = []
             # 全ての登録されたスケジュールに対して以下の処理を実行する
             for event in eventsobj:
-                # スケジュールの詳細を保存する辞書を作成
+                new_eventsobj.append(event)
+                
+                if event.repeat:
+                    repeat_event    = deepcopy(event)
+                    
+                    stop            = event.start + datetime.timedelta(days=365)
+                    if event.stop:
+                        stop = event.stop
+                    
+                    print(stop)
+                    
+                    while True:
+                        
+                        repeat_event.start = repeat_event.start + datetime.timedelta(days=repeat_event.repeat)
+                        repeat_event.end = repeat_event.end + datetime.timedelta(days=repeat_event.repeat)
+                        
+                        print(repeat_event.start)
+                            
+                        if repeat_event.start > stop:
+                            print("繰り返し終了")
+                            break
+                                
+                        new_eventsobj.append(deepcopy(repeat_event))
+                
+            for event in new_eventsobj:
+                    
+                # スケジュールの詳細を保存する辞書を作成     
                 details = {}
                 # jsでイベントを操作するときに利用するid(schedulemodelのidを利用できる)
                 details["id"] = event.id
@@ -55,13 +86,12 @@ class CalendarView(View):
                 details["start"] = localtime(event.start).strftime('%Y-%m-%d')
                 details["end"] = localtime(event.end).strftime('%Y-%m-%d')
                 event_list.append(details)
-            #print(event_list)
             
             context["events"]               = dumps(event_list)
-            context["eventsobj"]            = eventsobj
+            context["eventsobj"]            = new_eventsobj
             context["calendar"]             = calendarobj
             context["calendar_messages"]    = CalendarMessage.objects.filter(calendar=pk)
-            permissions             = CalendarPermission.objects.filter(calendar=pk)
+            permissions                     = CalendarPermission.objects.filter(calendar=pk)
                     
             for permission in permissions:
                 # value_sum
@@ -72,12 +102,12 @@ class CalendarView(View):
                 permission.select = value_sum
                     
             context["permissions"]  = permissions
-        
+            print("OK")
+            
             return render(request,"schedule/calendar.html",context)
 
     def post(self, request, pk, *args, **kwargs):
-        
-        calendar_id = request.POST["calendar"]
+        calendar_id = request.POST.get("calendar")
         if pk == 0:
             form = EventForm(request.POST)
             success = "イベントの登録に成功しました"
@@ -219,7 +249,6 @@ class CalendarPermissionView(View):
             else:
                 print(form.errors)
                 
-        print("こんにちは")
         return redirect("schedule:calendar", pk)
 
 calendar_permission = CalendarPermissionView.as_view()
