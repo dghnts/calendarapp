@@ -51,11 +51,12 @@ window.addEventListener("load" , function (){
             // 終了日を指定する（デフォルトは選択範囲の最終日）
             info.end.setDate(info.end.getDate());
             info.end.setHours(info.end.getHours()+today.getHours());
-            config_dt.defaultDate = info.start;
-            config_dt.defaultDate = info.end;
 
             // イベントの開始日と終了日をflatpickrで設定できるようにする
+            config_dt.defaultDate = info.start;
             flatpickr("[name='start']", config_dt);
+
+            config_dt.defaultDate = info.end;
             flatpickr("[name='end']", config_dt);
             flatpickr("[name='stop']", config_dt);
             

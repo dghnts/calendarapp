@@ -1,0 +1,46 @@
+<button type="button" id="edit_{{event.id}}" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    編集
+</button>
+<div class="modal" id="staticBackdrop" data-bs-backdrop="static" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">イベント編集画面</h5>
+        <!-- modal終了のボタン -->
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="" name="event_edit" method="post" id="event_edit">
+          {% csrf_token %}
+          <input type="hidden" name="calendar" value="{{ calendar.id }}">
+          <div>
+            <div>
+              <label for="content" class="form-label">イベントの内容</label>
+              <input type="text" class="form-control" name="title" placeholder="イベントの内容">
+            </div>
+            <div>
+              <label for="startdate" class="form-label">開始日：</label>
+              <input type="text" name="start" readonly> 
+              <label for="enddate" class="form-label">終了日：</label>
+              <input type="text" name="end" readonly> 
+            </div>
+            <a data-bs-toggle="collapse" href="#repeat">繰り返し設定</a>
+            <div id="repeat" class="collapse">
+              <label for="repeat" class="form-label">繰り返し期間：</label>
+              <input type="number" name="repeat" placeholder="日">
+              <label for="stop" class="form-label">繰り返し終了日時：</label>
+              <input type="text" name="stop" readonly>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+             <button type="submit" class="btn btn-primary" form="event_edit">保存</button>
+             <form action="" name="delete_event" method="post">
+              {% csrf_token %}
+              <input type="submit" value="削除">
+             </form>
+      </div>
+    </div>
+  </div>
+</div>

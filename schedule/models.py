@@ -72,7 +72,7 @@ class Event(models.Model):
     
     # スケジュールを登録したユーザー
     # スケジュールを作成したユーザーが削除されたらスケジュールも削除される
-    # user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="スケジュール作成者", on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="スケジュール作成者", on_delete=models.CASCADE)
 
 ## カレンダーに紐付けるメッセージ
 class CalendarMessage(models.Model):

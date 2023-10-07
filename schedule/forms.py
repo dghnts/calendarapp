@@ -15,7 +15,7 @@ class EventForm(forms.ModelForm):
                     "start", 
                     "end", 
                     "title", 
-                  # "user",
+                    "user",
                     "repeat",
                     "stop",
                   ]

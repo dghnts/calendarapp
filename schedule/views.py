@@ -107,12 +107,15 @@ class CalendarView(View):
             return render(request,"schedule/calendar.html",context)
 
     def post(self, request, pk, *args, **kwargs):
-        calendar_id = request.POST.get("calendar")
+        copied           = request.POST.copy()
+        copied["user"]  = request.user
+        
+        calendar_id     = request.POST.get("calendar")
         if pk == 0:
-            form = EventForm(request.POST)
+            form = EventForm(copied)
             success = "イベントの登録に成功しました"
         else:
-            form = EventForm(request.POST, instance=Event.objects.filter(id=pk).first())
+            form = EventForm(copied, instance=Event.objects.filter(id=pk).first())
             success = "イベントの編集に成功しました"
         # バリデーションチェック
         if not form.is_valid():
