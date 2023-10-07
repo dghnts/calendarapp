@@ -37,6 +37,7 @@
              <button type="submit" class="btn btn-primary" form="event_edit">保存</button>
              <form action="" name="delete_event" method="post">
               {% csrf_token %}
+              <input hidden type="text" name="cancel_dt">
               <input type="submit" value="削除">
              </form>
       </div>

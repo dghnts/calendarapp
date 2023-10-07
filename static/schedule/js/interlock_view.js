@@ -1,0 +1,56 @@
+window.addEventListener("load",function(){
+    calendar_prev_button=document.querySelector(".fc-prev-button");
+    calendar_today_button=document.querySelector(".fc-today-button");
+    calendar_next_button=document.querySelector(".fc-next-button");
+
+    list_prev_button=document.querySelectorAll(".fc-prev-button")[1];
+    list_today_button=document.querySelectorAll(".fc-today-button")[1];
+    list_next_button=document.querySelectorAll(".fc-next-button")[1];
+
+    
+    list_prev_button.style.display  = "none";
+    list_today_button.style.display = "none";
+    list_next_button.style.display  = "none";
+    
+
+    calendar_prev_button.addEventListener('click', function(){
+        list_prev_button.click();
+        console.log("prev");
+    });
+    calendar_today_button.addEventListener('click', function(){
+        list_today_button.click();
+        console.log("today");
+    });
+    calendar_next_button.addEventListener('click', function(){
+        list_next_button.click();
+        console.log("next");
+    });
+
+
+    calendar_dayGridMonth_button=document.querySelector(".fc-dayGridMonth-button");
+    calendar_dayGridWeek_button=document.querySelector(".fc-timeGridWeek-button");
+    calendar_dayGridDay_button=document.querySelector(".fc-timeGridDay-button");
+
+    list_listMonth_button=document.querySelector(".fc-listMonth-button");
+    list_listWeek_button=document.querySelector(".fc-listWeek-button");
+    list_listDay_button=document.querySelector(".fc-listDay-button");
+
+    
+    list_listMonth_button.style.display  = "none";
+    list_listWeek_button.style.display = "none";
+    list_listDay_button.style.display  = "none";
+    
+
+    calendar_dayGridMonth_button.addEventListener('click', function(){
+        list_listMonth_button.click();
+        console.log("prev");
+    });
+    calendar_dayGridWeek_button.addEventListener('click', function(){
+        list_listWeek_button.click();
+        console.log("today");
+    });
+    calendar_dayGridDay_button.addEventListener('click', function(){
+        list_listDay_button.click();
+        console.log("next");
+    });
+});

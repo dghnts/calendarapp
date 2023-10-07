@@ -13,7 +13,7 @@ urlpatterns = [
     # イベント削除用のurl
     path("delete_event/<int:pk>/", views.delete_event, name="delete_event"),
     # 繰り返しイベント削除用のurl
-    #path("cancel_repeat_event/")
+    path("event_repeat_cancel/<int:pk>/", views.event_repeat_cancel, name="event_repeat_cancel"),
     #チャット用のURL
     path("calendar_message/<int:pk>/", views.calendar_message, name="calendar_message"),
 ]

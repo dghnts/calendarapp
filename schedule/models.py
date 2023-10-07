@@ -81,17 +81,19 @@ class Event(models.Model):
         cancels = CancelRepeatEvent.objects.filter(event=self.id)
         flag    = False
         
+        # 時差を考慮するためにtimedeltaで時差を追加する
+        
+        start_dt    = self.start+timedelta(hours=9)
+        start_dt    = start_dt.date()
         for cancel in cancels:
-            start_dt    = self.start+timedelta(hours=9)
-            start_dt    = start_dt.date()
             cancel_dt   = cancel.cancel_dt
-            
+    
             if start_dt == cancel_dt:
                 flag    = True
                 break
-        
+    
         return flag
-
+    
 class CancelRepeatEvent(models.Model):
     event       = models.ForeignKey(Event, verbose_name="紐づくカレンダー", on_delete=models.CASCADE)
     

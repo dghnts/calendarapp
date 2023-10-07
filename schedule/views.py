@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from .forms import EventForm
-from .models import Event, Calendar, CalendarPermission, CalendarMessage
-from .forms import EventForm, CalendarForm, CalendarPermissionForm, CalendarMessageForm
+from .models import Event, Calendar, CalendarPermission, CalendarMessage, CancelRepeatEvent
+from .forms import EventForm, CalendarForm, CalendarPermissionForm, CalendarMessageForm, CancelRepeatEventForm
 
 from users.models import CustomUser
 
@@ -59,11 +59,18 @@ class CalendarView(View):
                     
                     stop            = event.start + timedelta(days=365)
                     if event.stop:
-                        stop = event.stop
+                        stop        = event.stop
                     
                     #print(stop)
                     
+                    #　繰り返し元のスケジュールのid
+                    #default_id  = str(event.id)
+                    #繰り返しｌスケジュール用のidを設定
+                    #copy_id     = 0
+                    
                     while True:
+                        #copy_id += 1
+                        #repeat_event.id = default_id + "_" + str(copy_id)
                         
                         repeat_event.start = repeat_event.start + timedelta(days=repeat_event.repeat)
                         repeat_event.end = repeat_event.end + timedelta(days=repeat_event.repeat)
@@ -75,6 +82,9 @@ class CalendarView(View):
                         print(repeat_event.start+timedelta(hours=9))
                         print(repeat_event.start.date())
                         
+                        for cancel in CancelRepeatEvent.objects.filter(event=event.id):
+                            print(repeat_event.is_cancel() == cancel.cancel_dt)
+                        print(repeat_event.is_cancel())
                         if repeat_event.is_cancel():
                             print("予定の登録をキャンセルします")
                         else:                      
@@ -85,11 +95,13 @@ class CalendarView(View):
                 # スケジュールの詳細を保存する辞書を作成     
                 details = {}
                 # jsでイベントを操作するときに利用するid(schedulemodelのidを利用できる)
-                details["id"]           = event.id
-                details["title"]        = event.title
-                details["start"]        = localtime(event.start).strftime('%Y-%m-%d')
-                details["end"]          = localtime(event.end).strftime('%Y-%m-%d')
-                details["extendprops"]  = "{ repeat:" + str(event.repeat) + "}"
+                details["id"]                   = event.id
+                details["title"]                = event.title
+                details["start"]                = localtime(event.start).strftime('%Y-%m-%d')
+                details["end"]                  = localtime(event.end).strftime('%Y-%m-%d')
+                details["extendedProps"]        = {'repeat': False}
+                if event.repeat != None:
+                    details["extendedProps"]        = {'repeat': True}
                 event_list.append(details)
             
             context["events"]               = dumps(event_list)
@@ -97,7 +109,7 @@ class CalendarView(View):
             context["calendar"]             = calendarobj
             context["calendar_messages"]    = CalendarMessage.objects.filter(calendar=pk)
             permissions                     = CalendarPermission.objects.filter(calendar=pk)
-                    
+            
             for permission in permissions:
                 # value_sum
                 # read = True -> 0
@@ -107,12 +119,11 @@ class CalendarView(View):
                 permission.select = value_sum
                     
             context["permissions"]  = permissions
-            print("OK")
             
             return render(request,"schedule/calendar.html",context)
 
     def post(self, request, pk, *args, **kwargs):
-        copied           = request.POST.copy()
+        copied          = request.POST.copy()
         copied["user"]  = request.user
         
         calendar_id     = request.POST.get("calendar")
@@ -313,3 +324,29 @@ class CalendarMessageView(View):
 
 calendar_message    = CalendarMessageView.as_view()
 
+# 繰り返しスケジュールのキャンセルを受け付ける。
+class EventRepeatCancelView(View):
+
+    # pkは対象のSchedule
+    def post(self, request, pk, *args, **kwargs):
+        event   = Event.objects.filter(id=pk).first()
+
+        #TODO:キャンセルを保存する。 "cancel_dt"が含まれている。
+        copied  = request.POST.copy()
+        
+        copied["cancel_dt"] = datetime.strptime(copied["cancel_dt"].split(" ")[0], '%Y-%m-%d')
+        copied["user"]      = request.user
+        copied["event"]     = event
+        
+        print(copied["cancel_dt"])
+        form    = CancelRepeatEventForm(copied)
+
+        if form.is_valid():
+            print("指定した日付の繰り返しスケジュールはキャンセルします。")
+            form.save()
+        else:
+            print("登録できませんでした")
+
+        return redirect("schedule:calendar", event.calendar.id)
+
+event_repeat_cancel    = EventRepeatCancelView.as_view()
