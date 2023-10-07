@@ -10,7 +10,7 @@ from django.contrib import messages
 
 from json import dumps
 from django.utils.timezone import localtime
-import datetime
+from datetime import datetime,timedelta
 
 from copy import deepcopy
 
@@ -57,7 +57,7 @@ class CalendarView(View):
                 if event.repeat:
                     repeat_event    = deepcopy(event)
                     
-                    stop            = event.start + datetime.timedelta(days=365)
+                    stop            = event.start + timedelta(days=365)
                     if event.stop:
                         stop = event.stop
                     
@@ -65,14 +65,14 @@ class CalendarView(View):
                     
                     while True:
                         
-                        repeat_event.start = repeat_event.start + datetime.timedelta(days=repeat_event.repeat)
-                        repeat_event.end = repeat_event.end + datetime.timedelta(days=repeat_event.repeat)
+                        repeat_event.start = repeat_event.start + timedelta(days=repeat_event.repeat)
+                        repeat_event.end = repeat_event.end + timedelta(days=repeat_event.repeat)
                             
                         if repeat_event.start > stop:
                             print("繰り返し終了")
                             break
                         
-                        print(repeat_event.start)
+                        print(repeat_event.start+timedelta(hours=9))
                         print(repeat_event.start.date())
                         
                         if repeat_event.is_cancel():

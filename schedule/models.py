@@ -82,8 +82,9 @@ class Event(models.Model):
         flag    = False
         
         for cancel in cancels:
-            start_dt = self.start.date()
-            cancel_dt = cancel.cancel_dt
+            start_dt    = self.start+timedelta(hours=9)
+            start_dt    = start_dt.date()
+            cancel_dt   = cancel.cancel_dt
             
             if start_dt == cancel_dt:
                 flag    = True
