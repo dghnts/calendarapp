@@ -9,5 +9,5 @@ class CustomAdapter(DefaultAccountAdapter):
         if Calendar.objects.filter(permission=request.user).exists():
             calendar_id = Calendar.objects.filter(permission=request.user)[0].id
             return "/calendar/"+str(calendar_id)
-        #else:
+        else:
             return "/calendar/"

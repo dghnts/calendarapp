@@ -61,30 +61,35 @@ class CalendarView(View):
                     if event.stop:
                         stop = event.stop
                     
-                    print(stop)
+                    #print(stop)
                     
                     while True:
                         
                         repeat_event.start = repeat_event.start + datetime.timedelta(days=repeat_event.repeat)
                         repeat_event.end = repeat_event.end + datetime.timedelta(days=repeat_event.repeat)
-                        
-                        print(repeat_event.start)
                             
                         if repeat_event.start > stop:
                             print("繰り返し終了")
                             break
-                                
-                        new_eventsobj.append(deepcopy(repeat_event))
+                        
+                        print(repeat_event.start)
+                        print(repeat_event.start.date())
+                        
+                        if repeat_event.is_cancel():
+                            print("予定の登録をキャンセルします")
+                        else:                      
+                            new_eventsobj.append(deepcopy(repeat_event))
                 
             for event in new_eventsobj:
                     
                 # スケジュールの詳細を保存する辞書を作成     
                 details = {}
                 # jsでイベントを操作するときに利用するid(schedulemodelのidを利用できる)
-                details["id"] = event.id
-                details["title"] = event.title
-                details["start"] = localtime(event.start).strftime('%Y-%m-%d')
-                details["end"] = localtime(event.end).strftime('%Y-%m-%d')
+                details["id"]           = event.id
+                details["title"]        = event.title
+                details["start"]        = localtime(event.start).strftime('%Y-%m-%d')
+                details["end"]          = localtime(event.end).strftime('%Y-%m-%d')
+                details["extendprops"]  = "{ repeat:" + str(event.repeat) + "}"
                 event_list.append(details)
             
             context["events"]               = dumps(event_list)

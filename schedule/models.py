@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import timedelta
+from datetime import datetime,timedelta
 from django.utils import timezone
 
 from users.models import CustomUser
@@ -60,20 +60,44 @@ class Event(models.Model):
     
     ## どのくらいのスパンで繰り返すか指定
     ## 繰り返しの初期値を7日間で設定
-    # durationsfieldのdefault値はtimedeltaｓ型で指定する
+    # durationsfieldのdefault値はtimedelta型で指定する
     # repeat =  models.DurationField(verbose_name="繰り返し期間", default="", null=True, blank=True)
     #repeat =  models.DurationField(verbose_name="繰り返し期間", default=timedelta(days=7), null=True, blank=True)
     repeat =  models.PositiveIntegerField(verbose_name="繰り返し期間", null=True, blank=True)
     
     # いつまで繰り返し処理を行うのかを指定する
-    # Datetimefieldのdefault値はdatetimeｓ型でｓ
+    # Datetimefieldのdefault値はdatetime型で指定する
     #stop = models.DateTimeField(verbose_name="繰り返し終了日", default=timedelta(days=7), null=True, blank=True)
     stop = models.DateTimeField(verbose_name="繰り返し終了日", default=timezone.now()+timedelta(days=1000), null=True, blank=True)
     
     # スケジュールを登録したユーザー
     # スケジュールを作成したユーザーが削除されたらスケジュールも削除される
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="スケジュール作成者", on_delete=models.CASCADE)
+    
+    def cancels(self):
+        return CancelRepeatEvent.objects.filter(event=self.id)
+    
+    def is_cancel(self):
+        cancels = CancelRepeatEvent.objects.filter(event=self.id)
+        flag    = False
+        
+        for cancel in cancels:
+            start_dt = self.start.date()
+            cancel_dt = cancel.cancel_dt
+            
+            if start_dt == cancel_dt:
+                flag    = True
+                break
+        
+        return flag
 
+class CancelRepeatEvent(models.Model):
+    event       = models.ForeignKey(Event, verbose_name="紐づくカレンダー", on_delete=models.CASCADE)
+    
+    cancel_dt   = models.DateField(verbose_name="キャンセル日時")
+    
+    user        = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="投稿者", on_delete=models.CASCADE)
+    
 ## カレンダーに紐付けるメッセージ
 class CalendarMessage(models.Model):
 

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Calendar,Event,CalendarPermission,CalendarMessage
+from .models import Calendar,Event,CalendarPermission,CalendarMessage, CancelRepeatEvent
 
 class CalendarForm(forms.ModelForm):
     
@@ -26,6 +26,11 @@ class EventForm(forms.ModelForm):
                    'required': "イベントの内容を入力してください",
             },
         }
+
+class CancelRepeatEventForm(forms.ModelForm):
+    class Meta:
+        model   = CancelRepeatEvent
+        fields  = ["event","cancel_dt","user"] 
 
 class CalendarPermissionForm(forms.ModelForm):
     class Meta:

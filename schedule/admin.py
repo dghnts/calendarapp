@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Calendar, Event, CalendarPermission, CalendarMessage
+from .models import Calendar, Event, CalendarPermission, CalendarMessage,CancelRepeatEvent
 
 class CalendarAdmin(admin.ModelAdmin):
     # 指定したフィールドを表示する
@@ -44,3 +44,4 @@ admin.site.register(Calendar, CalendarAdmin)
 admin.site.register(Event, EventAdmin)
 admin.site.register(CalendarPermission, CalendarPermissionAdmin)
 admin.site.register(CalendarMessage)
+admin.site.register(CancelRepeatEvent)
