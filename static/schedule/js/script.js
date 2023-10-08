@@ -199,44 +199,18 @@ window.addEventListener("load" , function (){
     });
     event_list.render();
 
-    // 各イベントの編集ボタンの一覧を取得する
-    //console.log(document.querySelectorAll('[id^="edit_"]'));
-    
-    // 各ボタンに対してクリックイベント処理を追加
-    document.querySelectorAll('[id^="edit_"]').forEach(function(event_btn) {
-            event_btn.addEventListener('click', function(){
-                // idからeventobjectのidを取り出す
-                let event_id = this.id.split("_")[1];
-
-                // event_idに紐づいたevent情報を取得する
-                let event = calendar.getEventById(event_id);
-
-                config_dt.defaultDate = event.start;
-                // 開始日と終了日を設定する
-                flatpickr("[name='start']", config_dt);
-                //　終了日の値がnullでなければ終了日を入力する。
-                if(event.end != null){
-                    config_dt.defaultDate = event.end;
-                }
-                // nullの場合は開始日と同じにする
-                else{
-                    config_dt.defaultDate = event.start;
-                }
-                //console.log(config_dt.defaultDate);
-                flatpickr("[name='end']", config_dt);
-                flatpickr("[name='stop']", config_dt);
-
-                // イベントのタイトルを取得して表示する
-                document.querySelectorAll("[name='title']").value = event.title;
-
-                //イベント編集用のviewへのリンクをaction属性に設定(id=0)
-                edit_event = edit_event.replace("0", event_id);
-                document.event_edit.action = edit_event;
-
-                // DTLを利用して作成したURLを編集してイベント削除のURLを作成する
-                delete_event = delete_event.replace('0', event_id);
-                delete_event_form.action = delete_event;
-                console.log(delete_event_form.action);
-        })
+    all_day_check = document.querySelector("[name=all_day]");
+    all_day_check.addEventListener("click",function(){
+        if(all_day_check.checked){
+            let start_dt    = document.querySelector('[name=start]').value;
+            let defaulttime = start_dt.split(" ")[1];
+            start_dt        = start_dt.replace(defaulttime, "00:00");
+            let end_dt    = document.querySelector('[name=end]').value;
+            defaulttime = end_dt.split(" ")[1];
+            end_dt        = end_dt.replace(defaulttime, "00:00");
+            document.querySelector('[name=start]').value  = start_dt;
+            document.querySelector('[name=end]').value  = end_dt;
+            console.log("終日のイベントにします");
+        }
     });
 });

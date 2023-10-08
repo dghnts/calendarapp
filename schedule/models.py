@@ -2,7 +2,7 @@ from django.db import models
 from datetime import datetime,timedelta
 from django.utils import timezone
 
-from users.models import CustomUser
+from django.utils.timezone import localtime
 
 from config import settings
 
@@ -83,7 +83,7 @@ class Event(models.Model):
         
         # 時差を考慮するためにtimedeltaで時差を追加する
         
-        start_dt    = self.start+timedelta(hours=9)
+        start_dt    = localtime(self.start)
         start_dt    = start_dt.date()
         for cancel in cancels:
             cancel_dt   = cancel.cancel_dt

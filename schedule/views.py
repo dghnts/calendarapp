@@ -79,7 +79,7 @@ class CalendarView(View):
                             print("繰り返し終了")
                             break
                         
-                        print(repeat_event.start+timedelta(hours=9))
+                        print(localtime(repeat_event.start))
                         print(repeat_event.start.date())
                         
                         for cancel in CancelRepeatEvent.objects.filter(event=event.id):
@@ -97,8 +97,8 @@ class CalendarView(View):
                 # jsでイベントを操作するときに利用するid(schedulemodelのidを利用できる)
                 details["id"]                   = event.id
                 details["title"]                = event.title
-                details["start"]                = localtime(event.start).strftime('%Y-%m-%d')
-                details["end"]                  = localtime(event.end).strftime('%Y-%m-%d')
+                details["start"]                = localtime(event.start).strftime('%Y-%m-%dT%H:%M:%S')
+                details["end"]                  = localtime(event.end).strftime('%Y-%m-%dT%H:%M:%S')
                 details["extendedProps"]        = {'repeat': False}
                 if event.repeat != None:
                     details["extendedProps"]        = {'repeat': True}
