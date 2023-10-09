@@ -97,7 +97,7 @@ class CalendarView(View):
                 if event.repeat != None:
                     details["extendedProps"]    = {'repeat': True}
                 if event.all_day == True:
-                    details["allDay"]          = True
+                    details["allDay"]           = True
                 event_list.append(details)
             
             context["events"]               = dumps(event_list)
@@ -122,6 +122,10 @@ class CalendarView(View):
         copied          = request.POST.copy()
         copied["user"]  = request.user
         
+        if "all_day" in copied.keys():
+            copied["all_day"] = True
+            print("これは連続のイベントです")
+            
         calendar_id     = request.POST.get("calendar")
         if pk == 0:
             form = EventForm(copied)

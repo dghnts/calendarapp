@@ -18,6 +18,7 @@ class EventForm(forms.ModelForm):
                     "user",
                     "repeat",
                     "stop",
+                    "all_day",
                   ]
         
         # エラーメッセージ

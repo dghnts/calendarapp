@@ -66,24 +66,34 @@ window.addEventListener("load" , function (){
             config_dt.defaultDate   = info.start;
             flatpickr("#day", config_dt);
 
-            config_time.defaultDate = info.end;
-            flatpickr("#start_time", config_time);
-            flatpickr("#end_time", config_time);
-
-            // イベントの開始日と終了日をflatpickrで設定できるようにする
-            config_dt.defaultDate = info.end;
-            flatpickr("#end_day", config_dt);
-
             //初期値の設定
-            start_dt.value  =   day.value + " " + start_time.value;
-            end_dt.value    =   day.value + " " + end_time.value;
+            start_dt.value  = event_time_set(start_time.value);
+            end_dt.value    = event_time_set(end_time.value);
 
             //イベント作成用のviewへのリンクをaction属性に設定(id=0)
             document.event_edit.action = edit_event;
              
             //新規作成時は削除ボタンを非表示にする
             delete_event_form.style.display ="none";
-
+            chk_start   = info.start.toISOString().split('T')[0];
+            info.end.setDate(info.end.getDate()-1);
+            chk_end     = info.end.toISOString().split('T')[0];
+            info.end.setDate(info.end.getDate()+1);
+            if(chk_start!=chk_end){
+                if(!all_day_check.checked){
+                    all_day_check.click();
+                }
+                config_dt.defaultDate = info.end;
+                flatpickr("#end_day", config_dt);
+                end_dt.value  = end_day.value;
+            }else{
+                if(all_day_check.checked){
+                    all_day_check.click();
+                }
+                config_time.defaultDate = info.end;
+                flatpickr("#start_time", config_time);
+                flatpickr("#end_time", config_time);                
+            }
             // モーダルをクリックする
             document.querySelector('#register').click();
         },
@@ -168,6 +178,8 @@ window.addEventListener("load" , function (){
         if(all_day_check.checked){
             all_day_check.checked=false;
         };
+        // title欄を空白にする
+        document.querySelector("[name='title']").value = "";
         //入力欄の表示を時間入力に変更
         event_time.style.display="inline";
         end_day.parentElement.style.display="none";
