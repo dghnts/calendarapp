@@ -226,7 +226,7 @@ window.addEventListener("load" , function (){
             edit_event = edit_event.replace("0", event_id);
             document.event_edit.action = edit_event;
 
-            // DTLを利用して作成したURLを編集してイベント削除のURLを作成する
+            // HTML側で作成したURLを編集してイベント削除のURLを作成する
             if (info.event.extendedProps.repeat){
                 document.querySelector("[name='cancel_dt']").value = day.value;
                 console.log(document.querySelector("[name='cancel_dt']").value);

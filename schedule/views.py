@@ -52,7 +52,9 @@ class CalendarView(View):
             new_eventsobj = []
             # 全ての登録されたスケジュールに対して以下の処理を実行する
             for event in eventsobj:
-                new_eventsobj.append(event)
+                event_origin = Event.objects.filter(id=event.id).first()
+                event_origin.repeat = None
+                new_eventsobj.append(event_origin)
                 
                 if event.repeat:
                     repeat_event    = deepcopy(event)
@@ -69,9 +71,6 @@ class CalendarView(View):
                     #copy_id     = 0
                     
                     while True:
-                        #copy_id += 1
-                        #repeat_event.id = default_id + "_" + str(copy_id)
-                        
                         repeat_event.start = repeat_event.start + timedelta(days=repeat_event.repeat)
                         repeat_event.end = repeat_event.end + timedelta(days=repeat_event.repeat)
                             
@@ -277,7 +276,6 @@ calendar_permission = CalendarPermissionView.as_view()
 # イベント削除用のview
 class DeleteEventView(View):
     def post(self, request, pk, *args, **keargs):
-        
         # 削除したいイベントを取得
         event = Event.objects.filter(id=pk).first()
         #　イベントを登録しているカレンダーのidを取得する
