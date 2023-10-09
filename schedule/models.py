@@ -74,6 +74,8 @@ class Event(models.Model):
     # スケジュールを作成したユーザーが削除されたらスケジュールも削除される
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="スケジュール作成者", on_delete=models.CASCADE)
     
+    all_day = models.BooleanField(verbose_name="終日イベント", default=False)
+    
     def cancels(self):
         return CancelRepeatEvent.objects.filter(event=self.id)
     

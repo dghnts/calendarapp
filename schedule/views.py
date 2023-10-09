@@ -79,12 +79,6 @@ class CalendarView(View):
                             print("繰り返し終了")
                             break
                         
-                        print(localtime(repeat_event.start))
-                        print(repeat_event.start.date())
-                        
-                        for cancel in CancelRepeatEvent.objects.filter(event=event.id):
-                            print(repeat_event.is_cancel() == cancel.cancel_dt)
-                        print(repeat_event.is_cancel())
                         if repeat_event.is_cancel():
                             print("予定の登録をキャンセルします")
                         else:                      
@@ -101,7 +95,9 @@ class CalendarView(View):
                 details["end"]                  = localtime(event.end).strftime('%Y-%m-%dT%H:%M:%S')
                 details["extendedProps"]        = {'repeat': False}
                 if event.repeat != None:
-                    details["extendedProps"]        = {'repeat': True}
+                    details["extendedProps"]    = {'repeat': True}
+                if event.all_day == True:
+                    details["allDay"]          = True
                 event_list.append(details)
             
             context["events"]               = dumps(event_list)
@@ -134,6 +130,7 @@ class CalendarView(View):
             form = EventForm(copied, instance=Event.objects.filter(id=pk).first())
             success = "イベントの編集に成功しました"
         # バリデーションチェック
+        print(copied)
         if not form.is_valid():
             # バリデーションエラーの場合の処理
             #print("イベントの登録に失敗しました")
