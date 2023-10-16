@@ -76,6 +76,22 @@ class Event(models.Model):
     
     all_day = models.BooleanField(verbose_name="終日イベント", default=False)
     
+    def create_json_data(self):
+        # スケジュールの詳細を保存する辞書を作成     
+        details = {}
+        # jsでイベントを操作するときに利用するid(schedulemodelのidを利用できる)
+        details["id"]                   = self.id
+        details["title"]                = self.title
+        details["start"]                = localtime(self.start).strftime('%Y-%m-%dT%H:%M')
+        details["end"]                  = localtime(self.end).strftime('%Y-%m-%dT%H:%M')
+        details["extendedProps"]        = {'repeat': False}
+        if self.is_repeat != False:
+            details["extendedProps"]    = {'repeat': True}
+        if self.all_day == True:
+            details["allDay"]           = True
+        
+        return details
+        
     def cancels(self):
         return CancelRepeatEvent.objects.filter(event=self.id)
     
@@ -85,10 +101,9 @@ class Event(models.Model):
         
         # 時差を考慮するためにtimedeltaで時差を追加する
         
-        start_dt    = localtime(self.start)
-        start_dt    = start_dt.date()
+        start_dt    = self.start.date()
         for cancel in cancels:
-            cancel_dt   = cancel.cancel_dt
+            cancel_dt   = cancel.cancel_dt.date()
     
             if start_dt == cancel_dt:
                 flag    = True
@@ -96,12 +111,34 @@ class Event(models.Model):
     
         return flag
     
+    def __str__(self):
+        return self.title
+    
 class CancelRepeatEvent(models.Model):
     event       = models.ForeignKey(Event, verbose_name="紐づくカレンダー", on_delete=models.CASCADE)
     
-    cancel_dt   = models.DateField(verbose_name="キャンセル日時")
+    cancel_dt   = models.DateTimeField(verbose_name="キャンセル日時")
     
     user        = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="投稿者", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.event)
+    
+    def create_json_data(self):
+        # スケジュールの詳細を保存する辞書を作成     
+        details = {}
+        # jsでイベントを操作するときに利用するid(schedulemodelのidを利用できる)
+        details["id"]                   = self.id
+        details["title"]                = self.event.title
+        details["start"]                = localtime(self.cancel_dt).strftime('%Y-%m-%dT%H:%M')
+        # キャンセルしたいイベントの終了時刻を取得する
+        cancel_end_date = datetime.combine(localtime(self.cancel_dt),localtime(self.event.end).time())
+        details["end"]                  = cancel_end_date.strftime('%Y-%m-%dT%H:%M')
+        details["extendedProps"]        = {'repeat': True}
+        if self.event.all_day == True:
+            details["allDay"]           = True
+        
+        return details
     
 ## カレンダーに紐付けるメッセージ
 class CalendarMessage(models.Model):

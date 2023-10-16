@@ -12,14 +12,15 @@ window.addEventListener("load" , function (){
     let dt = year + "-" + month + "-" + day + " " + hour + ":" + minute; 
     */
 
-    let all_day_check     = document.querySelector("[name='all_day']");
-    let event_time        = document.querySelector("#event_time");
-    let day               = document.getElementById("day");
-    let start_time        = document.getElementById("start_time");
-    let end_time          = document.getElementById("end_time");
-    let end_day            = document.getElementById("end_day");
-    let start_dt          = document.querySelector("[name='start']");
-    let end_dt            = document.querySelector("[name='end']");
+    let all_day_check       = document.querySelector("[name='all_day']");
+    let event_time          = document.querySelector("#event_time");
+    let day                 = document.getElementById("day");
+    let start_time          = document.getElementById("start_time");
+    let end_time            = document.getElementById("end_time");
+    let end_day             = document.getElementById("end_day");
+    let start_dt            = document.querySelector("[name='start']");
+    let end_dt              = document.querySelector("[name='end']");
+    let stop                = document.querySelector("[name=stop");
 
     // イベント開始日用の設定
     let config_dt   = { 
@@ -72,7 +73,7 @@ window.addEventListener("load" , function (){
 
             //イベント作成用のviewへのリンクをaction属性に設定(id=0)
             document.event_edit.action = edit_event;
-             
+
             //新規作成時は削除ボタンを非表示にする
             delete_event_form.style.display ="none";
             chk_start   = info.start.toISOString().split('T')[0];
@@ -94,6 +95,7 @@ window.addEventListener("load" , function (){
                 flatpickr("#start_time", config_time);
                 flatpickr("#end_time", config_time);                
             }
+            flatpickr("[name='stop']", config_dt);
             // モーダルをクリックする
             document.querySelector('#register').click();
         },
@@ -128,6 +130,34 @@ window.addEventListener("load" , function (){
     });
     event_list.render();
 
+    let event_cancel_El = document.getElementById('event_cancel');
+    let event_cancel = new FullCalendar.Calendar(event_cancel_El, {
+        headerToolbar: {
+            left: 'prev,today,next',
+            center: 'title',
+            right: 'listMonth,listWeek,listDay'
+        },
+        // 表示言語の設定
+        locale: "ja",
+        height: "100%",
+        buttonIcons: true,
+        initialView: "listMonth",
+        events: events_cancel,
+        //イベントをクリックしたときの処理
+        eventClick: function(info) {
+            event_id = info.event.id;
+            var res = confirm("このイベントの繰り返しキャンセルを取り消しますか？");
+            if(res){
+                event_repeat_cancel_delete  = event_repeat_cancel_delete.replace("0",event_id);
+                console.log(event_repeat_cancel_delete);
+                location.href               = event_repeat_cancel_delete;
+            }
+        }
+    });
+    event_cancel.render();
+
+
+
     all_day_check.addEventListener("click",() =>{change_end_date_format();});
 
     day.onchange = function(){
@@ -137,7 +167,7 @@ window.addEventListener("load" , function (){
             start_dt.value    = event_time_set(start_time.value);
             end_dt.value      = event_time_set(end_time.value);
     }};
-   
+
     start_time.onchange = function(){
         start_dt.value  = event_time_set(start_time.value);
     };
@@ -238,6 +268,8 @@ window.addEventListener("load" , function (){
                 delete_event_form.action = delete_event;
                 console.log(delete_event_form.action);
             }
+
+            flatpickr("[name='stop']",config_dt);
             
             // 削除ボタンが非表示の場合に表示を切り替える
             if(delete_event_form.style.display == "none"){

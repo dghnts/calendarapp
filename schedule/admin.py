@@ -38,10 +38,14 @@ class EventAdmin(admin.ModelAdmin):
 class CalendarPermissionAdmin(admin.ModelAdmin):
      # 指定したフィールドを表示する
     list_display = ["calendar","user","read","write","chat"]
+
+class CancelRepeatEventAdmin(admin.ModelAdmin):
+     # 指定したフィールドを表示する
+    list_display = ["id","event","cancel_dt","user"]
     
 # カレンダーテーブルの管理画面を登録    
 admin.site.register(Calendar, CalendarAdmin)
 admin.site.register(Event, EventAdmin)
 admin.site.register(CalendarPermission, CalendarPermissionAdmin)
 admin.site.register(CalendarMessage)
-admin.site.register(CancelRepeatEvent)
+admin.site.register(CancelRepeatEvent,CancelRepeatEventAdmin)

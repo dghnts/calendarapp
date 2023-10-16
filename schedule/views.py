@@ -42,8 +42,7 @@ class CalendarView(View):
             # 書き込み権限がない場合は編集writeをFalseに変更する
             if not CalendarPermission.objects.filter(calendar=pk, user=request.user, write=True).exists():
                 context["write"] = False
-    
-            event_list = []
+     
             # 現在表示しているカレンダーのオブジェクトを取得
             calendarobj = Calendar.objects.filter(id=pk).first()
             # 現在表示しているカレンダーに紐づいているイベントをすべて取得
@@ -52,12 +51,17 @@ class CalendarView(View):
             new_eventsobj = []
             # 全ての登録されたスケジュールに対して以下の処理を実行する
             for event in eventsobj:
-                event_origin = Event.objects.filter(id=event.id).first()
-                event_origin.repeat = None
+                event_origin = deepcopy(event)
+                event_origin.is_repeat = False
+                
                 new_eventsobj.append(event_origin)
                 
+                
+                
                 if event.repeat:
+                    # repeat用のスケジュールの作成
                     repeat_event    = deepcopy(event)
+                    repeat_event.is_repeat = True
                     
                     stop            = event.start + timedelta(days=365)
                     if event.stop:
@@ -77,32 +81,29 @@ class CalendarView(View):
                         if repeat_event.start > stop:
                             print("繰り返し終了")
                             break
-                        
+ 
                         if repeat_event.is_cancel():
-                            print("予定の登録をキャンセルします")
+                            print(str(repeat_event.title)+"の予定の登録をキャンセルします")
                         else:                      
                             new_eventsobj.append(deepcopy(repeat_event))
-                
+            
+            # カレンダーに登録するイベントのデータを登録するリストを作成
+            event_list          = []
             for event in new_eventsobj:
-                    
-                # スケジュールの詳細を保存する辞書を作成     
-                details = {}
-                # jsでイベントを操作するときに利用するid(schedulemodelのidを利用できる)
-                details["id"]                   = event.id
-                details["title"]                = event.title
-                details["start"]                = localtime(event.start).strftime('%Y-%m-%dT%H:%M:%S')
-                details["end"]                  = localtime(event.end).strftime('%Y-%m-%dT%H:%M:%S')
-                details["extendedProps"]        = {'repeat': False}
-                if event.repeat != None:
-                    details["extendedProps"]    = {'repeat': True}
-                if event.all_day == True:
-                    details["allDay"]           = True
-                event_list.append(details)
+                event_list.append(event.create_json_data())
+            
+            
+            # 繰り返しをキャンセルしたイベントのデータを登録するリストを作成
+            event_cancel_list   = []
+            for cancel_event in CancelRepeatEvent.objects.all():
+                event_cancel_list.append(cancel_event.create_json_data())
             
             context["events"]               = dumps(event_list)
+            context["events_cancel"]        = dumps(event_cancel_list)
             context["eventsobj"]            = new_eventsobj
             context["calendar"]             = calendarobj
             context["calendar_messages"]    = CalendarMessage.objects.filter(calendar=pk)
+            print(context["events_cancel"])
             permissions                     = CalendarPermission.objects.filter(calendar=pk)
             
             for permission in permissions:
@@ -112,7 +113,7 @@ class CalendarView(View):
                 # read = true -> +2 
                 value_sum   =   (permission.read*0 + permission.write*1 + permission.chat*2)
                 permission.select = value_sum
-                    
+            
             context["permissions"]  = permissions
             
             return render(request,"schedule/calendar.html",context)
@@ -272,7 +273,6 @@ class CalendarPermissionView(View):
 
 calendar_permission = CalendarPermissionView.as_view()
 
-   
 # イベント削除用のview
 class DeleteEventView(View):
     def post(self, request, pk, *args, **keargs):
@@ -349,3 +349,17 @@ class EventRepeatCancelView(View):
         return redirect("schedule:calendar", event.calendar.id)
 
 event_repeat_cancel    = EventRepeatCancelView.as_view()
+
+# 繰り返しスケジュールのキャンセルを受け付ける。
+class EventRepeatCancelDeleteView(View):
+
+    # pkは対象のScheduleRepeatCancelのid
+    def get(self, request, pk, *args, **kwargs):
+        event_repeat_cancel    = CancelRepeatEvent.objects.filter(id=pk, user=request.user).first()
+        print(event_repeat_cancel)
+        if event_repeat_cancel:
+            event_repeat_cancel.delete()
+
+        return redirect("schedule:calendar", event_repeat_cancel.event.calendar.id)
+
+event_repeat_cancel_delete    = EventRepeatCancelDeleteView.as_view()

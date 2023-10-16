@@ -8,6 +8,7 @@
   <!-- fullcalendar -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1/index.global.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/locales-all.global.min.js"></script>
+  <!-- <script src="{% static 'schedule/js/custom_view.js' %}" type="module"></script> -->
   <script src="{% static 'schedule/js/script.js' %}"></script>
 
   <!-- flatpckr -->
@@ -32,17 +33,13 @@
   <script> 
     //　特殊文字("<",">","'",etc...)をエスケープしないための処理
     {% autoescape off %}
-      let events              = {{ events }}
-      let edit_event          = "{% url 'schedule:calendar' 0%}"
-      let delete_event        = "{% url 'schedule:delete_event' 0%}"
-      let event_repeat_cancel = "{% url 'schedule:event_repeat_cancel' 0%}"
+      let events                      = {{ events }}
+      let events_cancel               = {{ events_cancel }}
+      let edit_event                  = "{% url 'schedule:calendar' 0%}"
+      let delete_event                = "{% url 'schedule:delete_event' 0%}"
+      let event_repeat_cancel         = "{% url 'schedule:event_repeat_cancel' 0%}"
+      let event_repeat_cancel_delete  = "{% url 'schedule:event_repeat_cancel_delete' 0%}"
     {% endautoescape %} 
-  </script>
-
-  <script>
-    function onclickSample() {
-      alert("ボタンがクリックされました");
-    }
   </script>
   
 {% endblock  %}
@@ -136,21 +133,22 @@
           <div id='event_list'></div>
         </div>
         <div class="col-md-3">
-            <h2>チャット</h2>
-              {# TODO:メッセージの投稿を表示 #}
-              {# TODO:contextprocessorを使って、ユーザーのアクセス権をコンテキストに与え、↓をif文で表示・非表示 ? #}
-              <form action="{% url 'schedule:calendar_message' calendar.id %}" method="POST">
-                  {% csrf_token %}
-                  <textarea class="form-control" name="content"></textarea>
-                  <input class="form-control" type="submit" value="投稿">
-              </form>
-            
-              {% for message in calendar_messages %}
-              <div class="border">
-                  <div>{{ message.user }} : {{ message.dt }}</div>
-                  <div>{{ message.content|linebreaksbr }}</div>
-              </div>
-              {% endfor %}
+          <div id='event_cancel'></div>
+          <h2>チャット</h2>
+            {# TODO:メッセージの投稿を表示 #}
+            {# TODO:contextprocessorを使って、ユーザーのアクセス権をコンテキストに与え、↓をif文で表示・非表示 ? #}
+            <form action="{% url 'schedule:calendar_message' calendar.id %}" method="POST">
+                {% csrf_token %}
+                <textarea class="form-control" name="content"></textarea>
+                <input class="form-control" type="submit" value="投稿">
+            </form>
+          
+            {% for message in calendar_messages %}
+            <div class="border">
+                <div>{{ message.user }} : {{ message.dt }}</div>
+                <div>{{ message.content|linebreaksbr }}</div>
+            </div>
+            {% endfor %}
         </div>
       {% endif %}
     </div>

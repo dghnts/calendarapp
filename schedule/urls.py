@@ -12,8 +12,10 @@ urlpatterns = [
     path("calendar_permission/<int:pk>", views.calendar_permission, name="calendar_permission"),
     # イベント削除用のurl
     path("delete_event/<int:pk>/", views.delete_event, name="delete_event"),
-    # 繰り返しイベント削除用のurl
+    # 繰り返しイベントキャンセル用のurl
     path("event_repeat_cancel/<int:pk>/", views.event_repeat_cancel, name="event_repeat_cancel"),
+    # 繰り返しイベント削除用のurl
+    path("event_repeat_cancel_delete/<int:pk>/", views.event_repeat_cancel_delete, name="event_repeat_cancel_delete"),
     #チャット用のURL
     path("calendar_message/<int:pk>/", views.calendar_message, name="calendar_message"),
 ]
