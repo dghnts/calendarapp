@@ -25,6 +25,7 @@ window.addEventListener("load" , function (){
     let config_dt   = { 
         //enableTime: true,
         altInput    : true,   
+        altFormat   : "Y-m-d",
         dateFormat  : "Y-m-d", //変更
         locale      : "ja",
         position    : "center",
@@ -33,6 +34,7 @@ window.addEventListener("load" , function (){
 
     let config_time = {
         altInput    : true,
+        altFormat   : "H:i",
         enableTime  : true,
         noCalendar  : true, //カレンダーを表示しない
         dateFormat  : "H:i",
@@ -72,6 +74,8 @@ window.addEventListener("load" , function (){
             config_time.defaultDate   = info.end;
             flatpickr("#end_day", config_dt);
             flatpickr("#end_time", config_time);
+            
+            console.log(start_time.value);
 
             //初期値の設定
             start_dt.value  = start_day.value   + " "   + start_time.value;
@@ -83,13 +87,6 @@ window.addEventListener("load" , function (){
             //新規作成時は削除ボタンを非表示にする
             delete_event_form.style.display ="none";
 
-            //chk_start   = info.startStr.split('T')[0];
-            //info.end.setDate(info.end.getDate()-1);
-            //chk_end     = info.endStr.split('T')[0];
-            //info.end.setDate(info.end.getDate()-1);
-            //console.log(info.startStr);
-            //console.log(info.endStr);
-            //console.log(info.allDay);
             if(info.allDay){
                 if(!all_day_check.checked){
                     all_day_check.click();
@@ -104,10 +101,7 @@ window.addEventListener("load" , function (){
             }else{
                 if(all_day_check.checked){
                     all_day_check.click();
-                }
-                config_time.defaultDate = info.end;
-                flatpickr("#start_time", config_time);
-                flatpickr("#end_time", config_time);                
+                }                
             }
             flatpickr("[name='stop']", config_dt);
             // モーダルをクリックする
@@ -159,10 +153,10 @@ window.addEventListener("load" , function (){
         events: events_cancel,
         //イベントをクリックしたときの処理
         eventClick: function(info) {
-            event_id = info.event.id;
-            var res = confirm("このイベントの繰り返しキャンセルを取り消しますか？");
+            event_id            = info.event.id;
+            var res             = confirm("このイベントの繰り返しキャンセルを取り消しますか？");
             if(res){
-                location.href               = event_repeat_cancel_delete_url.replace("0",event_id);
+                location.href   = event_repeat_cancel_delete_url.replace("0",event_id);
             }
         }
     });
@@ -181,7 +175,7 @@ window.addEventListener("load" , function (){
     }};
 
     start_time.onchange = function(){
-        start_dt.value  = event_time_set(start_time.value);
+        start_dt.value  = start_day.value + " " + start_time.value;
     };
 
     end_time.onchange   = function(){
@@ -217,15 +211,6 @@ window.addEventListener("load" , function (){
         };
         // title欄を空白にする
         document.querySelector("[name='title']").value = "";
-        //入力欄の表示を時間入力に変更
-        //end_time.parentElement.style.display="none";
-        //console.log(form_controls);
-        /*日付入力のform-controlをはずす
-        form_controls.forEach((form) => {
-            console.log(form);
-            form.classList.remove('form-control');
-        });
-        */
     }
 
     function event_click(info){
