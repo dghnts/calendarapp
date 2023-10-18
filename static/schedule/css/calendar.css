@@ -2,11 +2,26 @@
     display:none;
 }
 
+/* イベント登録時のmodalの設定*/ 
+#input_event{
+    /*入力フォームを左寄せにする*/
+    text-align: left;
+}
+
+#input_event li{
+    list-style: none;
+    margin-left: 0;
+}
+
+#input_event label{
+    width: 119px;
+}
+
 #start_input, #end_input{
     margin: 0.5rem;
 }
 
-#start_input > input, #end_input > input{
+.form-control{
     display: inline;
     width:auto !important;
 }
