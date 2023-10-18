@@ -33,12 +33,12 @@
   <script> 
     //　特殊文字("<",">","'",etc...)をエスケープしないための処理
     {% autoescape off %}
-      let events                      = {{ events }}
-      let events_cancel               = {{ events_cancel }}
-      let edit_event                  = "{% url 'schedule:calendar' 0%}"
-      let delete_event                = "{% url 'schedule:delete_event' 0%}"
-      let event_repeat_cancel         = "{% url 'schedule:event_repeat_cancel' 0%}"
-      let event_repeat_cancel_delete  = "{% url 'schedule:event_repeat_cancel_delete' 0%}"
+      let events                          = {{ events }}
+      let events_cancel                   = {{ events_cancel }}
+      let edit_event                      = "{% url 'schedule:calendar' 0%}"
+      let delete_url                      = "{% url 'schedule:delete_event' 0%}"
+      let event_repeat_cancel_url         = "{% url 'schedule:event_repeat_cancel' 0%}"
+      let event_repeat_cancel_delete_url  = "{% url 'schedule:event_repeat_cancel_delete' 0%}"
     {% endautoescape %} 
   </script>
   
@@ -97,7 +97,7 @@
                   </form>
                 </div>
                 <div class="modal-footer">
-                       <button type="submit" class="btn btn-primary" form="create_calendar">新規作成</button>
+                  <button type="submit" class="btn btn-primary" form="create_calendar">新規作成</button>
                 </div>
               </div>
             </div>

@@ -12,7 +12,7 @@ from json import dumps
 from django.utils.timezone import localtime
 from datetime import datetime,timedelta
 
-from copy import deepcopy
+from .new_events import new_events
 
 class IndexView(View):
     def get(self, request, *args, **kwargs):
@@ -48,44 +48,8 @@ class CalendarView(View):
             # 現在表示しているカレンダーに紐づいているイベントをすべて取得
             eventsobj = Event.objects.filter(calendar=calendarobj)
             
-            new_eventsobj = []
             # 全ての登録されたスケジュールに対して以下の処理を実行する
-            for event in eventsobj:
-                event_origin = deepcopy(event)
-                event_origin.is_repeat = False
-                
-                new_eventsobj.append(event_origin)
-                
-                
-                
-                if event.repeat:
-                    # repeat用のスケジュールの作成
-                    repeat_event    = deepcopy(event)
-                    repeat_event.is_repeat = True
-                    
-                    stop            = event.start + timedelta(days=365)
-                    if event.stop:
-                        stop        = event.stop
-                    
-                    #print(stop)
-                    
-                    #　繰り返し元のスケジュールのid
-                    #default_id  = str(event.id)
-                    #繰り返しｌスケジュール用のidを設定
-                    #copy_id     = 0
-                    
-                    while True:
-                        repeat_event.start = repeat_event.start + timedelta(days=repeat_event.repeat)
-                        repeat_event.end = repeat_event.end + timedelta(days=repeat_event.repeat)
-                            
-                        if repeat_event.start > stop:
-                            print("繰り返し終了")
-                            break
- 
-                        if repeat_event.is_cancel():
-                            print(str(repeat_event.title)+"の予定の登録をキャンセルします")
-                        else:                      
-                            new_eventsobj.append(deepcopy(repeat_event))
+            new_eventsobj = new_events(eventsobj)
             
             # カレンダーに登録するイベントのデータを登録するリストを作成
             event_list          = []
@@ -103,7 +67,7 @@ class CalendarView(View):
             context["eventsobj"]            = new_eventsobj
             context["calendar"]             = calendarobj
             context["calendar_messages"]    = CalendarMessage.objects.filter(calendar=pk)
-            print(context["events_cancel"])
+            print(context["events"])
             permissions                     = CalendarPermission.objects.filter(calendar=pk)
             
             for permission in permissions:

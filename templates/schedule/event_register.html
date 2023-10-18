@@ -18,17 +18,15 @@
               <input type="text" class="form-control" name="title" placeholder="イベントの内容">
             </div>
             <div>
-              <label for="day" class="form-label">開始日</label>
-              <input type="text" id="day" readonly> 
-              <div id="event_time" style="display:inline;">
-                <label for="start-time">開始時刻</label>
+              <div id="start_input" display="display:inline;">
+                <label for="start_day" class="form-label">開始日</label>
+                <input type="text" id="start_day" readonly> 
                 <input type="text" id="start_time" readonly>
-                <label for="start-time">終了時刻</label>
-                <input type="text" id="end_time" readonly>
               </div>
-              <div id="event_end" style="display:none;">
+              <div id="end_input">
                 <label for="end_day">終了日</label>
                 <input type="text" id="end_day">
+                <input type="text" id="end_time" readonly>
               </div>
             </div>
             <div style="display:none;">
@@ -50,12 +48,12 @@
         </form>
       </div>
       <div class="modal-footer">
-             <button type="submit" class="btn btn-primary" form="event_edit">保存</button>
-             <form action="" name="delete_event" method="post">
+            <button type="submit" class="btn btn-primary" form="event_edit">保存</button>
+            <form action="" name="delete_event" method="post">
               {% csrf_token %}
               <input hidden type="text" name="cancel_dt">
               <input type="submit" value="削除">
-             </form>
+            </form>
       </div>
     </div>
   </div>
