@@ -25,3 +25,12 @@
     display: inline;
     width:auto !important;
 }
+
+.permission_form li{
+    list-style: none;
+    margin-bottom: 0.5rem;
+}
+
+.permission_form label{
+    width: 134px;
+}

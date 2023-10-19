@@ -19,24 +19,29 @@
             <div id="permission_form_edit_area">
               <input id="permission_form_edit_add" class="mb-2" type="button" value="共有するユーザーの追加">
               {% for permission in permissions %}
-                <div class="permission_form mb-2">
-                    <label>対象ユーザーのEmail:</label>
+                <ul class="permission_form text-bg-dark mb-2">
+                  <li class="email">
+                    <label>対象ユーザーのEmail</label>
                     <input type="hidden" name="id" value="{{ permission.id }}">
                     <input type="text" name="email" value="{{ permission.user.email}}" readonly>
+                  </li>
+                  <li class="authority">
+                    <label>権限</label>
                     <select>
-                        <option value="3" {%if permission.select == 3 %} selected {% endif %}>編集者</option>
-                        <option value="0" {%if permission.select == 0 %} selected {% endif %}>閲覧者</option>
-                        <option value="1" {%if permission.select == 1 %} selected {% endif %}>編集者（チャット禁止）</option>
-                        <option value="2" {%if permission.select == 2 %} selected {% endif %}>閲覧者（書き込み禁止）</option>
+                      <option value="3" {%if permission.select == 3 %} selected {% endif %}>編集者</option>
+                      <option value="0" {%if permission.select == 0 %} selected {% endif %}>閲覧者</option>
+                      <option value="1" {%if permission.select == 1 %} selected {% endif %}>編集者（チャット禁止）</option>
+                      <option value="2" {%if permission.select == 2 %} selected {% endif %}>閲覧者（書き込み禁止）</option>
                     </select>
                     <input type="hidden" name="authority" value="{{ forloop.counter }}">
                     <input type="checkbox" style="display:none;" name="read" value="{{ forloop.counter }}" {% if permission.read  %}checked{% endif %}>
                     <input type="checkbox" style="display:none;" name="write" value="{{ forloop.counter }}" {% if permission.write %}checked{% endif %}>
                     <input type="checkbox" style="display:none;" name="chat" value="{{ forloop.counter }}" {% if permission.chat  %}checked{% endif %}>
-                    {% if user == calendar.user %}
-                      <input type="button" class="btn btn-danger" name="delete_btn" value="削除">
-                    {% endif %}
-                </div>
+                  </li>
+                  {% if user == calendar.user %}
+                    <input type="button" class="btn btn-danger" name="delete_btn" value="削除">
+                  {% endif %}
+                </ul>
               {% endfor %}
             </div>
           </form>
