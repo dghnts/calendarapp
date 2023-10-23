@@ -14,6 +14,9 @@ from datetime import datetime,timedelta
 
 from .new_events import new_events
 
+from django.http.response import JsonResponse
+from django.template.loader import render_to_string
+
 class IndexView(View):
     def get(self, request, *args, **kwargs):
         return render(request, "schedule/index.html")
@@ -42,7 +45,7 @@ class CalendarView(View):
             # 書き込み権限がない場合は編集writeをFalseに変更する
             if not CalendarPermission.objects.filter(calendar=pk, user=request.user, write=True).exists():
                 context["write"] = False
-     
+                
             # 現在表示しているカレンダーのオブジェクトを取得
             calendarobj = Calendar.objects.filter(id=pk).first()
             # 現在表示しているカレンダーに紐づいているイベントをすべて取得
@@ -318,12 +321,36 @@ event_repeat_cancel    = EventRepeatCancelView.as_view()
 class EventRepeatCancelDeleteView(View):
 
     # pkは対象のScheduleRepeatCancelのid
-    def get(self, request, pk, *args, **kwargs):
+    def post(self, request, pk, *args, **kwargs):
         event_repeat_cancel    = CancelRepeatEvent.objects.filter(id=pk, user=request.user).first()
-        print(event_repeat_cancel)
+        json = {"error":False}
+        
         if event_repeat_cancel:
             event_repeat_cancel.delete()
-
-        return redirect("schedule:calendar", event_repeat_cancel.event.calendar.id)
+        
+        
+        # キャンセルを取り消す繰り返しイベントに紐づいているカレンダーを取得
+        calendarobj = Calendar.objects.filter(id=event_repeat_cancel.event.calendar.id).first()
+        # 現在表示しているカレンダーに紐づいているイベントをすべて取得
+        eventsobj = Event.objects.filter(calendar=calendarobj)
+        
+        # 全ての登録されたイベントをjson形式に変換
+        new_eventsobj = new_events(eventsobj)
+        
+        # カレンダーに登録するイベントのデータを登録するリストを作成
+        event_list          = []
+        for event in new_eventsobj:
+            event_list.append(event.create_json_data())
+        
+        
+        # 繰り返しをキャンセルしたイベントのデータを登録するリストを作成
+        event_cancel_list   = []
+        for cancel_event in CancelRepeatEvent.objects.all():
+            event_cancel_list.append(cancel_event.create_json_data())
+        
+        json["events"]               = dumps(event_list)
+        json["events_cancel"]        = dumps(event_cancel_list)
+        
+        return JsonResponse(json)
 
 event_repeat_cancel_delete    = EventRepeatCancelDeleteView.as_view()

@@ -18,6 +18,9 @@
   <!--日本語化用JS-->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
   
+  <!--cokkiejs-->
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+
   <!-- fontawesome -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
   <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -130,10 +133,10 @@
       </div>
       {% if calendars %}
         <div class="col-md-3">
-          <div id='event_list'></div>
+          <div id='event_list_calendar'></div>
         </div>
         <div class="col-md-3">
-          <div id='event_cancel'></div>
+          <div id='event_cancel_calendar'></div>
           <h2>チャット</h2>
             {# TODO:メッセージの投稿を表示 #}
             {# TODO:contextprocessorを使って、ユーザーのアクセス権をコンテキストに与え、↓をif文で表示・非表示 ? #}

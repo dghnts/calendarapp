@@ -118,8 +118,8 @@ window.addEventListener("load" , function (){
     });
     calendar.render();
 
-    var event_listEl = document.querySelector('#event_list');
-    var event_list = new FullCalendar.Calendar(event_listEl,{
+    var event_list_calendar_El = document.querySelector('#event_list_calendar');
+    var event_list_calendar = new FullCalendar.Calendar(event_list_calendar_El,{
         headerToolbar: {
             left: 'prev,today,next',
             center: 'title',
@@ -136,10 +136,10 @@ window.addEventListener("load" , function (){
             event_click(info);
         }
     });
-    event_list.render();
+    event_list_calendar.render();
 
-    let event_cancel_El = document.getElementById('event_cancel');
-    let event_cancel = new FullCalendar.Calendar(event_cancel_El, {
+    let event_cancel_calendar_El = document.getElementById('event_cancel_calendar');
+    let event_cancel_calendar = new FullCalendar.Calendar(event_cancel_calendar_El, {
         headerToolbar: {
             left: 'prev,today,next',
             center: 'title',
@@ -154,13 +154,59 @@ window.addEventListener("load" , function (){
         //イベントをクリックしたときの処理
         eventClick: function(info) {
             event_id            = info.event.id;
+            const csrftoken = Cookies.get('csrftoken');
+            const url       = event_repeat_cancel_delete_url.replace("0",event_id)
+
             var res             = confirm("このイベントの繰り返しキャンセルを取り消しますか？");
             if(res){
-                location.href   = event_repeat_cancel_delete_url.replace("0",event_id);
+                const request   = new XMLHttpRequest();
+                
+                //送信先とメソッドの指定
+                request.open("POST",url);
+            
+                //ヘッダにCSRFトークンをセットする。
+                request.setRequestHeader("X-CSRFToken", csrftoken);
+            
+                //送信(内容)
+                request.send();
+            
+                //成功時の処理
+                request.onreadystatechange = function() {
+                    if( request.readyState === 4 && request.status === 200 ) {
+                        let json = JSON.parse(request.responseText);
+                        
+                        // 更新したキャンセルイベントのjasondataを変数に格納
+                        let new_cancel_events = JSON.parse(json["events_cancel"]);
+
+                        // event_cancel_calendarのイベントを削除し、新しいものに更新する
+                        let event_cancel_calendar_source = event_cancel_calendar.getEventSources();
+                        event_cancel_calendar_source.forEach((source) => {
+                            source.remove();
+                        });
+                        event_cancel_calendar.addEventSource(new_cancel_events);
+
+                        // 更新したイベントのjsondataを変数に格納
+                        let new_events = JSON.parse(json["events"]);
+                        
+                        // calendar,event_list_calendarのイベントを削除し、新しいものに更新する
+                        let calendar_source = calendar.getEventSources();
+                        calendar_source.forEach((source) => {
+                            source.remove();
+                        });
+                        new_events = JSON.parse(json["events"]);
+                        calendar.addEventSource(new_events);
+
+                        let event_list_calendar_source = event_list_calendar.getEventSources();
+                        event_list_calendar_source.forEach((source) => {
+                            source.remove();
+                        });
+                        event_list_calendar.addEventSource(new_events);
+                    }
+                }
             }
         }
     });
-    event_cancel.render();
+    event_cancel_calendar.render();
 
 
 
@@ -255,8 +301,6 @@ window.addEventListener("load" , function (){
         
         //イベント編集用のviewへのリンクをaction属性に設定(id=0)
         edit_event = edit_event.replace("0", event_id);
-        
-        console.log(event_id);
 
         document.event_edit.action = edit_event;
         // HTML側で作成したURLを編集してイベント削除のURLを作成する
