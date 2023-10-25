@@ -4,7 +4,7 @@ from .forms import EventForm
 from .models import Event, Calendar, CalendarPermission, CalendarMessage, CancelRepeatEvent
 from .forms import EventForm, CalendarForm, CalendarPermissionForm, CalendarMessageForm, CancelRepeatEventForm
 
-from users.models import CustomUser
+from config import settings
 
 from django.contrib import messages
 
@@ -12,7 +12,7 @@ from json import dumps
 from django.utils.timezone import localtime
 from datetime import datetime,timedelta
 
-from .new_events import new_events
+from . import create_new_events
 
 from django.http.response import JsonResponse
 from django.template.loader import render_to_string
@@ -52,7 +52,7 @@ class CalendarView(View):
             eventsobj = Event.objects.filter(calendar=calendarobj)
             
             # 全ての登録されたスケジュールに対して以下の処理を実行する
-            new_eventsobj = new_events(eventsobj)
+            new_eventsobj = create_new_events.create(eventsobj)
             
             # カレンダーに登録するイベントのデータを登録するリストを作成
             event_list          = []
@@ -174,8 +174,8 @@ class CreateCalendarView(View):
                 dic["calendar"] = calendar
                 #TODO: カスタムユーザーモデルを使って検索
                 print(email)
-                print( CustomUser.objects.filter(email=email).first() )
-                dic["user"]     = CustomUser.objects.filter(email=email).first()
+                print( settings.AUTH_USER_MODEL.objects.filter(email=email).first() )
+                dic["user"]     = settings.AUTH_USER_MODEL.objects.filter(email=email).first()
                 # ↓参照: https://note.nkmk.me/python-if-conditional-expressions/
                 dic["read"]     = True if authority in reads else False
                 dic["write"]    = True if authority in writes else False
@@ -213,7 +213,7 @@ class CalendarPermissionView(View):
         for id,email,authority in zip(ids,emails,authorities):
             dic             = {}
             dic["calendar"] = pk
-            dic["user"]     = CustomUser.objects.filter(email=email).first()
+            dic["user"]     = settings.AUTH_USER_MODEL.objects.filter(email=email).first()
             
             dic["read"]     = True if authority in reads else False 
             dic["write"]    = True if authority in writes else False
@@ -335,7 +335,7 @@ class EventRepeatCancelDeleteView(View):
         eventsobj = Event.objects.filter(calendar=calendarobj)
         
         # 全ての登録されたイベントをjson形式に変換
-        new_eventsobj = new_events(eventsobj)
+        new_eventsobj = create_new_events.create(eventsobj)
         
         # カレンダーに登録するイベントのデータを登録するリストを作成
         event_list          = []

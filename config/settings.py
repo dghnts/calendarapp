@@ -14,6 +14,8 @@ from pathlib import Path
 
 from django.contrib import messages
 
+import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -133,46 +135,6 @@ STATICFILES_DIRS = [ BASE_DIR / "static" ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#################django-allauthでのメール認証設定ここから###################
-
-#djangoallauthでメールでユーザー認証する際に必要になる認証バックエンド
-AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
-]
-
-#ログイン時の認証方法はemailとパスワードとする
-ACCOUNT_AUTHENTICATION_METHOD   = "email"
-
-#ユーザー登録画面でユーザー名(ユーザーID)を入力する
-ACCOUNT_USERNAME_REQUIRED       = True
-
-#ユーザー登録時に入力したメールアドレスに、確認メールを送信する事を必須(mandatory)とする
-ACCOUNT_EMAIL_VARIFICATION  = "mandatory"
-
-#ユーザー登録画面でメールアドレス入力を要求する(True)
-ACCOUNT_EMAIL_REQUIRED      = True
-
-
-#DEBUGがTrueのとき、メールの内容は全て端末に表示させる
-if DEBUG:
-    EMAIL_BACKEND   = "django.core.mail.backends.console.EmailBackend"
-
-else:
-    #ここにメール送信設定を入力する(Sendgridを使用する場合)
-    EMAIL_BACKEND   = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST      = 'ここにメールのホストを書く'
-
-    #メールを暗号化する
-    EMAIL_USE_TLS   = True
-    EMAIL_PORT      = 587
-
-    #【重要】メールのパスワードとメールアドレスの入力後、GitHubへのプッシュは厳禁
-    EMAIL_HOST_USER     = ''
-    EMAIL_HOST_PASSWORD = ''
-
-#################django-allauthでのメール認証設定ここまで###################
-
 SITE_ID = 1
 #django-allauthログイン時とログアウト時のリダイレクトURL
 # ログイン後（新規登録後）ユーザーの個別ページに遷移する
@@ -191,3 +153,42 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert alert-warning',
     messages.ERROR: 'alert alert-danger',
 }
+
+#################django-allauthでのメール認証設定ここから###################
+
+#djangoallauthでメールでユーザー認証する際に必要になる認証バックエンド
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+#ログイン時の認証方法はemailとパスワードとする
+ACCOUNT_AUTHENTICATION_METHOD   = "email"
+
+#ユーザー登録画面でユーザー名(ユーザーID)を入力する
+ACCOUNT_USERNAME_REQUIRED       = "False"
+
+#ユーザー登録時に入力したメールアドレスに、確認メールを送信する事を必須(mandatory)とする
+ACCOUNT_EMAIL_VARIFICATION  = "mandatory"
+
+#ユーザー登録画面でメールアドレス入力を要求する(True)
+ACCOUNT_EMAIL_REQUIRED      = True
+
+#DEBUGがTrueのとき、メールの内容は全て端末に表示させる
+if DEBUG:
+    EMAIL_BACKEND   = "django.core.mail.backends.console.EmailBackend"
+
+else:
+    #ここにメール送信設定を入力する(Sendgridを使用する場合)
+    EMAIL_BACKEND   = 'sendgrid_backend.SendgridBackend'
+    EMAIL_HOST      = 'ここにメールのホストを書く'
+
+    DEFAULT_FROM_EMAIL  = "ここに送信元メールアドレスを指定"
+    if "SENDGRID_API_KEY" in os.environ:
+        SENDGRID_API_KEY  = os.environ["SENDGRID_API_KEY"]
+    else:
+        SENDGRID_API_KEY    = "ここにAPIキーを入力"
+    
+    SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+
+#################django-allauthでのメール認証設定ここまで###################

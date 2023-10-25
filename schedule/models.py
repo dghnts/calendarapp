@@ -113,7 +113,15 @@ class Event(models.Model):
     
     def __str__(self):
         return self.title
-    
+
+
+#TODO: メール通知後に記録するモデル。
+class EventNotified(models.Model):
+
+    event    = models.ForeignKey(Event, verbose_name="紐づくスケジュール", on_delete=models.CASCADE)
+    start_dt    = models.DateTimeField(verbose_name="スケジュールの日時")
+    user        = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="投稿者", on_delete=models.CASCADE)
+ 
 class CancelRepeatEvent(models.Model):
     event       = models.ForeignKey(Event, verbose_name="紐づくカレンダー", on_delete=models.CASCADE)
     

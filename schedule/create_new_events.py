@@ -1,7 +1,7 @@
 from datetime import timedelta
 from copy import deepcopy
 
-def new_events(eventsobj):
+def create(eventsobj):
     new_eventsobj = []
     # 全ての登録されたスケジュールに対して以下の処理を実行する
     for event in eventsobj:
