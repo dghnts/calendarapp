@@ -88,10 +88,13 @@ class CalendarView(View):
     def post(self, request, pk, *args, **kwargs):
         copied          = request.POST.copy()
         copied["user"]  = request.user
+        copied["start"] = copied["start_day"] + " " + copied["start_time"]
+        copied["end"]   = copied["end_day"] + " " + copied["end_time"]
         
+        print(request.POST)
         if "all_day" in copied.keys():
             copied["all_day"] = True
-            print("これは連続のイベントです")
+            print("これは終日のイベントです")
             
         calendar_id     = request.POST.get("calendar")
         if pk == 0:

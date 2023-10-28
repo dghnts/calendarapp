@@ -1,40 +1,26 @@
 window.addEventListener("load" , function (){ 
     //flatpckrの設定/////////////////////////////////////////////////////////////////
-    /*今日の日付を取得
+    //今日の日付を取得
     let today = new Date();
 
-    let year    = String(today.getFullYear());
-    let month   = ("0" + String(today.getMonth() + 1) ).slice(-2);
-    let start_day     = ("0" + String(today.getDate()) ).slice(-2);
     let hour    = ("0" + String(today.getHours()) ).slice(-2);
     let minute  = ("0" + String(today.getMinutes()) ).slice(-2);
-
-    let dt = year + "-" + month + "-" + start_day + " " + hour + ":" + minute; 
-    */
 
     let all_day_check       = document.querySelector("[name='all_day']");
     let start_day                 = document.getElementById("start_day");
     let start_time          = document.getElementById("start_time");
     let end_time            = document.getElementById("end_time");
     let end_day             = document.getElementById("end_day");
-    let start_dt            = document.querySelector("[name='start']");
-    let end_dt              = document.querySelector("[name='end']");
     //let stop                = document.querySelector("[name=stop");
 
     // イベント開始日用の設定
     let config_dt   = { 
-        //enableTime: true,
-        altInput    : true,   
-        altFormat   : "Y-m-d",
         dateFormat  : "Y-m-d", //変更
         locale      : "ja",
         position    : "center",
-        //defaultDate : dt
     };
 
     let config_time = {
-        altInput    : true,
-        altFormat   : "H:i",
         enableTime  : true,
         noCalendar  : true, //カレンダーを表示しない
         dateFormat  : "H:i",
@@ -78,8 +64,8 @@ window.addEventListener("load" , function (){
             console.log(start_time.value);
 
             //初期値の設定
-            start_dt.value  = start_day.value   + " "   + start_time.value;
-            end_dt.value    = end_day.value     + " "   + end_time.value;
+            ////start_dt.value  = start_day.value   + " "   + start_time.value;
+            ////end_dt.value    = end_day.value     + " "   + end_time.value;
 
             //イベント作成用のviewへのリンクをaction属性に設定(id=0)
             document.event_edit.action = edit_event;
@@ -97,7 +83,7 @@ window.addEventListener("load" , function (){
                 config_dt.defaultDate = info.end;
                 //　終了日を入力
                 flatpickr("#end_day", config_dt);
-                end_dt.value  = end_day.value;
+                //end_dt.value  = end_day.value;
             }else{
                 if(all_day_check.checked){
                     all_day_check.click();
@@ -209,43 +195,22 @@ window.addEventListener("load" , function (){
     event_cancel_calendar.render();
 
 
-
     all_day_check.addEventListener("click",() =>{change_end_date_format();});
-
-    start_day.onchange = function(){
-        if(all_day_check.checked){
-            start_dt.value    = start_day.value;
-        }else{
-            start_dt.value    = start_day.value + " " + start_time.value;
-            end_dt.value      = end_day.value   + " " + end_time.value;
-    }};
-
-    start_time.onchange = function(){
-        start_dt.value  = start_day.value + " " + start_time.value;
-    };
-
-    end_time.onchange   = function(){
-        end_dt.value    = end_day.value + " " + end_time.value;
-    };
-
-    end_day.onchange     = function(){
-        end_dt.value  = end_day.value;
-    };
 
     //終了日の入力方法を変更する（時間or日付）
     function change_end_date_format(){
         if(all_day_check.checked){
             // altinputの要素を取得して非表示にする
-            start_time.nextSibling.style.display = "none";
-            end_time.nextSibling.style.display = "none";
-            start_dt.value                            = start_day.value;
-            end_dt.value                              = end_day.value;
+            start_time.style.display = "none";
+            end_time.style.display = "none";
+            //start_dt.value                            = start_day.value;
+            //end_dt.value                              = end_day.value;
         }else{
             // altinputの要素を取得して非表示にする
-            start_time.nextSibling.style.display = "inline";
-            end_time.nextSibling.style.display ="inline";
-            start_dt.value                      = start_day.value   + " " + start_time.value;
-            end_dt.value                        = end_day.value     + " " + end_time.value;
+            start_time.style.display = "inline";
+            end_time.style.display ="inline";
+            //start_dt.value                      = start_day.value   + " " + start_time.value;
+            //end_dt.value                        = end_day.value     + " " + end_time.value;
         }
     };
 

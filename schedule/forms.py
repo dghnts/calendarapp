@@ -8,18 +8,18 @@ class CalendarForm(forms.ModelForm):
         fields = ["user", "name", "permission"]
         
 class EventForm(forms.ModelForm):
-    
+
     class Meta:
         model = Event
         fields = ["calendar",
-                    "start", 
-                    "end", 
-                    "title", 
-                    "user",
-                    "repeat",
-                    "stop",
-                    "all_day",
-                  ]
+                "start",
+                "end", 
+                "title", 
+                "user",
+                "repeat",
+                "stop",
+                "all_day",
+                ]
         
         # エラーメッセージ
         error_messages = {
