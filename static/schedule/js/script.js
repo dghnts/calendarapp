@@ -106,14 +106,13 @@ window.addEventListener("load" , function (){
 
     var event_list_calendar_El = document.querySelector('#event_list_calendar');
     var event_list_calendar = new FullCalendar.Calendar(event_list_calendar_El,{
-        headerToolbar: {
+        headerToolbar:{
             left: 'prev,today,next',
-            center: 'title',
-            right: 'listMonth,listWeek,listDay'
+            right: 'listMonth,listWeek,listDay',
         },
         // 表示言語の設定
         locale: "ja",
-        height: "100%",
+        height: "40%",
         buttonIcons: true,
         initialView: "listMonth",
         events: events,
@@ -128,12 +127,11 @@ window.addEventListener("load" , function (){
     let event_cancel_calendar = new FullCalendar.Calendar(event_cancel_calendar_El, {
         headerToolbar: {
             left: 'prev,today,next',
-            center: 'title',
             right: 'listMonth,listWeek,listDay'
         },
         // 表示言語の設定
         locale: "ja",
-        height: "100%",
+        height: "40%",
         buttonIcons: true,
         initialView: "listMonth",
         events: events_cancel,

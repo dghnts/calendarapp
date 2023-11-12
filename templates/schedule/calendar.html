@@ -133,27 +133,28 @@
       </div>
       {% if calendars %}
         <div class="col-md-3">
+          <h3>予定一覧</h3>
           <div id='event_list_calendar'></div>
-        </div>
-        <div class="col-md-3">
+          <h3>キャンセルリスト</h3>
           <div id='event_cancel_calendar'></div>
-          <h2>チャット</h2>
-            {# TODO:メッセージの投稿を表示 #}
-            {# TODO:contextprocessorを使って、ユーザーのアクセス権をコンテキストに与え、↓をif文で表示・非表示 ? #}
-            <form action="{% url 'schedule:calendar_message' calendar.id %}" method="POST">
-                {% csrf_token %}
-                <textarea class="form-control" name="content"></textarea>
-                <input class="form-control" type="submit" value="投稿">
-            </form>
-          
-            {% for message in calendar_messages %}
-            <div class="border">
-                <div>{{ message.user }} : {{ message.dt }}</div>
-                <div>{{ message.content|linebreaksbr }}</div>
-            </div>
-            {% endfor %}
         </div>
       {% endif %}
+      <div class="col-md-3">
+        <h2>チャット</h2>
+            {# TODO:メッセージの投稿を表示 #}
+            {# TODO:contextprocessorを使って、ユーザーのアクセス権をコンテキストに与え、↓をif文で表示・非表示 ? #}
+        <form action="{% url 'schedule:calendar_message' calendar.id %}" method="POST">
+            {% csrf_token %}
+            <textarea class="form-control" name="content"></textarea>
+            <input class="form-control" type="submit" value="投稿">
+        </form>
+      
+        {% for message in calendar_messages %}
+        <div class="border">
+            <div>{{ message.user }} : {{ message.dt }}</div>
+            <div>{{ message.content|linebreaksbr }}</div>
+        </div>
+        {% endfor %}
     </div>
   </div>
   <!--モーダルダイアログの記述-->

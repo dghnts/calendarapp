@@ -34,3 +34,7 @@
 .permission_form label{
     width: 134px;
 }
+
+.fc-toolbar-ltr{
+    display: none !important;
+}
