@@ -140,14 +140,16 @@
         </div>
       {% endif %}
       <div class="col-md-3">
-        <h2>チャット</h2>
-            {# TODO:メッセージの投稿を表示 #}
-            {# TODO:contextprocessorを使って、ユーザーのアクセス権をコンテキストに与え、↓をif文で表示・非表示 ? #}
-        <form action="{% url 'schedule:calendar_message' calendar.id %}" method="POST">
-            {% csrf_token %}
-            <textarea class="form-control" name="content"></textarea>
-            <input class="form-control" type="submit" value="投稿">
-        </form>
+        {% if calendar %}
+          <h2>チャット</h2>
+              {# TODO:メッセージの投稿を表示 #}
+              {# TODO:contextprocessorを使って、ユーザーのアクセス権をコンテキストに与え、↓をif文で表示・非表示 ? #}
+          <form action="{% url 'schedule:calendar_message' calendar.id %}" method="POST">
+             {% csrf_token %}
+             <textarea class="form-control" name="content"></textarea>
+             <input class="form-control" type="submit" value="投稿">
+          </form>
+        {% endif %}
       
         {% for message in calendar_messages %}
         <div class="border">
