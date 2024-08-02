@@ -11,3 +11,4 @@ class CustomAdapter(DefaultAccountAdapter):
             return "/calendar/"+str(calendar_id)
         else:
             return "/calendar/"
+    
