@@ -7,7 +7,7 @@
 {% block extra_navbar %}
     <li class="nav-item">
         <form class="nav-link d-flex justify-content-center mb-2 login"
-              method="POST"
+              method="GET"
               action="{% url 'account_login' %}"
               aria-current="page">
             {% csrf_token %}
@@ -23,7 +23,7 @@
     <li class="nav-item">
         <form class="nav-link d-flex justify-content-center mb-2 signup"
               id="signup_form"
-              method="post"
+              method="GET"
               action="{% url 'account_signup' %}">
             {% csrf_token %}
             {% if redirect_field_value %}

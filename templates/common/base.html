@@ -2,69 +2,109 @@
 {% load i18n %}
 <!DOCTYPE html>
 <html lang="ja"d>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block page_title %}{% endblock %}</title>
-    
-    <!-- bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
-    <!-- fontawesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
-    <!-- css -->
-    <link rel="stylesheet" href="{% static 'common/css/common.css' %}">
-    {% block extra_head %}
-    {% endblock  %}
-    <!-- js -->
-    <script src="{% static 'common/js/sidebar.js' %}"></script>
-</head>
-<body>
-    <header>
-        {% if messages %}
-        {% for message in messages %}
-        <div {% if message.tags %} class="{{ message.tags }} alert-dismissible" {% endif %}% >
-            {{message}}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %}
-        {% endif %}
-        <nav class="navbar bg-body-tertiary" data-bs-theme="dark">
-            <div class="container-fluid">
-                <!--ハンバーガー メニューでサイドバーを操作する -->
-                <div class="navbar-brand">
-                    <label class="sidebar_label" for="sidebar_chk">
-                        <i class="fa fa-bars"></i>
-                    </label>
-                    スケジュールアプリ
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>
+            {% block page_title %}{% endblock %}
+        </title>
+        <!-- bootstrap -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+              rel="stylesheet"
+              integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+              crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+                crossorigin="anonymous"></script>
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <!-- fontawesome -->
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        <!-- css -->
+        <link rel="stylesheet" href="{% static 'common/css/common.css' %}">
+        {% block extra_head %}{% endblock %}
+        <!-- js -->
+        <!-- <script src="{% static 'common/js/sidebar.js' %}"></script> -->
+    </head>
+    <body>
+        <header data-bs-theme="dark">
+            <nav class="navbar navbar-expand-lg bg-body-tertiary">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="/">Schedule-manager</a>
+                    <button class="navbar-toggler"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#navbarText"
+                            aria-controls="navbarText"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarText">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle"
+                                   href="#"
+                                   role="button"
+                                   data-bs-toggle="dropdown"
+                                   aria-expanded="false">calendars</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="#">Action</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">Another action</a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">Something else here</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <div class="d-lg-flex gap-2 col-lg-3 justify-content-lg-end text-nowrap">
+                            {% if user.is_authenticated %}
+                                {% url 'account_email' as email_url %}
+                                {% url 'socialaccount_connections' as socialaccount_url %}
+                                {% if email_url or socialaccount_url %}
+                                    <a href="{% if email_url %}{{ email_url }}{% else %}{{ socialaccount_url }}{% endif %}"
+                                       class="btn btn-secondary">Manage Account</a>
+                                {% endif %}
+                                <a href="{% url 'account_logout' %}" class="btn btn-danger">{% translate "Sign Out" %}</a>
+                            {% else %}
+                                <a href="{% url 'account_login' %}" class="btn btn-outline-light">{% translate "Sign In" %}</a>
+                                {% url 'account_signup' as signup_url %}
+                                {% if signup_url %}
+                                    <a href="{{ signup_url }}" class="btn btn-success">{% translate "Sign Up" %}</a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-                {%block header %}
-                {% endblock %} 
+            </nav>
+        </header>
+        <main>
+            <input id="sidebar_chk" class="sidebar_chk" type="checkbox">
+            <div class="sidebar_area p-3 text-bg-dark">
+                <div class="sidear_content d-flex flex-column">
+                    <hr style="height:2px; background-color:white;">
+                    <ul class="nav nav-pills flex-column mb-auto">
+                        {% block extra_navbar %}{% endblock %}
+                    </ul>
+                    <hr style="height:2px; background-color:white;">
+                    {% block dropdown_menu %}{% endblock %}
+                </div>
             </div>
-        </nav>
-    </header>
-    <main> 
-        <input id="sidebar_chk" class="sidebar_chk" type="checkbox">
-        <div class="sidebar_area p-3 text-bg-dark">
-            <div class="sidear_content d-flex flex-column">
-                <hr style="height:2px; background-color:white;">
-                <ul class="nav nav-pills flex-column mb-auto">
-                    {% block extra_navbar %}
-                    {% endblock %}  
-                </ul>
-                <hr style="height:2px; background-color:white;">
-                {% block dropdown_menu %}
-                {% endblock %}
+            <div class="calendar_area">
+                <label class="sidebar_outlabel" for="sidebar_chk"></label>
+                {% block main %}{% endblock %}
             </div>
-        </div>
-        <div class="calendar_area">
-            <label class="sidebar_outlabel" for="sidebar_chk"></label>      
-            {% block main %}
-            {% endblock %}
-        </div>
-    </main>            
-</body>
-</html>     
+        </main>
+    </body>
+</html>
