@@ -1,9 +1,6 @@
-#データベース関連
-*/__pycache__
-*.sqlite3
+*/_pycache_
+db.sqlite3
 
-#アプリ開発の時に書いたメモ
 idea.md
 
-#仮想環境の設定
-venv
+.env

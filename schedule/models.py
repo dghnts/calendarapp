@@ -4,20 +4,20 @@ from django.utils import timezone
 
 from django.utils.timezone import localtime
 
-from config import settings
+from config.settings import base
 
 # カレンダーモデル
 class Calendar(models.Model):
     #作成したユーザー
     #作成者のアカウントが消えたらカレンダーも同時に削除される
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="作成者", on_delete=models.CASCADE)
+    user = models.ForeignKey(base.AUTH_USER_MODEL, verbose_name="作成者", on_delete=models.CASCADE)
     #登録するカレンダーの名前
     name = models.CharField(verbose_name="カレンダー", max_length=100)
     
     # カレンダーを共有するユーザー名の指定
-    #share = models.ManyToManyField(settings.AUTH_USER_MODEL,verbose_name="公開範囲", related_name="share_calendar")
+    #share = models.ManyToManyField(base.AUTH_USER_MODEL,verbose_name="公開範囲", related_name="share_calendar")
     
-    permission = models.ManyToManyField(settings.AUTH_USER_MODEL, verbose_name="公開範囲", through="CalendarPermission" ,related_name="calendar_permission", blank=True)
+    permission = models.ManyToManyField(base.AUTH_USER_MODEL, verbose_name="公開範囲", through="CalendarPermission" ,related_name="calendar_permission", blank=True)
     
     def __str__(self):
         return self.name
@@ -25,7 +25,7 @@ class Calendar(models.Model):
 class CalendarPermission(models.Model):
     
     calendar    = models.ForeignKey(Calendar, verbose_name="カレンダー", on_delete=models.CASCADE)
-    user        = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="対象ユーザー", on_delete=models.CASCADE)
+    user        = models.ForeignKey(base.AUTH_USER_MODEL, verbose_name="対象ユーザー", on_delete=models.CASCADE)
     
     read        = models.BooleanField(verbose_name="読み込み権限", default=False)
     write       = models.BooleanField(verbose_name="書き込み権限", default=False)
@@ -72,7 +72,7 @@ class Event(models.Model):
     
     # スケジュールを登録したユーザー
     # スケジュールを作成したユーザーが削除されたらスケジュールも削除される
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="スケジュール作成者", on_delete=models.CASCADE)
+    user = models.ForeignKey(base.AUTH_USER_MODEL, verbose_name="スケジュール作成者", on_delete=models.CASCADE)
     
     all_day = models.BooleanField(verbose_name="終日イベント", default=False)
     
@@ -120,14 +120,14 @@ class EventNotified(models.Model):
 
     event    = models.ForeignKey(Event, verbose_name="紐づくスケジュール", on_delete=models.CASCADE)
     start_dt    = models.DateTimeField(verbose_name="スケジュールの日時")
-    user        = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="投稿者", on_delete=models.CASCADE)
+    user        = models.ForeignKey(base.AUTH_USER_MODEL, verbose_name="投稿者", on_delete=models.CASCADE)
  
 class CancelRepeatEvent(models.Model):
     event       = models.ForeignKey(Event, verbose_name="紐づくカレンダー", on_delete=models.CASCADE)
     
     cancel_dt   = models.DateTimeField(verbose_name="キャンセル日時")
     
-    user        = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="投稿者", on_delete=models.CASCADE)
+    user        = models.ForeignKey(base.AUTH_USER_MODEL, verbose_name="投稿者", on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.event)
@@ -154,7 +154,7 @@ class CalendarMessage(models.Model):
     calendar    = models.ForeignKey(Calendar, verbose_name="カレンダー", on_delete=models.CASCADE)
     dt          = models.DateTimeField(verbose_name="投稿日時",default=timezone.now)
 
-    user        = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="投稿者", on_delete=models.CASCADE)
+    user        = models.ForeignKey(base.AUTH_USER_MODEL, verbose_name="投稿者", on_delete=models.CASCADE)
     content     = models.CharField(verbose_name="内容", max_length=500)
     
     def __str__(self):
