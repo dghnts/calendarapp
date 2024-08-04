@@ -21,11 +21,6 @@
     margin: 0.5rem;
 }
 
-.form-control{
-    display: inline;
-    width:auto !important;
-}
-
 .permission_form li{
     list-style: none;
     margin-bottom: 0.5rem;

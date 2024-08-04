@@ -23,7 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'allauth', 
     'allauth.account', 
-    'allauth.socialaccount', 
+   'allauth.socialaccount', 
 ]
 
 MIDDLEWARE = [
@@ -50,6 +50,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'config.custom_context.get_calendars'
             ],
         },
     },
@@ -103,7 +104,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SITE_ID = 1
 #django-allauthログイン時とログアウト時のリダイレクトURL
 # ログイン後（新規登録後）ユーザーの個別ページに遷移する
-LOGIN_REDIRECT_URL = '/calendar/'
+LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -114,7 +115,7 @@ ACCOUNT_ADAPTER = 'account.customadapter.CustomAdapter'
 # messagetemplateの装飾
 MESSAGE_TAGS = {
     messages.INFO: 'alert alert-info',
-    messages.SUCCESS: 'alert alert-success',
+    messages.SUCCESS: 'alert alert-info',
     messages.WARNING: 'alert alert-warning',
     messages.ERROR: 'alert alert-danger',
 }

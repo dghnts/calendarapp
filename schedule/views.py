@@ -44,9 +44,6 @@ index = IndexView.as_view()
 class CalendarView(View):
     def get(self, request, *args, **kwargs):
         context = {}
-        if not request.user.is_anonymous:
-            # print(Calendar.objects.filter(calendarpermission=""))
-            context["calendars"] = Calendar.objects.filter(permission=request.user)
         print(request.path)
         print("pk" in kwargs.keys())
         if not "pk" in kwargs.keys():
