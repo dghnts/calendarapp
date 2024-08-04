@@ -27,11 +27,12 @@
                                href="#"
                                role="button"
                                data-bs-toggle="dropdown"
-                               aria-expanded="false">calendars</a>
-                            <ul id="calendar_list" class="list-unstyled">
+                               aria-expanded="false">calendars
+                            </a>
+                            <ul id="calendar_list" class="dropdown-menu list-unstyled">
                                 {% for calendar in calendars %}
                                     <li>
-                                        <a class="text-center text-white"
+                                        <a class="dropdown-item text-white"
                                            href="{% url 'schedule:calendar' calendar.id %}">{{ calendar.name }}</a>
                                     </li>
                                 {% endfor %}
@@ -40,52 +41,52 @@
                     {% endif %}
                 </ul>
                 <div class="d-lg-flex gap-2 col-lg-3 justify-content-lg-end text-nowrap">
-                    <button type="button"
-                            id="create"
-                            class="btn btn-outline-light"
-                            data-bs-toggle="modal"
-                            data-bs-target="#createcalendarBackdrop">カレンダー新規作成</button>
-                    <div class="modal"
-                         id="createcalendarBackdrop"
-                         data-bs-backdrop="static"
-                         tabindex="-1">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">新規作成フォーム</h5>
-                                    <!-- modal終了のボタン -->
-                                    <button type="button"
-                                            class="btn-close"
-                                            data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="{% url 'schedule:createcalendar' %}"
-                                          method="post"
-                                          id="create_calendar">
-                                        {% csrf_token %}
-                                        <input class="mb-2" type="text" name="name" placeholder="カレンダー名">
-                                        {# TODO: メールアドレスを指定、ユーザーを選び、そのユーザーに対する権限を指定する。#}
-                                        {% comment %}
+                    {% if user.is_authenticated %}
+                        <button type="button"
+                                id="create"
+                                class="btn btn-outline-light"
+                                data-bs-toggle="modal"
+                                data-bs-target="#createcalendarBackdrop">カレンダー新規作成</button>
+                        <div class="modal"
+                             id="createcalendarBackdrop"
+                             data-bs-backdrop="static"
+                             tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">新規作成フォーム</h5>
+                                        <!-- modal終了のボタン -->
+                                        <button type="button"
+                                                class="btn-close"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{% url 'schedule:createcalendar' %}"
+                                              method="post"
+                                              id="create_calendar">
+                                            {% csrf_token %}
+                                            <input class="mb-2" type="text" name="name" placeholder="カレンダー名">
+                                            {# TODO: メールアドレスを指定、ユーザーを選び、そのユーザーに対する権限を指定する。#}
+                                            {% comment %}
                         ユーザーの指定方法1: Ajaxを使ってメールアドレスを入力、サーバー側にユーザー検索をしてもらい、ヒットしたユーザーを選択する。(難しい)
                         ユーザーの指定方法2: メールアドレスを入力。カレンダー作成のフォームを投稿する。ビュー側でメールアドレスを元にuserを指定する。
-                                        {% endcomment %}
-                                        {# TODO:この一人分の権限のフォームはJavaScriptで増やせるようにする。 #}
-                                        <div id="permission_form_area">
-                                            <input class="btn btn-info"
-                                                   id="permission_form_add"
-                                                   type="button"
-                                                   value="権限追加">
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-light" form="create_calendar">新規作成</button>
+                                            {% endcomment %}
+                                            {# TODO:この一人分の権限のフォームはJavaScriptで増やせるようにする。 #}
+                                            <div id="permission_form_area">
+                                                <input class="btn btn-info"
+                                                       id="permission_form_add"
+                                                       type="button"
+                                                       value="権限追加">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-light" form="create_calendar">新規作成</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    {% if user.is_authenticated %}
                         {% url 'account_email' as email_url %}
                         {% url 'socialaccount_connections' as socialaccount_url %}
                         {% if email_url or socialaccount_url %}

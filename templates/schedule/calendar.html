@@ -48,9 +48,8 @@
 {% endblock  %}
 
 {% block header %}
-  {% if  calendars %}
-    {% include 'schedule/permission_edit.html' %}
-  {% endif %}
+  {% include "common/navbar.html" %}
+  {% include 'schedule/permission_edit.html' %}
 {% endblock %}
 
 
