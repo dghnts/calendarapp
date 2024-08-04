@@ -1,0 +1,107 @@
+{% load i18n %}
+<header data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Schedule-manager</a>
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarText"
+                    aria-controls="navbarText"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active"
+                           aria-current="page"
+                           href="{% if user.is_authenticated %}/{% else %}{% url 'account_login' %}{% endif %}">
+                            Home
+                        </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle"
+                               href="#"
+                               role="button"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false">calendars</a>
+                            <ul id="calendar_list" class="list-unstyled">
+                                {% for calendar in calendars %}
+                                    <li>
+                                        <a class="text-center text-white"
+                                           href="{% url 'schedule:calendar' calendar.id %}">{{ calendar.name }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endif %}
+                </ul>
+                <div class="d-lg-flex gap-2 col-lg-3 justify-content-lg-end text-nowrap">
+                    <button type="button"
+                            id="create"
+                            class="btn btn-outline-light"
+                            data-bs-toggle="modal"
+                            data-bs-target="#createcalendarBackdrop">カレンダー新規作成</button>
+                    <div class="modal"
+                         id="createcalendarBackdrop"
+                         data-bs-backdrop="static"
+                         tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">新規作成フォーム</h5>
+                                    <!-- modal終了のボタン -->
+                                    <button type="button"
+                                            class="btn-close"
+                                            data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{% url 'schedule:createcalendar' %}"
+                                          method="post"
+                                          id="create_calendar">
+                                        {% csrf_token %}
+                                        <input class="mb-2" type="text" name="name" placeholder="カレンダー名">
+                                        {# TODO: メールアドレスを指定、ユーザーを選び、そのユーザーに対する権限を指定する。#}
+                                        {% comment %}
+                        ユーザーの指定方法1: Ajaxを使ってメールアドレスを入力、サーバー側にユーザー検索をしてもらい、ヒットしたユーザーを選択する。(難しい)
+                        ユーザーの指定方法2: メールアドレスを入力。カレンダー作成のフォームを投稿する。ビュー側でメールアドレスを元にuserを指定する。
+                                        {% endcomment %}
+                                        {# TODO:この一人分の権限のフォームはJavaScriptで増やせるようにする。 #}
+                                        <div id="permission_form_area">
+                                            <input class="btn btn-info"
+                                                   id="permission_form_add"
+                                                   type="button"
+                                                   value="権限追加">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-light" form="create_calendar">新規作成</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if user.is_authenticated %}
+                        {% url 'account_email' as email_url %}
+                        {% url 'socialaccount_connections' as socialaccount_url %}
+                        {% if email_url or socialaccount_url %}
+                            <a href="{% if email_url %}{{ email_url }}{% else %}{{ socialaccount_url }}{% endif %}"
+                               class="btn btn-secondary">Manage Account</a>
+                        {% endif %}
+                        <a href="{% url 'account_logout' %}" class="btn btn-danger">{% translate "Sign Out" %}</a>
+                    {% else %}
+                        <a href="{% url 'account_login' %}" class="btn btn-outline-light">{% translate "Sign In" %}</a>
+                        {% url 'account_signup' as signup_url %}
+                        {% if signup_url %}
+                            <a href="{{ signup_url }}" class="btn btn-success">{% translate "Sign Up" %}</a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
