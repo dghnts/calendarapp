@@ -48,85 +48,12 @@
 {% endblock  %}
 
 {% block header %}
-  {% include "common/navbar.html" %}
-  {% include 'schedule/permission_edit.html' %}
-{% endblock %}
-
-
-{% block extra_navbar %}
-  <li class="nav-item mb-2">
-    <div class="text-center text-white">
-      <h5>カレンダー一覧</h5>
-    </div>
-    <ul id="calendar_list" class="list-unstyled">
-      {% for calendar in calendars %}
-        <li>
-          <a class="text-center text-white" href="{% url 'schedule:calendar' calendar.id %}">{{ calendar.name }}</a>
-        </li>
-      {% endfor %}
-      <li>こんにちは</li>
-    </ul>  
-  </li>
-  <hr style="height:2px; background-color:white;">
-  <li class="nav-item mb-2" >
-      <div class="d-flex justify-content-center">
-          <button type="button" id="create" class="btn text-white p-0 m-0" data-bs-toggle="modal" data-bs-target="#createcalendarBackdrop">
-              <h5 class="mb-0">カレンダー新規作成</h5>
-          </button>
-          <div class="modal" id="createcalendarBackdrop" data-bs-backdrop="static" tabindex="-1">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">新規作成フォーム</h5>
-                  <!-- modal終了のボタン -->
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <form action="{% url 'schedule:createcalendar' %}" method="post" id="create_calendar">
-                      {% csrf_token %}
-                      <input class="mb-2" type="text" name="name" placeholder="カレンダー名">
-                  
-                      {# TODO: メールアドレスを指定、ユーザーを選び、そのユーザーに対する権限を指定する。#} 
-                      
-                      {% comment %}
-                      ユーザーの指定方法1: Ajaxを使ってメールアドレスを入力、サーバー側にユーザー検索をしてもらい、ヒットしたユーザーを選択する。(難しい)
-                      ユーザーの指定方法2: メールアドレスを入力。カレンダー作成のフォームを投稿する。ビュー側でメールアドレスを元にuserを指定する。
-                      {% endcomment %}
-                  
-                      {# TODO:この一人分の権限のフォームはJavaScriptで増やせるようにする。 #} 
-                      <div id="permission_form_area">
-                          <input class="btn btn-info" id="permission_form_add" type="button" value="権限追加">
-                      </div>
-                  </form>
-                </div>
-                <div class="modal-footer">
-                  <button type="submit" class="btn btn-primary" form="create_calendar">新規作成</button>
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>
-  </li>
-{% endblock %}
-
-{% block dropdown_menu %}
-<div class="dropdown-center d-flex justify-content-center">
-  <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-    <i class="fa-solid fa-user me-2"></i>
-    {{user.username}}
-  </button>
-  <form class="dropdown-menu text-center mb-2 logout" method="post" action="{% url 'account_logout' %}" aria-current="page" data-bs-theme="dark">
-    {% csrf_token %}
-    {% if redirect_field_value %}
-      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
-    {% endif %}
-    <button type="submit" class="btn">Sign Out</button>
-  </form>
-</div>
+  {# {% include "common/base.html" %}#}
+  {% include 'schedule/permission/edit.html' %}
 {% endblock %}
 
 {% block main %}
-  <div class="container-fluid">
+  <div class="container-fluid mt-3">
     <div class="row">
       <div class="col-md-6">
         <div id='calendar'></div>
@@ -165,5 +92,5 @@
   {% if write %}
     {% include "schedule/event_register.html" %}
   {% endif %}
-  {% include "schedule/permission_form.html" %}
+  {% include "schedule/permission/form.html" %}
 {% endblock %}

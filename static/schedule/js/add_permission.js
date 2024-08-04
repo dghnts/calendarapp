@@ -6,7 +6,7 @@ window.addEventListener('load', function (){
         const value                     = permission_form_area.querySelectorAll(".permission_form").length + 1;
         // permission_formをコピー
 
-        const permission_form_init_area = document.querySelector("#permission_form_init_area").children[0].cloneNode(true);
+        const permission_form_init_area = document.querySelector("#permission_form_init_area").children[0].children[0].cloneNode(true);
         
         // 各valueの値を書き換える。
         permission_form_init_area.querySelector("[name='authority']").value = value;
@@ -42,7 +42,7 @@ window.addEventListener('load', function (){
         delete_btns.forEach(btn => {
             btn.addEventListener('click', function(){
                 console.log(btn.parentElement);
-                btn.parentElement.remove();
+                btn.parentElement.parentElement.remove();
             });
         }); 
     });

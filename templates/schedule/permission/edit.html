@@ -1,0 +1,124 @@
+<!--モーダルダイアログの記述-->
+<!-- Button trigger modal -->
+<button id="calendar_permission"
+        class="btn btn-outline-light"
+        data-bs-toggle="modal"
+        data-bs-target="#permissionBackdrop">
+  <i class="fa-solid fa-user-group me-2"></i>共有
+</button>
+<div class="modal fade"
+     id="permissionBackdrop"
+     data-bs-backdrop="static"
+     tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title">共有設定</h5>
+        <!-- modal終了のボタン -->
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'schedule:calendar_permission' calendar.id %}"
+              name="calendar_permission"
+              method="post"
+              id="permission_edit">
+          {% csrf_token %}
+          <div>
+            <button id="permission_form_edit_add"
+                    type="button"
+                    class="btn btn-warning mb-2">共有するユーザーの追加</button>
+            <table class="table table-dark table-stripe">
+              <thead class="bg-dark text-white">
+                <tr>
+                  <th scope="col" class="text-center">email</th>
+                  <th scope="col" class="text-center">authority</th>
+                  {% if user == calendar.user %}
+                    <th scope="col" class="text-center">削除</th>
+                  {% endif %}
+                </tr>
+              </thead>
+              <tbody id="permission_form_edit_area">
+                {% for permission in permissions %}
+                  <tr class="permission_form">
+                    <th>
+                      <input type="hidden" name="id" value="{{ permission.id }}">
+                      <input class="form-control text-center"
+                             type="text"
+                             name="email"
+                             value="{{ permission.user.email }}"
+                             readonly>
+                    </th>
+                    <th>
+                      <select class="form-select text-center">
+                        <option value="3" {% if permission.select == 3 %}selected{% endif %}>編集者</option>
+                        <option value="0" {% if permission.select == 0 %}selected{% endif %}>閲覧者</option>
+                        <option value="1" {% if permission.select == 1 %}selected{% endif %}>編集者（チャット禁止）</option>
+                        <option value="2" {% if permission.select == 2 %}selected{% endif %}>閲覧者（書き込み禁止）</option>
+                      </select>
+                      <input type="hidden" name="authority" value="{{ forloop.counter }}">
+                      <input type="checkbox"
+                             style="display:none"
+                             name="read"
+                             value="{{ forloop.counter }}"
+                             {% if permission.read %}checked{% endif %}>
+                      <input type="checkbox"
+                             style="display:none"
+                             name="write"
+                             value="{{ forloop.counter }}"
+                             {% if permission.write %}checked{% endif %}>
+                      <input type="checkbox"
+                             style="display:none"
+                             name="chat"
+                             value="{{ forloop.counter }}"
+                             {% if permission.chat %}checked{% endif %}>
+                    </th>
+                    {% if user == calendar.user %}
+                      <th class="d-flex justify-content-center">
+                        <input type="button" class="btn btn-danger" name="delete_btn" value="削除">
+                      </th>
+                    {% endif %}
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% comment %}
+              {% for permission in permissions %}
+                <ul class="permission_form list-group list-group-horizontal text-bg-dark mb-2">
+                  <li class="email list-group-item">
+                    <label>対象ユーザーのEmail</label>
+                    <div>
+                      <input type="hidden" name="id" value="{{ permission.id }}">
+                      <input class="form-control" type="text" name="email" value="{{ permission.user.email}}" readonly>
+                    </div>
+                  </li>
+                  <li class="authority list-group-item">
+                    <label>権限</label>
+                    <select class="form-select w-auto">
+                      <option value="3" {%if permission.select == 3 %} selected {% endif %}>編集者</option>
+                      <option value="0" {%if permission.select == 0 %} selected {% endif %}>閲覧者</option>
+                      <option value="1" {%if permission.select == 1 %} selected {% endif %}>編集者（チャット禁止）</option>
+                      <option value="2" {%if permission.select == 2 %} selected {% endif %}>閲覧者（書き込み禁止）</option>
+                    </select>
+                    <input type="hidden" name="authority" value="{{ forloop.counter }}">
+                    <input type="checkbox" style="display:none;" name="read" value="{{ forloop.counter }}" {% if permission.read  %}checked{% endif %}>
+                    <input type="checkbox" style="display:none;" name="write" value="{{ forloop.counter }}" {% if permission.write %}checked{% endif %}>
+                    <input type="checkbox" style="display:none;" name="chat" value="{{ forloop.counter }}" {% if permission.chat  %}checked{% endif %}>
+                  </li>
+                  {% if user == calendar.user %}
+                    <li class="list-group-item "><input type="button" class="btn btn-danger" name="delete_btn" value="削除"></li>
+                  {% endif %}
+                </ul>
+              {% endfor %}
+            {% endcomment %}
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" form="permission_edit">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
