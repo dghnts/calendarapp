@@ -1,39 +1,32 @@
-{% extends "common/base.html"%}
+{% extends "common/base.html" %}
 {% load static %}
-{% block page_title %}
-カレンダー{{calendar.name}}
-{% endblock %}
-
+{% block page_title %}カレンダー{{ calendar.name }}{% endblock %}
 {% block extra_head %}
   <!-- fullcalendar -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1/index.global.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/locales-all.global.min.js"></script>
   <!-- <script src="{% static 'schedule/js/custom_view.js' %}" type="module"></script> -->
   <script src="{% static 'schedule/js/script.js' %}"></script>
-
   <!-- flatpckr -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-      
   <!--日本語化用JS-->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
-  
   <!--cokkiejs-->
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
-
   <!-- fontawesome -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
-  <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
+  <link rel="stylesheet"
+        src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <!-- js -->
+  <script src="{% static 'schedule/js/permission/common.js' %}"></script>
   <script src="{% static 'schedule/js/permission/add.js' %}"></script>
   <script src="{% static 'schedule/js/permission/edit.js' %}"></script>
   <script src="{% static 'schedule/js/interlock_view.js' %}"></script>
-
   <!-- css -->
   <link rel="stylesheet" href="{% static 'schedule/css/calendar.css' %}">
-  
-  <script> 
+  <script>
     //　特殊文字("<",">","'",etc...)をエスケープしないための処理
     {% autoescape off %}
       let events                          = {{ events }}
@@ -44,14 +37,11 @@
       let event_repeat_cancel_delete_url  = "{% url 'schedule:event_repeat_cancel_delete' 0%}"
     {% endautoescape %} 
   </script>
-  
-{% endblock  %}
-
+{% endblock %}
 {% block header %}
   {# {% include "common/base.html" %}#}
   {% include 'schedule/permission/edit.html' %}
 {% endblock %}
-
 {% block main %}
   <div class="container-fluid mt-3">
     <div class="row">
@@ -69,28 +59,28 @@
       <div class="col-md-3">
         {% if calendar %}
           <h2>チャット</h2>
-              {# TODO:メッセージの投稿を表示 #}
-              {# TODO:contextprocessorを使って、ユーザーのアクセス権をコンテキストに与え、↓をif文で表示・非表示 ? #}
-          <form action="{% url 'schedule:calendar_message' calendar.id %}" method="POST">
-             {% csrf_token %}
-             <textarea class="form-control" name="content"></textarea>
-             <input class="form-control" type="submit" value="投稿">
+          {# TODO:メッセージの投稿を表示 #}
+          {# TODO:contextprocessorを使って、ユーザーのアクセス権をコンテキストに与え、↓をif文で表示・非表示 ? #}
+          <form action="{% url 'schedule:calendar_message' calendar.id %}"
+                method="POST">
+            {% csrf_token %}
+            <textarea class="form-control" name="content"></textarea>
+            <input class="form-control" type="submit" value="投稿">
           </form>
         {% endif %}
-      
         {% for message in calendar_messages %}
-        <div class="border">
+          <div class="border">
             <div>{{ message.user }} : {{ message.dt }}</div>
             <div>{{ message.content|linebreaksbr }}</div>
-        </div>
+          </div>
         {% endfor %}
+      </div>
     </div>
-  </div>
-  <!--モーダルダイアログの記述-->
-  <!-- Button trigger modal -->
-  <!-- 書き込み権限がある場合modalを表示する -->
-  {% if write %}
-    {% include "schedule/event_register.html" %}
-  {% endif %}
-  {% include "schedule/permission/form.html" %}
-{% endblock %}
+    <!--モーダルダイアログの記述-->
+    <!-- Button trigger modal -->
+    <!-- 書き込み権限がある場合modalを表示する -->
+    {% if write %}
+      {% include "schedule/event_register.html" %}
+    {% endif %}
+    {% include "schedule/permission/form.html" %}
+  {% endblock %}

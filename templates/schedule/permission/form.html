@@ -1,40 +1,10 @@
-{% comment %}
-    アクセス権フォームの雛形
-    display:noneで非表示にしておく
-    <div id="permission_form_init_area" style="display:none;">
-        <ul class="permission_form mb-2 text-bg-dark">
-            <li class="email">
-                <label>対象ユーザーのEmail:</label>
-                <div>
-                    <input hidden name="id">
-                    <input class="form-control" type="text" name="email">    
-                </div>
-            </li>
-            <li class="authority">
-                <label>権限</label>
-                <select class="form-select w-auto">
-                    <option value="none">選択してください</option>
-                    <option value="3">編集者</option>
-                    <option value="0">閲覧者</option>
-                    <option value="1">編集者（チャット禁止）</option>
-                    <option value="2">閲覧者（書き込み禁止）</option>
-                </select>
-                <input type="hidden" name="authority" value="1">
-                <input type="checkbox" style="display:none;" name="read" value="1">
-                <input type="checkbox" style="display:none;" name="write" value="1">
-                <input type="checkbox" style="display:none;" name="chat" value="1">
-            </li>
-            <input type="button" class="btn btn-danger" name="delete_btn" value="削除">
-        </ul>
-    </div>
-{% endcomment %}
-<table id="permission_form_init_area" style="display:none;">
-    <tr>
-        <th>
+<div id="permission_form_init_area" style="display:none;">
+    <div class="row mb-2">
+        <div class="col-4 d-flex justify-content-center">
             <input hidden name="id">
             <input class="form-control text-center" type="text" placeholder="メールアドレス" name="email">
-        </th>
-        <th class="authority">
+        </div>
+        <div class="col-4 d-flex justify-content-center authorities">
             <select class="form-select text-center">
                 <option value="none">選択してください</option>
                 <option value="3">編集者</option>
@@ -46,9 +16,9 @@
             <input type="checkbox" style="display:none;" name="read" value="1">
             <input type="checkbox" style="display:none;" name="write" value="1">
             <input type="checkbox" style="display:none;" name="chat" value="1">
-        </th>
-        <th class="d-flex justify-content-center">
+        </div>
+        <div class="col-4 d-flex justify-content-center">
             <input type="button" class="btn btn-danger" name="delete_btn" value="削除">
-        </th>
-    </tr>
-</table>
+        </div>
+    </div>
+</div>

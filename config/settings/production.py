@@ -17,8 +17,6 @@ else:
 
 SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 
-
-
 ALLOWED_HOSTS = ["shedule-manager.com"]
 
 CSRF_TRUSTED_ORIGINS    = [ "https://shedule-manager.com" ]

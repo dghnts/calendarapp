@@ -30,28 +30,24 @@
             <button id="permission_form_edit_add"
                     type="button"
                     class="btn btn-warning mb-2">共有するユーザーの追加</button>
-            <table class="table table-dark table-stripe">
-              <thead class="bg-dark text-white">
-                <tr>
-                  <th scope="col" class="text-center">email</th>
-                  <th scope="col" class="text-center">authority</th>
-                  {% if user == calendar.user %}
-                    <th scope="col" class="text-center">削除</th>
-                  {% endif %}
-                </tr>
-              </thead>
-              <tbody id="permission_form_edit_area">
+            <div class="container">
+              <div class="row bg-dark text-white">
+                <div class="col text-center">email</div>
+                <div class="col text-center">authority</div>
+                {% if user == calendar.user %}<div class="col text-center">削除</div>{% endif %}
+              </div>
+              <div id="permission_form_edit_area">
                 {% for permission in permissions %}
-                  <tr class="permission_form">
-                    <th>
+                  <div class="row permission_form mb-2">
+                    <div class="col-4 justify-content-center">
                       <input type="hidden" name="id" value="{{ permission.id }}">
                       <input class="form-control text-center"
                              type="text"
                              name="email"
                              value="{{ permission.user.email }}"
                              readonly>
-                    </th>
-                    <th>
+                    </div>
+                    <div class="col-4 justify-content-center">
                       <select class="form-select text-center">
                         <option value="3" {% if permission.select == 3 %}selected{% endif %}>編集者</option>
                         <option value="0" {% if permission.select == 0 %}selected{% endif %}>閲覧者</option>
@@ -74,44 +70,60 @@
                              name="chat"
                              value="{{ forloop.counter }}"
                              {% if permission.chat %}checked{% endif %}>
+                    </div>
+                    {% if user == calendar.user %}
+                      {% if permission.user.email != calendar.user.email %}
+                        <div class="col-4 d-flex justify-content-center">
+                          <input type="button" class="btn btn-danger" name="delete_btn" value="削除">
+                        </div>
+                      {% else %}
+                        <div class="col-4 offset">
+                        </div>                
+                      {% endif %}
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+            {% comment %}
+            <table class="table table-dark table-stripe">
+              <thead class="bg-dark text-white">
+                <tr>
+                  <th scope="col" class="text-center">email</th>
+                  <th scope="col" class="text-center">authority</th>
+                  {% if user == calendar.user %}<th scope="col" class="text-center">削除</th>{% endif %}
+                </tr>
+              </thead>
+              <tbody id="permission_form_edit_area">
+                {% for permission in permissions %}
+                  <tr class="permission_form">
+                    <th>
+                      <input type="hidden" name="id" value="{{ permission.id }}">
+                      <input class="form-control text-center" type="text" name="email" value="{{ permission.user.email }}" readonly>
+                    </th>
+                    <th>
+                      <select class="form-select text-center">
+                        <option value="3" {% if permission.select == 3 %}selected{% endif %}>編集者</option>
+                        <option value="0" {% if permission.select == 0 %}selected{% endif %}>閲覧者</option>
+                        <option value="1" {% if permission.select == 1 %}selected{% endif %}>編集者（チャット禁止）</option>
+                        <option value="2" {% if permission.select == 2 %}selected{% endif %}>閲覧者（書き込み禁止）</option>
+                      </select>
+                      <input type="hidden" name="authority" value="{{ forloop.counter }}">
+                      <input type="checkbox" style="display:none" name="read" value="{{ forloop.counter }}" {% if permission.read %}checked{% endif %}>
+                      <input type="checkbox" style="display:none" name="write" value="{{ forloop.counter }}" {% if permission.write %}checked{% endif %}>
+                      <input type="checkbox" style="display:none" name="chat" value="{{ forloop.counter }}" {% if permission.chat %}checked{% endif %}>
                     </th>
                     {% if user == calendar.user %}
-                      <th class="d-flex justify-content-center">
-                        <input type="button" class="btn btn-danger" name="delete_btn" value="削除">
-                      </th>
+                      {% if permission.user.email != calendar.user.email %}
+                        <th class="d-flex justify-content-center">
+                          <input type="button" class="btn btn-danger" name="delete_btn" value="削除">
+                        </th>
+                      {% endif %}
                     {% endif %}
                   </tr>
                 {% endfor %}
               </tbody>
             </table>
-            {% comment %}
-              {% for permission in permissions %}
-                <ul class="permission_form list-group list-group-horizontal text-bg-dark mb-2">
-                  <li class="email list-group-item">
-                    <label>対象ユーザーのEmail</label>
-                    <div>
-                      <input type="hidden" name="id" value="{{ permission.id }}">
-                      <input class="form-control" type="text" name="email" value="{{ permission.user.email}}" readonly>
-                    </div>
-                  </li>
-                  <li class="authority list-group-item">
-                    <label>権限</label>
-                    <select class="form-select w-auto">
-                      <option value="3" {%if permission.select == 3 %} selected {% endif %}>編集者</option>
-                      <option value="0" {%if permission.select == 0 %} selected {% endif %}>閲覧者</option>
-                      <option value="1" {%if permission.select == 1 %} selected {% endif %}>編集者（チャット禁止）</option>
-                      <option value="2" {%if permission.select == 2 %} selected {% endif %}>閲覧者（書き込み禁止）</option>
-                    </select>
-                    <input type="hidden" name="authority" value="{{ forloop.counter }}">
-                    <input type="checkbox" style="display:none;" name="read" value="{{ forloop.counter }}" {% if permission.read  %}checked{% endif %}>
-                    <input type="checkbox" style="display:none;" name="write" value="{{ forloop.counter }}" {% if permission.write %}checked{% endif %}>
-                    <input type="checkbox" style="display:none;" name="chat" value="{{ forloop.counter }}" {% if permission.chat  %}checked{% endif %}>
-                  </li>
-                  {% if user == calendar.user %}
-                    <li class="list-group-item "><input type="button" class="btn btn-danger" name="delete_btn" value="削除"></li>
-                  {% endif %}
-                </ul>
-              {% endfor %}
             {% endcomment %}
           </div>
         </form>
