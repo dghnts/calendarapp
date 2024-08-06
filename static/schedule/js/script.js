@@ -104,7 +104,7 @@ window.addEventListener("load" , function (){
     });
     calendar.render();
 
-    var event_list_calendar_El = document.querySelector('#event_list_calendar');
+    var event_list_calendar_El = document.getElementById('event_list_calendar');
     var event_list_calendar = new FullCalendar.Calendar(event_list_calendar_El,{
         headerToolbar:{
             left: 'prev,today,next',

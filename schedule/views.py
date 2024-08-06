@@ -47,7 +47,7 @@ class CalendarView(View):
         print(request.path)
         print("pk" in kwargs.keys())
         if not "pk" in kwargs.keys():
-            return render(request, "schedule/calendar.html")
+            return render(request, "schedule/index.html")
         else:
             pk = kwargs["pk"]
             if not CalendarPermission.objects.filter(
@@ -218,8 +218,20 @@ class CreateCalendarView(View):
         return redirect("schedule:calendar", calendar.id)
 
 
-createcalendar = CreateCalendarView.as_view()
+create_calendar = CreateCalendarView.as_view()
 
+class DeleteCalendarView(View):
+    def post(self, request, pk, *args, **keargs):
+        #削除したいカレンダーを取得
+        calendar_obj = Calendar.objects.filter(id=pk).first()
+        calendar_obj.delete()
+        
+        # 削除完了メッセージをcalendarのページで表示する
+        messages.info(request, "カレンダーを削除しました。")
+        
+        return redirect("schedule:index")
+
+delete_calendar = DeleteCalendarView.as_view()
 
 class CalendarPermissionView(View):
 
