@@ -18,7 +18,7 @@
   <!-- fontawesome -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
   <link rel="stylesheet"
-        src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <!-- js -->
   <script src="{% static 'schedule/js/permission/common.js' %}"></script>
   <script src="{% static 'schedule/js/permission/add.js' %}"></script>
@@ -43,41 +43,44 @@
   {% include 'schedule/permission/edit.html' %}
 {% endblock %}
 {% block main %}
-  <div class="container-fluid mt-3">
-    <div class="row">
-      <div class="col-md-6">
-        <div id='calendar'></div>
+  <div class="container-fluid">
+    <div class="row mt-3">
+      <!-- カレンダー -->
+      <div class="col-lg-6 col-md-12 mb-3">
+        <div class="p-3 d-flex flex-grow-1" id='calendar'></div>
       </div>
-      {% if calendars %}
-        <div class="col-md-3">
-          <h3>予定一覧</h3>
-          <div id='event_list_calendar'></div>
-          <h3>キャンセルリスト</h3>
-          <div id='event_cancel_calendar'></div>
+      <!-- 予定一覧・キャンセルリスト・削除ボタン-->
+      <div class="col-lg-3 col-md-6 p-3 mb-3">
+        <h5 class="text-center">予定一覧</h5>
+        <div class="p-2" id='event_list_calendar'></div>
+        <h5 class="text-center">キャンセルリスト</h5>
+        <div class="p-2" id='event_cancel_calendar'></div>
+        <form action="{% url 'schedule:delete_calendar' calendar.id %}"
+              method="POST">
+          {% csrf_token %}
+          <button class="btn btn-danger mt-auto w-100" type="submit">このカレンダーを削除する</button>
+        </form>
+      </div>
+      <!-- チャット機能 -->
+      <div class="col-lg-3 col-md-6 p-3 mb-3">
+        <h5 class="text-center">チャット</h5>
+        {# TODO:contextprocessorを使って、ユーザーのアクセス権をコンテキストに与え、↓をif文で表示・非表示 ? #}
+        <form action="{% url 'schedule:calendar_message' calendar.id %}"
+              method="POST">
+          {% csrf_token %}
+          <textarea class="form-control" name="content"></textarea>
+          <button class="btn btn-primary mb-2 w-100" type="submit">投稿</button>
+        </form>
+        <div class="chat_container overflow-auto" style="height:300px">
+          {% for message in calendar_messages %}
+            <div class="border">
+              <div>{{ message.user }} : {{ message.dt }}</div>
+              <div>{{ message.content|linebreaksbr }}</div>
+            </div>
+          {% endfor %}
         </div>
-      {% endif %}
-      <div class="col-md-3">
-        {% if calendar %}
-          <h2>チャット</h2>
-          {# TODO:メッセージの投稿を表示 #}
-          {# TODO:contextprocessorを使って、ユーザーのアクセス権をコンテキストに与え、↓をif文で表示・非表示 ? #}
-          <form action="{% url 'schedule:calendar_message' calendar.id %}"
-                method="POST">
-            {% csrf_token %}
-            <textarea class="form-control" name="content"></textarea>
-            <input class="form-control" type="submit" value="投稿">
-          </form>
-        {% endif %}
-        {% for message in calendar_messages %}
-          <div class="border">
-            <div>{{ message.user }} : {{ message.dt }}</div>
-            <div>{{ message.content|linebreaksbr }}</div>
-          </div>
-        {% endfor %}
       </div>
     </div>
-    <!--モーダルダイアログの記述-->
-    <!-- Button trigger modal -->
     <!-- 書き込み権限がある場合modalを表示する -->
     {% if write %}
       {% include "schedule/event_register.html" %}
