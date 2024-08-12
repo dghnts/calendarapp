@@ -44,8 +44,6 @@ index = IndexView.as_view()
 class CalendarView(View):
     def get(self, request, *args, **kwargs):
         context = {}
-        print(request.path)
-        print("pk" in kwargs.keys())
         if not "pk" in kwargs.keys():
             return render(request, "schedule/index.html")
         else:
@@ -58,7 +56,7 @@ class CalendarView(View):
                     "あなたにはこのカレンダーへのアクセス権（読み込み権限）がありません",
                 )
                 return redirect("schedule:index")
-            print("読み込み権限の確認")
+            #print("読み込み権限の確認")
 
             context["write"] = True
             # 書き込み権限がない場合は編集writeをFalseに変更する
@@ -90,7 +88,7 @@ class CalendarView(View):
             context["eventsobj"] = new_eventsobj
             context["calendar"] = calendarobj
             context["calendar_messages"] = CalendarMessage.objects.filter(calendar=pk)
-            print(context["events"])
+            #print(context["events"])
             permissions = CalendarPermission.objects.filter(calendar=pk)
 
             for permission in permissions:
@@ -308,10 +306,6 @@ class CalendarMessageView(View):
         if form.is_valid():
             form.save()
         else:
-            # バリデーションエラーの場合の処理
-            # print("イベントの登録に失敗しました")
-
-            # エラー内容をjdon形式で取得
             errors = form.errors.get_json_data().values()
 
             for error in errors:
@@ -415,7 +409,7 @@ class DeleteEventView(View):
 delete_event = DeleteEventView.as_view()
 
 
-# チャットsかうじょ用のview
+# チャット削除用のview
 class DeleteMessageView(View):
     def post(self, request, pk, *args, **kwargs):
         # 削除したいチャットを削除
@@ -436,14 +430,41 @@ delete_message = DeleteMessageView.as_view()
 class UpdateMessageView(View):
     def post(self, request, pk, *args, **kwargs):
         message = CalendarMessage.objects.filter(id=pk).first()
-
-        form = CalendarMessageForm(request.POST, instance=message)
-
+        
+        copied = request.POST.copy()
+        copied["user"]      = message.user
+        copied["calendar"]  = message.calendar.id
+        copied["content"]   = request.POST["content"]
+        
+        form = CalendarMessageForm(copied,instance=message)
+        
         if form.is_valid():
             form.save()
-            html = render_to_string("calenar.html",{'message':message}, request=request)
-            return JsonResponse({'success':True, 'html': html})
         else:
             print(form.errors)
-
+        
+        return redirect("schedule:calendar", pk=message.calendar.id)
+    
+    '''
+    def post(self, request, pk, *args, **kwargs):
+        message = CalendarMessage.objects.filter(id=pk).first()
+        
+        copied = request.POST.copy()
+        copied["user"]      = message.user
+        copied["calendar"]  = message.calendar.id
+        #print(request.POST["content"])
+        
+        form = CalendarMessageForm(copied,instance=message)
+        
+        data = {}
+        data["success"] = True
+        
+        if form.is_valid():
+            form.save()
+            data["contents"] = render_to_string("schedule/chat_message.html",{'message':message}, request)
+        else:
+            data["success"] = False
+        
+        return JsonResponse(data)
+    '''
 update_message = UpdateMessageView.as_view()

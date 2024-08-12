@@ -12,16 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    //他のチャットのメニューが開かれているときに他の設定ボタンを押すと全て非表示に切り替わる?
-    /*
-    document.addEventListener("click", (event) => {
-        if (!event.target.matches(".settings_button")) {
-            document.querySelectorAll(".settings_menu").forEach((menu) => {
-                menu.style.display = "none";
-            });
-        }
-    });*/
-
     document.querySelectorAll(".update_link").forEach((link) => {
         link.addEventListener("click", function (event) {
             event.preventDefault();
@@ -33,46 +23,47 @@ document.addEventListener("DOMContentLoaded", () => {
                 '.settings_menu[data-id="' + messageId + '"]'
             );
 
-            // Hide menu, content and show update form
             menu.style.display = "none";
             contentP.style.display = "none";
             updateForm.style.display = "block";
         });
     });
 
+/*    
     document.querySelectorAll(".update_form").forEach((form) => {
-        form.addEventListener("submit", function (event) {
-            event.preventDefault();
+        form.addEventListener("submit", function () {
 
+            const form = this.parelentElement;
             var messageId = this.dataset.id;
             var newContent = this.querySelector('[name="content"]').value;
-            var csrfToken = document.querySelector(
+            var csrfToken = this.querySelector(
                 "[name=csrfmiddlewaretoken]"
             ).value;
-
+            
             fetch("/update_message/" + messageId + "/", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Content-Type": "application/json",
                     "X-CSRFToken": csrfToken,
                 },
-                body: new URLSearchParams({
-                    content: newContent,
-                    csrfmiddlewaretoken: csrfToken,
-                }),
             })
-                .then((response) => response.json())
+                .then((res) => {
+                    res_json = res.json();
+                    console.log(res_json);
+                })
                 .then((data) => {
+                    console.log(data);
                     if (data.success) {
                         var messageDiv = document.getElementById(
                             "message-" + messageId
                         );
-                        messageDiv.outerHTML = data.html;
+                        messageDiv.outerHTML = data.content;
                     } else {
                         alert("Failed to update message.");
                     }
                 })
                 .catch((error) => console.error("Error:", error));
         });
-    });
+    });*/
 });
+

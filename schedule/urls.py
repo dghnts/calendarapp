@@ -30,6 +30,6 @@ urlpatterns = [
     ),
     # チャット用のURL
     path("calendar_message/<int:pk>/", views.calendar_message, name="calendar_message"),
-    path("delete_message/<int:pk>", views.delete_message, name="delete_message"),
-    path("update_message/<int:pk>", views.update_message, name="update_message")
+    path("delete_message/<int:pk>/", views.delete_message, name="delete_message"),
+    path("update_message/<int:pk>/", views.update_message, name="update_message")
 ]
