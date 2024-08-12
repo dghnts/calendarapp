@@ -5,8 +5,6 @@
   <!-- fullcalendar -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1/index.global.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/locales-all.global.min.js"></script>
-  <!-- <script src="{% static 'schedule/js/custom_view.js' %}" type="module"></script> -->
-  <script src="{% static 'schedule/js/script.js' %}"></script>
   <!-- flatpckr -->
   <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -20,8 +18,8 @@
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <!-- js -->
-  <script src="{% static 'schedule/js/permission/common.js' %}"></script>
-  <script src="{% static 'schedule/js/permission/add.js' %}"></script>
+  <script src="{% static 'schedule/js/calendar.js' %}"></script>
+  <script src="{% static 'schedule/js/chat.js' %}"></script>
   <script src="{% static 'schedule/js/permission/edit.js' %}"></script>
   <script src="{% static 'schedule/js/interlock_view.js' %}"></script>
   <!-- css -->
@@ -73,10 +71,7 @@
         </form>
         <div class="chat_container overflow-auto" style="height:300px">
           {% for message in calendar_messages %}
-            <div class="border">
-              <div>{{ message.user }} : {{ message.dt }}</div>
-              <div>{{ message.content|linebreaksbr }}</div>
-            </div>
+            {% include "schedule/chat_message.html" %}
           {% endfor %}
         </div>
       </div>
@@ -85,5 +80,4 @@
     {% if write %}
       {% include "schedule/event_register.html" %}
     {% endif %}
-    {% include "schedule/permission/form.html" %}
   {% endblock %}

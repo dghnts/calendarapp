@@ -25,7 +25,9 @@
         <link rel="stylesheet" href="{% static 'common/css/common.css' %}">
         {% block extra_head %}{% endblock %}
         <!-- js -->
-        <!-- <script src="{% static 'common/js/sidebar.js' %}"></script> -->
+        <script src="{% static 'schedule/js/message.js' %}"></script>
+        <script src="{% static 'schedule/js/permission/common.js' %}"></script>
+        <script src="{% static 'schedule/js/permission/add.js' %}"></script>
     </head>
     <body>
         <header data-bs-theme="dark">
@@ -34,12 +36,18 @@
         {% if messages %}
             <ul class="messages list-unstyled">
                 {% for message in messages %}
-                    <li {% if message.tags %}class="{{ message.tags }} "{% endif %}>{{ message }}</li>
+                    <li {% if message.tags %}class="{{ message.tags }} alert-dismissible"{% endif %}
+                        role="alaert">
+                        <button type="button" class="btn-close" onclick="deleteMessage(this)" data-dismiss="alert" aria-label="Close">
+                        </button>
+                        {{ message }}
+                    </li>
                 {% endfor %}
             </ul>
         {% endif %}
         <main>
             {% block main %}{% endblock %}
+            {% include "schedule/permission/form.html" %}
         </main>
     </body>
 </html>
