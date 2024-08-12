@@ -1,6 +1,5 @@
 /* イベント登録時のmodalの設定*/ 
 #input_event{
-    /*入力フォームを左寄せにする*/
     text-align: left;
 }
 
@@ -17,6 +16,7 @@
     margin: 0.5rem;
 }
 
+/*権限周りのレイアウト*/
 .permission_form li{
     list-style: none;
     margin-bottom: 0.5rem;

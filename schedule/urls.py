@@ -4,8 +4,7 @@ from django.urls import path
 app_name = "schedule"
 
 urlpatterns = [
-    path("", views.index, name="index"),
-    path("calendar/", views.calendar, name="calendar_index"),    
+    path("", views.index, name="index"),   
     path("calendar/<int:pk>", views.calendar, name="calendar"),
     path("create_calendar", views.create_calendar, name="createcalendar"),
     path("delete_calendar/<int:pk>", views.delete_calendar, name="delete_calendar"),

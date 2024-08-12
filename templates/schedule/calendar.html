@@ -20,8 +20,6 @@
   <!-- js -->
   <script src="{% static 'schedule/js/calendar.js' %}"></script>
   <script src="{% static 'schedule/js/chat.js' %}"></script>
-  <script src="{% static 'schedule/js/permission/common.js' %}"></script>
-  <script src="{% static 'schedule/js/permission/add.js' %}"></script>
   <script src="{% static 'schedule/js/permission/edit.js' %}"></script>
   <script src="{% static 'schedule/js/interlock_view.js' %}"></script>
   <!-- css -->
@@ -82,5 +80,4 @@
     {% if write %}
       {% include "schedule/event_register.html" %}
     {% endif %}
-    {% include "schedule/permission/form.html" %}
   {% endblock %}

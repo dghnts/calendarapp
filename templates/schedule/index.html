@@ -9,9 +9,8 @@
         {{ user.user_name }}
         <h2>カレンダー一覧</h2>
         {% if not calendars %}
-            カレンダーがまだありません。
-            カレンダーを
-            <a href="{% url 'schedule:create_calendar' %}">作成しましょう</a>
+            <p>まだカレンダーがありません。</p>
+            {% include "schedule/create_calendar.html" %}
             
         {% endif %}
         {% for calendar in calendars %}

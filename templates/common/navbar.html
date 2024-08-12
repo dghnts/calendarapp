@@ -41,53 +41,7 @@
                     {% if calendar %}
                         {% include "schedule/permission/edit.html" %}
                     {% endif %}
-                    <button type="button"
-                            id="create"
-                            class="btn btn-outline-light"
-                            data-bs-toggle="modal"
-                            data-bs-target="#createcalendarBackdrop">カレンダー新規作成</button>
-                    <div class="modal fade"
-                         id="createcalendarBackdrop"
-                         data-bs-backdrop="static"
-                         tabindex="-1">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header bg-dark text-white">
-                                    <h5 class="modal-title">新規作成フォーム</h5>
-                                    <!-- modal終了のボタン -->
-                                    <button type="button"
-                                            class="btn-close btn-close-white"
-                                            data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="{% url 'schedule:createcalendar' %}"
-                                          method="post"
-                                          id="create_calendar">
-                                        {% csrf_token %}
-                                        <input class="form-control mb-2"
-                                               type="text"
-                                               name="name"
-                                               placeholder="カレンダー名">
-                                        {# TODO: メールアドレスを指定、ユーザーを選び、そのユーザーに対する権限を指定する。#}
-                                        {% comment %}
-                        ユーザーの指定方法1: Ajaxを使ってメールアドレスを入力、サーバー側にユーザー検索をしてもらい、ヒットしたユーザーを選択する。(難しい)
-                        ユーザーの指定方法2: メールアドレスを入力。カレンダー作成のフォームを投稿する。ビュー側でメールアドレスを元にuserを指定する。
-                                        {% endcomment %}
-                                        <div id="permission_form_area">
-                                            <input class="btn btn-secondary mb-2"
-                                                   id="permission_form_add"
-                                                   type="button"
-                                                   value="権限追加">
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-light" form="create_calendar">新規作成</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {% include "schedule/create_calendar.html" %}
                     {% url 'account_email' as email_url %}
                     {% url 'socialaccount_connections' as socialaccount_url %}
                     {% if email_url or socialaccount_url %}

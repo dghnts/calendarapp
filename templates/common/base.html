@@ -26,6 +26,8 @@
         {% block extra_head %}{% endblock %}
         <!-- js -->
         <script src="{% static 'schedule/js/message.js' %}"></script>
+        <script src="{% static 'schedule/js/permission/common.js' %}"></script>
+        <script src="{% static 'schedule/js/permission/add.js' %}"></script>
     </head>
     <body>
         <header data-bs-theme="dark">
@@ -45,6 +47,7 @@
         {% endif %}
         <main>
             {% block main %}{% endblock %}
+            {% include "schedule/permission/form.html" %}
         </main>
     </body>
 </html>
