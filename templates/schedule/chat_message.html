@@ -27,12 +27,12 @@
                 </li>
             </ul>
         </div>
-    {% endif %}
+        {% endif %}
     </div>
-    <p class="message_content">{{ message.content|linebreaksbr }}</p>
-    <form action="{% url 'schedule:update_message' message.id %}" method="POST" id="update_form_{{ message.id }}" class="update_form" data-id="{{ message.id }}" style="display: none;">
+    {% include "schedule/chat.html" %}
+    <form id="update_form_{{ message.id }}" data-id="{{ message.id }}" style="display: none;">
         {% csrf_token %}
         <input type="text" name="content" value="{{ message.content }}"></input>
-        <input class="btn" type="submit" value="保存"></input>
+        <input class="btn" type="submit"  name="update_submit_{{ message.id}}"value="保存"></input>
     </form>
 </div>
