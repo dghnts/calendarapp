@@ -1,7 +1,3 @@
-#calendar_list li:nth-child(n+6){
-    display:none;
-}
-
 /* イベント登録時のmodalの設定*/ 
 #input_event{
     /*入力フォームを左寄せにする*/

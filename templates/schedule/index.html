@@ -4,4 +4,20 @@
 {% block extra_head %}{% endblock %}
 {% block header %}
 {% endblock %}
-{% block main %}{% endblock %}
+{% block main %}
+    {% if user.is_authenticated %}
+        {{ user.user_name }}
+        <h2>カレンダー一覧</h2>
+        {% if not calendars %}
+            カレンダーがまだありません。
+            カレンダーを
+            <a href="{% url 'schedule:create_calendar' %}">作成しましょう</a>
+            
+        {% endif %}
+        {% for calendar in calendars %}
+            <ul class="list-unstyled">
+                <li><a href="{% url 'schedule:calendar' calendar.id %}">{{ calendar.name }}</a></li>
+            </ul>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

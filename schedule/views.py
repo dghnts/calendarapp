@@ -220,18 +220,21 @@ class CreateCalendarView(View):
 
 create_calendar = CreateCalendarView.as_view()
 
+
 class DeleteCalendarView(View):
     def post(self, request, pk, *args, **keargs):
-        #削除したいカレンダーを取得
+        # 削除したいカレンダーを取得
         calendar_obj = Calendar.objects.filter(id=pk).first()
         calendar_obj.delete()
-        
+
         # 削除完了メッセージをcalendarのページで表示する
         messages.info(request, "カレンダーを削除しました。")
-        
+
         return redirect("schedule:index")
 
+
 delete_calendar = DeleteCalendarView.as_view()
+
 
 class CalendarPermissionView(View):
 
@@ -281,24 +284,6 @@ class CalendarPermissionView(View):
 
 
 calendar_permission = CalendarPermissionView.as_view()
-
-
-# イベント削除用のview
-class DeleteEventView(View):
-    def post(self, request, pk, *args, **keargs):
-        # 削除したいイベントを取得
-        event = Event.objects.filter(id=pk).first()
-        # 　イベントを登録しているカレンダーのidを取得する
-        calendar_id = event.calendar.id
-        # イベントの削除
-        event.delete()
-
-        # 削除完了メッセージをcalendarのページで表示する
-        messages.info(request, "イベントを削除しました")
-        return redirect("schedule:calendar", pk=calendar_id)
-
-
-delete_event = DeleteEventView.as_view()
 
 
 class CalendarMessageView(View):
@@ -410,3 +395,55 @@ class EventRepeatCancelDeleteView(View):
 
 
 event_repeat_cancel_delete = EventRepeatCancelDeleteView.as_view()
+
+
+# イベント削除用のview
+class DeleteEventView(View):
+    def post(self, request, pk, *args, **keargs):
+        # 削除したいイベントを取得
+        event = Event.objects.filter(id=pk).first()
+        # 　イベントを登録しているカレンダーのidを取得する
+        calendar_id = event.calendar.id
+        # イベントの削除
+        event.delete()
+
+        # 削除完了メッセージをcalendarのページで表示する
+        messages.info(request, "イベントを削除しました")
+        return redirect("schedule:calendar", pk=calendar_id)
+
+
+delete_event = DeleteEventView.as_view()
+
+
+# チャットsかうじょ用のview
+class DeleteMessageView(View):
+    def post(self, request, pk, *args, **kwargs):
+        # 削除したいチャットを削除
+        message = CalendarMessage.objects.filter(id=pk).first()
+        # 　イベントを登録しているカレンダーのidを取得する
+        calendar_id = message.calendar.id
+        # メッセージの削除
+        message.delete()
+
+        # 削除完了メッセージをcalendarのページで表示する
+        messages.info(request, "イベントを削除しました")
+        return redirect("schedule:calendar", pk=calendar_id)
+
+
+delete_message = DeleteMessageView.as_view()
+
+
+class UpdateMessageView(View):
+    def post(self, request, pk, *args, **kwargs):
+        message = CalendarMessage.objects.filter(id=pk).first()
+
+        form = CalendarMessageForm(request.POST, instance=message)
+
+        if form.is_valid():
+            form.save()
+            html = render_to_string("calenar.html",{'message':message}, request=request)
+            return JsonResponse({'success':True, 'html': html})
+        else:
+            print(form.errors)
+
+update_message = UpdateMessageView.as_view()
