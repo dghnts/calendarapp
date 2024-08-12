@@ -428,6 +428,7 @@ delete_message = DeleteMessageView.as_view()
 
 
 class UpdateMessageView(View):
+    '''
     def post(self, request, pk, *args, **kwargs):
         message = CalendarMessage.objects.filter(id=pk).first()
         
@@ -452,19 +453,21 @@ class UpdateMessageView(View):
         copied = request.POST.copy()
         copied["user"]      = message.user
         copied["calendar"]  = message.calendar.id
-        #print(request.POST["content"])
+        copied["content"]   = request.POST["content"]
+        print(request.POST["content"])
         
         form = CalendarMessageForm(copied,instance=message)
-        
+        print(form) 
         data = {}
         data["success"] = True
         
         if form.is_valid():
             form.save()
-            data["contents"] = render_to_string("schedule/chat_message.html",{'message':message}, request)
+            data["content"] = render_to_string("schedule/chat.html",{'message':message}, request)
         else:
+            print(form.errors)
             data["success"] = False
         
         return JsonResponse(data)
-    '''
+    
 update_message = UpdateMessageView.as_view()
