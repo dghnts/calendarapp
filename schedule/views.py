@@ -31,8 +31,10 @@ from django.template.loader import render_to_string
 
 from django.contrib.auth import get_user_model
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class IndexView(View):
+
+class IndexView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         return render(request, "schedule/index.html")
 
@@ -41,7 +43,7 @@ index = IndexView.as_view()
 
 
 # カレンダーを表示させるview
-class CalendarView(View):
+class CalendarView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         context = {}
         if not "pk" in kwargs.keys():
@@ -56,7 +58,7 @@ class CalendarView(View):
                     "あなたにはこのカレンダーへのアクセス権（読み込み権限）がありません",
                 )
                 return redirect("schedule:index")
-            #print("読み込み権限の確認")
+            # print("読み込み権限の確認")
 
             context["write"] = True
             # 書き込み権限がない場合は編集writeをFalseに変更する
@@ -88,7 +90,7 @@ class CalendarView(View):
             context["eventsobj"] = new_eventsobj
             context["calendar"] = calendarobj
             context["chats"] = Chat.objects.filter(calendar=pk)
-            #print(context["events"])
+            # print(context["events"])
             permissions = CalendarPermission.objects.filter(calendar=pk)
 
             for permission in permissions:
@@ -150,7 +152,7 @@ class CalendarView(View):
 calendar = CalendarView.as_view()
 
 
-class CreateCalendarView(View):
+class CreateCalendarView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         # TODO:カレンダーの新規作成
         # request.POSTを編集するためにコピーする
@@ -305,7 +307,7 @@ class CreateChatView(View):
         data["success"] = True
 
         if form.is_valid():
-            messages.info(request,"チャットを送信しました")
+            messages.info(request, "チャットを送信しました")
             form.save()
         else:
             errors = form.errors.get_json_data().values()
@@ -314,12 +316,15 @@ class CreateChatView(View):
                 for e in error:
                     messages.error(request, e["message"])
             data["success"] = False
-        
-        
+
         chats = Chat.objects.all()
-        data["content"] = render_to_string("schedule/chat_content.html",{'chats':chats}, request)
-        data["messages"]    = render_to_string("common/message.html", {'messages': messages.get_messages(request)}, request)
-                
+        data["content"] = render_to_string(
+            "schedule/chat_content.html", {"chats": chats}, request
+        )
+        data["messages"] = render_to_string(
+            "common/message.html", {"messages": messages.get_messages(request)}, request
+        )
+
         return JsonResponse(data)
 
 
@@ -423,18 +428,22 @@ class DeleteChatView(View):
         # 削除したいチャットを削除
         chat = Chat.objects.filter(id=pk).first()
         # 　イベントを登録しているカレンダーのidを取得する
-        #calendar_id = chat.calendar.id
+        # calendar_id = chat.calendar.id
         # メッセージの削除
         chat.delete()
-        
+
         chats = Chat.objects.all()
         # 削除完了メッセージをcalendarのページで表示する
         messages.info(request, "イベントを削除しました")
-        
+
         data = {}
-        data["success"]     = True
-        data["chats"]       = render_to_string("schedule/chat_content.html",{'chats':chats}, request)
-        data["messages"]    = render_to_string("common/message.html", {'messages': messages.get_messages(request)}, request)
+        data["success"] = True
+        data["chats"] = render_to_string(
+            "schedule/chat_content.html", {"chats": chats}, request
+        )
+        data["messages"] = render_to_string(
+            "common/message.html", {"messages": messages.get_messages(request)}, request
+        )
 
         return JsonResponse(data)
 
@@ -445,26 +454,31 @@ delete_chat = DeleteChatView.as_view()
 class UpdateChatView(View):
     def post(self, request, pk, *args, **kwargs):
         chat = Chat.objects.filter(id=pk).first()
-        
-        copied = request.POST.copy()
-        copied["user"]      = chat.user
-        copied["calendar"]  = chat.calendar.id
 
-        form = ChatForm(copied,instance=chat)
+        copied = request.POST.copy()
+        copied["user"] = chat.user
+        copied["calendar"] = chat.calendar.id
+
+        form = ChatForm(copied, instance=chat)
 
         data = {}
         data["success"] = True
-        
+
         if form.is_valid():
             form.save()
-            data["content"] = render_to_string("schedule/chat.html",{'chat':chat}, request)
+            data["content"] = render_to_string(
+                "schedule/chat.html", {"chat": chat}, request
+            )
         else:
             print(form.errors)
             data["success"] = False
-        
+
         messages.info(request, "チャットを編集しました")
-        data["messages"] = render_to_string("common/message.html", {"messages": messages.get_messages(request)},request)
-        
+        data["messages"] = render_to_string(
+            "common/message.html", {"messages": messages.get_messages(request)}, request
+        )
+
         return JsonResponse(data)
-    
+
+
 update_chat = UpdateChatView.as_view()
