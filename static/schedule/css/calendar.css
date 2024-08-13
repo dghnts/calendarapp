@@ -1,31 +1,36 @@
-/* イベント登録時のmodalの設定*/ 
-#input_event{
+/* イベント登録時のmodalの設定*/
+#input_event {
     text-align: left;
 }
 
-#input_event li{
+#input_event li {
     list-style: none;
     margin-left: 0;
 }
 
-#input_event label{
+#input_event label {
     width: 119px;
 }
 
-#start_input, #end_input{
+#start_input,
+#end_input {
     margin: 0.5rem;
 }
 
 /*権限周りのレイアウト*/
-.permission_form li{
+.permission_form li {
     list-style: none;
     margin-bottom: 0.5rem;
 }
 
-.permission_form label{
+.permission_form label {
     width: 134px;
 }
 
-.fc-toolbar-ltr{
+.fc-toolbar-ltr {
     display: none !important;
+}
+
+.col-lg-3.col-md-6 {
+    min-height: 350px;
 }

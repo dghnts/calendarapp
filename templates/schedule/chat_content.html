@@ -1,5 +1,5 @@
 <div id="chat_{{ chat.id }}" class="chat border">
-    <div class="d-flex justify-content-between">
+    <div class="d-flex chat_content">
         <div class="p-1">
             {{ chat.user }} : {{ chat.dt }}
         </div>
@@ -7,7 +7,7 @@
         <button class="btn settings_button p-1" data-id="{{ chat.id }}">
             <i class="bi bi-three-dots-vertical"></i>
         </button>
-        <div class="settings_menu"
+        <div class="settings_menu bg-white m-auto"
              data-id="{{ chat.id }}"
              style="display: none">
             <ul class="list-unstyled border">

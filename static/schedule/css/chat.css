@@ -1,0 +1,13 @@
+.chat_content {
+    position: relative;
+}
+
+.settings_button {
+    position: absolute;
+    right: 0;
+}
+
+.settings_menu {
+    position: absolute;
+    right: 25px;
+}
