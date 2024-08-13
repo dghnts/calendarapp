@@ -24,6 +24,7 @@
   <script src="{% static 'schedule/js/interlock_view.js' %}"></script>
   <!-- css -->
   <link rel="stylesheet" href="{% static 'schedule/css/calendar.css' %}">
+  <link rel="stylesheet" href="{% static 'schedule/css/chat.css' %}">
   <script>
     //　特殊文字("<",">","'",etc...)をエスケープしないための処理
     {% autoescape off %}
@@ -45,7 +46,7 @@
     <div class="row mt-3">
       <!-- カレンダー -->
       <div class="col-lg-6 col-md-12 mb-3">
-        <div class="p-3 d-flex flex-grow-1" id='calendar'></div>
+        <div class="p-3" id='calendar'></div>
       </div>
       <!-- 予定一覧・キャンセルリスト・削除ボタン-->
       <div class="col-lg-3 col-md-6 p-3 mb-3">
@@ -63,15 +64,15 @@
       <div class="col-lg-3 col-md-6 p-3 mb-3">
         <h5 class="text-center">チャット</h5>
         {# TODO:contextprocessorを使って、ユーザーのアクセス権をコンテキストに与え、↓をif文で表示・非表示 ? #}
-        <form action="{% url 'schedule:calendar_message' calendar.id %}"
+        <form action="{% url 'schedule:create_chat' calendar.id %}"
               method="POST">
           {% csrf_token %}
           <textarea class="form-control" name="content"></textarea>
           <button class="btn btn-primary mb-2 w-100" type="submit">投稿</button>
         </form>
         <div class="chat_container overflow-auto" style="height:300px">
-          {% for message in calendar_messages %}
-            {% include "schedule/chat_message.html" %}
+          {% for chat in chats %}
+            {% include "schedule/chat_content.html" %}
           {% endfor %}
         </div>
       </div>

@@ -2,9 +2,9 @@ document.addEventListener("DOMContentLoaded", () => {
     //設定ボタン推したとき，設定メニューの表示・非表示を切り替える
     document.querySelectorAll(".settings_button").forEach((button) => {
         button.addEventListener("click", function () {
-            var messageId = this.dataset.id;
+            var chatId = this.dataset.id;
             var menu = document.querySelector(
-                '.settings_menu[data-id="' + messageId + '"]'
+                '.settings_menu[data-id="' + chatId + '"]'
             );
 
             menu.style.display =
@@ -16,12 +16,12 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".update_link").forEach((link) => {
         link.addEventListener("click", function (event) {
             event.preventDefault();
-            var messageId = this.dataset.id;
-            var messageDiv = document.querySelector("#message_" + messageId);
-            var contentP = messageDiv.querySelector("#message_content_" + messageId);
-            var updateForm = messageDiv.querySelector("#update_form_" + messageId);
+            var chatId = this.dataset.id;
+            var chatDiv = document.querySelector("#chat_" + chatId);
+            var contentP = chatDiv.querySelector("#chat_content_" + chatId);
+            var updateForm = chatDiv.querySelector("#update_form_" + chatId);
             var menu = document.querySelector(
-                '.settings_menu[data-id="' + messageId + '"]'
+                '.settings_menu[data-id="' + chatId + '"]'
             );
 
             menu.style.display = "none";
@@ -35,16 +35,16 @@ document.addEventListener("DOMContentLoaded", () => {
         form.addEventListener("submit", function (e) {
             e.preventDefault();
             
-            const messageId = this.dataset.id;
-            const form = document.querySelector("#update_form_" + messageId);
-            const submitter = document.querySelector("[name=update_submit_"+ messageId + "]");
+            const chatId = this.dataset.id;
+            const form = document.querySelector("#update_form_" + chatId);
+            const submitter = document.querySelector("[name=update_submit_"+ chatId + "]");
             const body = new FormData(form,submitter);
 
             var csrfToken = this.querySelector(
                 "[name=csrfmiddlewaretoken]"
             ).value;
             
-            fetch("/update_message/" + messageId + "/", {
+            fetch("/update_chat/" + chatId + "/", {
                 method: "POST",
                 body: body,
             })
@@ -52,13 +52,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 .then((data) => {
                     console.log(data.content);
                     if (data.success) {
-                        const messageDiv    = document.getElementById("message_content_" + messageId);
-                        messageDiv.innerHTML = data.content;
-                        messageDiv.style.display = "block"
+                        const chatDiv    = document.getElementById("chat_content_" + chatId);
+                        chatDiv.innerHTML = data.content;
+                        chatDiv.style.display = "block"
                         form.style.display = "none"
                         
                     } else {
-                        alert("Failed to update message.");
+                        alert("Failed to update chat.");
                     }
                 })
                 .catch((error) => console.error("Error:", error));

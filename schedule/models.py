@@ -149,7 +149,7 @@ class CancelRepeatEvent(models.Model):
         return details
     
 ## カレンダーに紐付けるメッセージ
-class CalendarMessage(models.Model):
+class Chat(models.Model):
 
     calendar    = models.ForeignKey(Calendar, verbose_name="カレンダー", on_delete=models.CASCADE)
     dt          = models.DateTimeField(verbose_name="投稿日時",default=timezone.now)

@@ -29,7 +29,7 @@ urlpatterns = [
         name="event_repeat_cancel_delete",
     ),
     # チャット用のURL
-    path("calendar_message/<int:pk>/", views.calendar_message, name="calendar_message"),
-    path("delete_message/<int:pk>/", views.delete_message, name="delete_message"),
-    path("update_message/<int:pk>/", views.update_message, name="update_message")
+    path("create_chat/<int:pk>/", views.create_chat, name="create_chat"),
+    path("delete_chat/<int:pk>/", views.delete_chat, name="delete_chat"),
+    path("update_chat/<int:pk>/", views.update_chat, name="update_chat")
 ]
