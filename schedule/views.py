@@ -5,14 +5,14 @@ from .models import (
     Event,
     Calendar,
     CalendarPermission,
-    CalendarMessage,
+    Chat,
     CancelRepeatEvent,
 )
 from .forms import (
     EventForm,
     CalendarForm,
     CalendarPermissionForm,
-    CalendarMessageForm,
+    ChatForm,
     CancelRepeatEventForm,
 )
 
@@ -87,7 +87,7 @@ class CalendarView(View):
             context["events_cancel"] = dumps(event_cancel_list)
             context["eventsobj"] = new_eventsobj
             context["calendar"] = calendarobj
-            context["calendar_messages"] = CalendarMessage.objects.filter(calendar=pk)
+            context["chats"] = Chat.objects.filter(calendar=pk)
             #print(context["events"])
             permissions = CalendarPermission.objects.filter(calendar=pk)
 
@@ -284,7 +284,7 @@ class CalendarPermissionView(View):
 calendar_permission = CalendarPermissionView.as_view()
 
 
-class CalendarMessageView(View):
+class CreateChatView(View):
 
     # pkは対象のカレンダー
     def post(self, request, pk, *args, **kwargs):
@@ -301,7 +301,7 @@ class CalendarMessageView(View):
         copied["user"] = request.user
         copied["calendar"] = pk
 
-        form = CalendarMessageForm(copied)
+        form = ChatForm(copied)
 
         if form.is_valid():
             form.save()
@@ -315,7 +315,7 @@ class CalendarMessageView(View):
         return redirect("schedule:calendar", pk)
 
 
-calendar_message = CalendarMessageView.as_view()
+create_chat = CreateChatView.as_view()
 
 
 # 繰り返しスケジュールのキャンセルを受け付ける。
@@ -410,34 +410,57 @@ delete_event = DeleteEventView.as_view()
 
 
 # チャット削除用のview
-class DeleteMessageView(View):
+class DeleteChatView(View):
     def post(self, request, pk, *args, **kwargs):
         # 削除したいチャットを削除
-        message = CalendarMessage.objects.filter(id=pk).first()
+        chat = Chat.objects.filter(id=pk).first()
         # 　イベントを登録しているカレンダーのidを取得する
-        calendar_id = message.calendar.id
+        calendar_id = chat.calendar.id
         # メッセージの削除
-        message.delete()
+        chat.delete()
 
         # 削除完了メッセージをcalendarのページで表示する
         messages.info(request, "イベントを削除しました")
         return redirect("schedule:calendar", pk=calendar_id)
 
 
-delete_message = DeleteMessageView.as_view()
+delete_chat = DeleteChatView.as_view()
 
 
-class UpdateMessageView(View):
+class UpdateChatView(View):
+    def post(self, request, pk, *args, **kwargs):
+        chat = Chat.objects.filter(id=pk).first()
+        
+        copied = request.POST.copy()
+        copied["user"]      = chat.user
+        copied["calendar"]  = chat.calendar.id
+        copied["content"]   = request.POST["content"]
+        print(request.POST["content"])
+
+        form = ChatForm(copied,instance=chat)
+        print(form) 
+        data = {}
+        data["success"] = True
+        
+        if form.is_valid():
+            form.save()
+            data["content"] = render_to_string("schedule/chat.html",{'chat':chat}, request)
+        else:
+            print(form.errors)
+            data["success"] = False
+        
+        return JsonResponse(data)
+    
     '''
     def post(self, request, pk, *args, **kwargs):
-        message = CalendarMessage.objects.filter(id=pk).first()
+        message = Chat.objects.filter(id=pk).first()
         
         copied = request.POST.copy()
         copied["user"]      = message.user
         copied["calendar"]  = message.calendar.id
         copied["content"]   = request.POST["content"]
         
-        form = CalendarMessageForm(copied,instance=message)
+        form = ChatForm(copied,instance=message)
         
         if form.is_valid():
             form.save()
@@ -447,27 +470,5 @@ class UpdateMessageView(View):
         return redirect("schedule:calendar", pk=message.calendar.id)
     
     '''
-    def post(self, request, pk, *args, **kwargs):
-        message = CalendarMessage.objects.filter(id=pk).first()
-        
-        copied = request.POST.copy()
-        copied["user"]      = message.user
-        copied["calendar"]  = message.calendar.id
-        copied["content"]   = request.POST["content"]
-        print(request.POST["content"])
-        
-        form = CalendarMessageForm(copied,instance=message)
-        print(form) 
-        data = {}
-        data["success"] = True
-        
-        if form.is_valid():
-            form.save()
-            data["content"] = render_to_string("schedule/chat.html",{'message':message}, request)
-        else:
-            print(form.errors)
-            data["success"] = False
-        
-        return JsonResponse(data)
     
-update_message = UpdateMessageView.as_view()
+update_chat = UpdateChatView.as_view()

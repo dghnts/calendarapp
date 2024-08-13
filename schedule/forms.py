@@ -1,5 +1,5 @@
 from django import forms
-from .models import Calendar,Event,CalendarPermission,CalendarMessage, CancelRepeatEvent
+from .models import Calendar,Event,CalendarPermission,Chat, CancelRepeatEvent
 
 class CalendarForm(forms.ModelForm):
     
@@ -38,7 +38,7 @@ class CalendarPermissionForm(forms.ModelForm):
         model   = CalendarPermission
         fields  = [ "calendar","user","read","write","chat" ] 
 
-class CalendarMessageForm(forms.ModelForm):
+class ChatForm(forms.ModelForm):
     class Meta:
-        model   = CalendarMessage
+        model   = Chat
         fields  = ["calendar", "user", "content"] 

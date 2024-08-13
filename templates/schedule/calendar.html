@@ -63,14 +63,14 @@
       <div class="col-lg-3 col-md-6 p-3 mb-3">
         <h5 class="text-center">チャット</h5>
         {# TODO:contextprocessorを使って、ユーザーのアクセス権をコンテキストに与え、↓をif文で表示・非表示 ? #}
-        <form action="{% url 'schedule:calendar_message' calendar.id %}"
+        <form action="{% url 'schedule:create_chat' calendar.id %}"
               method="POST">
           {% csrf_token %}
           <textarea class="form-control" name="content"></textarea>
           <button class="btn btn-primary mb-2 w-100" type="submit">投稿</button>
         </form>
         <div class="chat_container overflow-auto" style="height:300px">
-          {% for message in calendar_messages %}
+          {% for chat in chats %}
             {% include "schedule/chat_message.html" %}
           {% endfor %}
         </div>
