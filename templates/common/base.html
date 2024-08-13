@@ -33,18 +33,7 @@
         <header data-bs-theme="dark">
             {% include "common/navbar.html" %}
         </header>
-        {% if messages %}
-            <ul class="messages list-unstyled">
-                {% for message in messages %}
-                    <li {% if message.tags %}class="{{ message.tags }} alert-dismissible"{% endif %}
-                        role="alaert">
-                        <button type="button" class="btn-close" onclick="deleteMessage(this)" data-dismiss="alert" aria-label="Close">
-                        </button>
-                        {{ message }}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+        {% include "common/message.html" %}
         <main>
             {% block main %}{% endblock %}
             {% include "schedule/permission/form.html" %}
