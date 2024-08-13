@@ -1,42 +1,40 @@
-<div id="chat_{{ chat.id }}" class="chat border">
-    <div class="d-flex chat_content">
-        <div class="p-1">
-            {{ chat.user }} : {{ chat.dt }}
+{% for chat in chats %}
+    <div id="chat_{{ chat.id }}" class="chat border">
+        <div class="d-flex chat_content">
+            <div class="p-1">
+                {{ chat.user }} : {{ chat.dt }}
+            </div>
+            {% if user == chat.user or user == calendar.user%}
+            <button class="btn settings_button p-1" data-id="{{ chat.id }}">
+                <i class="bi bi-three-dots-vertical"></i>
+            </button>
+            <div class="settings_menu bg-white m-auto"
+                 data-id="{{ chat.id }}"
+                 style="display: none">
+                <ul class="list-unstyled border">
+                    <li>
+                        <a href="#"
+                           class="delete_link"
+                           data-id="{{ chat.id }}">削除</a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="update_link"
+                           data-id="{{ chat.id }}">編集</a>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
         </div>
-        {% if user == chat.user or user == calendar.user%}
-        <button class="btn settings_button p-1" data-id="{{ chat.id }}">
-            <i class="bi bi-three-dots-vertical"></i>
-        </button>
-        <div class="settings_menu bg-white m-auto"
-             data-id="{{ chat.id }}"
-             style="display: none">
-            <ul class="list-unstyled border">
-                {# チャットの削除・編集ボタンを入れる #}
-                {# アンカー属性でformをpostする方法 => onclick="document.formの名前.submit() #}
-                <li>
-                    <a href="#"
-                       class="delete_link"
-                       data-id="{{ chat.id }}"
-                       onclick="document.delete_chat_{{ chat.id }}.submit()">削除</a>
-                </li>
-                <li>
-                    <a href="#"
-                       class="update_link"
-                       data-id="{{ chat.id }}"
-                       onclick="document.update_chat_{{ chat.id }}">編集</a>
-                </li>
-            </ul>
-        </div>
-        {% endif %}
+        {% include "schedule/chat.html" %}
+        <form id="update_chat_{{ chat.id }}" data-id="{{ chat.id }}" class="update_form" style="display: none;">
+            {% csrf_token %}
+            <input type="text" name="content" value="{{ chat.content }}">
+            <input class="btn" type="submit"  name="update_button_{{ chat.id}}" value="保存">
+        </form>
+        <form id="delete_chat_{{ chat.id }}" style="display:none;">
+            {% csrf_token %}
+            <input class="btn" type="submit" name="delete_button_{{ chat.id }}" value="削除">
+        </form>
     </div>
-    {% include "schedule/chat.html" %}
-    <form id="update_form_{{ chat.id }}" data-id="{{ chat.id }}" class="update_form" style="display: none;">
-        {% csrf_token %}
-        <input type="text" name="content" value="{{ chat.content }}">
-        <input class="btn" type="submit"  name="update_submit_{{ chat.id}}"value="保存">
-    </form>
-    <form action="{% url 'schedule:delete_chat' chat.id %}" method="POST" name="delete_chat_{{ chat.id }}" style="display:none;">
-        {% csrf_token %}
-        <input type="btn" type="submit" value="削除">
-    </form>
-</div>
+{% endfor %}

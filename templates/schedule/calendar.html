@@ -34,6 +34,7 @@
       let delete_url                      = "{% url 'schedule:delete_event' 0%}"
       let event_repeat_cancel_url         = "{% url 'schedule:event_repeat_cancel' 0%}"
       let event_repeat_cancel_delete_url  = "{% url 'schedule:event_repeat_cancel_delete' 0%}"
+      let calendarId                      = {{ calendar.id }}      
     {% endautoescape %} 
   </script>
 {% endblock %}
@@ -64,16 +65,13 @@
       <div class="col-lg-3 col-md-6 p-3 mb-3">
         <h5 class="text-center">チャット</h5>
         {# TODO:contextprocessorを使って、ユーザーのアクセス権をコンテキストに与え、↓をif文で表示・非表示 ? #}
-        <form action="{% url 'schedule:create_chat' calendar.id %}"
-              method="POST">
+        <form id="create_chat_form">
           {% csrf_token %}
-          <textarea class="form-control" name="content"></textarea>
+          <textarea class="form-control mb-2" name="content"></textarea>
           <button class="btn btn-primary mb-2 w-100" type="submit">投稿</button>
         </form>
         <div class="chat_container overflow-auto" style="height:300px">
-          {% for chat in chats %}
-            {% include "schedule/chat_content.html" %}
-          {% endfor %}
+          {% include "schedule/chat_content.html" %}
         </div>
       </div>
     </div>
