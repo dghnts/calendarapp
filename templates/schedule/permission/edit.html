@@ -84,47 +84,7 @@
                   </div>
                 {% endfor %}
               </div>
-            </div>
-            {% comment %}
-            <table class="table table-dark table-stripe">
-              <thead class="bg-dark text-white">
-                <tr>
-                  <th scope="col" class="text-center">email</th>
-                  <th scope="col" class="text-center">authority</th>
-                  {% if user == calendar.user %}<th scope="col" class="text-center">削除</th>{% endif %}
-                </tr>
-              </thead>
-              <tbody id="permission_form_edit_area">
-                {% for permission in permissions %}
-                  <tr class="permission_form">
-                    <th>
-                      <input type="hidden" name="id" value="{{ permission.id }}">
-                      <input class="form-control text-center" type="text" name="email" value="{{ permission.user.email }}" readonly>
-                    </th>
-                    <th>
-                      <select class="form-select text-center">
-                        <option value="3" {% if permission.select == 3 %}selected{% endif %}>編集者</option>
-                        <option value="0" {% if permission.select == 0 %}selected{% endif %}>閲覧者</option>
-                        <option value="1" {% if permission.select == 1 %}selected{% endif %}>編集者（チャット禁止）</option>
-                        <option value="2" {% if permission.select == 2 %}selected{% endif %}>閲覧者（書き込み禁止）</option>
-                      </select>
-                      <input type="hidden" name="authority" value="{{ forloop.counter }}">
-                      <input type="checkbox" style="display:none" name="read" value="{{ forloop.counter }}" {% if permission.read %}checked{% endif %}>
-                      <input type="checkbox" style="display:none" name="write" value="{{ forloop.counter }}" {% if permission.write %}checked{% endif %}>
-                      <input type="checkbox" style="display:none" name="chat" value="{{ forloop.counter }}" {% if permission.chat %}checked{% endif %}>
-                    </th>
-                    {% if user == calendar.user %}
-                      {% if permission.user.email != calendar.user.email %}
-                        <th class="d-flex justify-content-center">
-                          <input type="button" class="btn btn-danger" name="delete_btn" value="削除">
-                        </th>
-                      {% endif %}
-                    {% endif %}
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-            {% endcomment %}
+            </div> 
           </div>
         </form>
       </div>
