@@ -7,28 +7,29 @@ document.addEventListener("DOMContentLoaded", () => {
         .addEventListener("submit", function (e) {
             e.preventDefault();
 
+            const url = "/create_chat/" + calendarId + "/";
             const submitter = this.querySelector(".btn");
             const body = new FormData(this, submitter);
 
-            fetch("/create_chat/" + calendarId + "/", {
+            fetch(url, {
                 method: "POST",
                 body: body,
             })
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data.content);
                     if (data.success) {
                         const chatContainer =
                             document.querySelector(".chat_container");
 
                         //入力フォームの初期化
                         this.reset();
-
                         //チャットデータのセット
                         chatContainer.innerHTML = data.content;
                         setSettignsButton();
+
+                        sendMessage(data);
                     } else {
-                        alert("Failed to update chat.");
+                        sendMessage(data);
                     }
                 })
                 .catch((error) => console.error("Error:", error));
@@ -52,17 +53,16 @@ function setSettignsButton() {
     document.querySelectorAll(".update_link").forEach((link) => {
         link.addEventListener("click", function (e) {
             e.preventDefault();
-            var chatId = this.dataset.id;
-            var chatDiv = document.querySelector("#chat_" + chatId);
-            var contentP = chatDiv.querySelector("#chat_content_" + chatId);
-            var updateForm = chatDiv.querySelector("#update_form_" + chatId);
-            var menu = document.querySelector(
+            const chatId = this.dataset.id;
+            const contentP = document.querySelector("#chat_content_" + chatId);
+            const form = document.querySelector("#update_chat_" + chatId);
+            const menu = document.querySelector(
                 '.settings_menu[data-id="' + chatId + '"]'
             );
 
             menu.style.display = "none";
             contentP.style.display = "none";
-            updateForm.style.display = "block";
+            form.style.display = "block";
         });
     });
 
@@ -71,28 +71,30 @@ function setSettignsButton() {
             e.preventDefault();
 
             const chatId = this.dataset.id;
-            const form = document.querySelector("#update_form_" + chatId);
-            const submitter = document.querySelector(
-                "[name=update_submit_" + chatId + "]"
+            const url = "/update_chat/" + chatId + "/";
+            const form = document.querySelector("#update_chat_" + chatId);
+            const submitter = form.querySelector(
+                "[name=update_button_" + chatId + "]"
             );
             const body = new FormData(form, submitter);
 
-            fetch("/update_chat/" + chatId + "/", {
+            fetch(url, {
                 method: "POST",
                 body: body,
             })
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data.content);
                     if (data.success) {
-                        const chatDiv = document.getElementById(
-                            "chat_content_" + chatId
+                        const chatDiv = document.querySelector(
+                            "#chat_content_" + chatId
                         );
                         chatDiv.innerHTML = data.content;
                         chatDiv.style.display = "block";
                         form.style.display = "none";
+
+                        sendMessage(data);
                     } else {
-                        alert("Failed to update chat.");
+                        sendMessage(data);
                     }
                 })
                 .catch((error) => console.error("Error:", error));
@@ -104,41 +106,48 @@ function setSettignsButton() {
             e.preventDefault();
 
             const chatId = this.dataset.id;
-            const form = document.querySelector(
-                "[name=delete_chat_" + chatId + "]"
+            const url = "/delete_chat/" + chatId + "/";
+            const form = document.querySelector("#delete_chat_" + chatId);
+            const submitter = form.querySelector(
+                "[name=delete_button" + chatId + "]"
             );
-            const submitter = form.querySelector(".btn");
             const body = new FormData(form, submitter);
 
-            fetch("/delete_chat/" + chatId + "/", {
+            fetch(url, {
                 method: "POST",
                 body: body,
             })
                 .then((res) => res.json())
                 .then((data) => {
                     if (data.success) {
-                        console.log(data);
                         const chatContainer =
                             document.querySelector(".chat_container");
 
                         chatContainer.innerHTML = data.chats;
                         setSettignsButton();
 
-                        // 削除成功のメッセージを表示する
-                        const messages = new DOMParser().parseFromString(
-                            data.messages,
-                            "text/html"
-                        ).body.firstElementChild;
-
-                        // headerタグの後にmessageを表示させる
-                        document
-                            .querySelector("html header")
-                            .insertAdjacentElement("afterend", messages);
+                        sendMessage(data);
                     } else {
-                        alert("Failed to update chat.");
+                        endMessage("data");
                     }
                 })
                 .catch((error) => console.error("Error:", error));
         });
     });
+}
+
+function sendMessage(data) {
+    const messagesList = document.querySelector(".messages");
+
+    if (messagesList) {
+        messagesList.remove();
+    }
+    // 削除成功のメッセージを表示する
+    const messages = new DOMParser().parseFromString(data.messages, "text/html")
+        .body.firstElementChild;
+
+    // headerタグの後にmessageを表示させる
+    document
+        .querySelector("html header")
+        .insertAdjacentElement("afterend", messages);
 }

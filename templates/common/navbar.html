@@ -46,7 +46,7 @@
                     {% url 'socialaccount_connections' as socialaccount_url %}
                     {% if email_url or socialaccount_url %}
                         <a href="{% if email_url %}{{ email_url }}{% else %}{{ socialaccount_url }}{% endif %}"
-                           class="btn btn-secondary">Manage Account</a>
+                           class="btn btn-secondary">{% translate "Manage Account" %}</a>
                     {% endif %}
                     <a href="{% url 'account_logout' %}" class="btn btn-danger">{% translate "Sign Out" %}</a>
                 {% else %}

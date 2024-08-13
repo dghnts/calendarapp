@@ -305,6 +305,7 @@ class CreateChatView(View):
         data["success"] = True
 
         if form.is_valid():
+            messages.info(request,"チャットを送信しました")
             form.save()
         else:
             errors = form.errors.get_json_data().values()
@@ -314,8 +315,10 @@ class CreateChatView(View):
                     messages.error(request, e["message"])
             data["success"] = False
         
+        
         chats = Chat.objects.all()
         data["content"] = render_to_string("schedule/chat_content.html",{'chats':chats}, request)
+        data["messages"]    = render_to_string("common/message.html", {'messages': messages.get_messages(request)}, request)
                 
         return JsonResponse(data)
 
@@ -459,26 +462,9 @@ class UpdateChatView(View):
             print(form.errors)
             data["success"] = False
         
+        messages.info(request, "チャットを編集しました")
+        data["messages"] = render_to_string("common/message.html", {"messages": messages.get_messages(request)},request)
+        
         return JsonResponse(data)
-    
-    '''
-    def post(self, request, pk, *args, **kwargs):
-        message = Chat.objects.filter(id=pk).first()
-        
-        copied = request.POST.copy()
-        copied["user"]      = message.user
-        copied["calendar"]  = message.calendar.id
-        copied["content"]   = request.POST["content"]
-        
-        form = ChatForm(copied,instance=message)
-        
-        if form.is_valid():
-            form.save()
-        else:
-            print(form.errors)
-        
-        return redirect("schedule:calendar", pk=message.calendar.id)
-    
-    '''
     
 update_chat = UpdateChatView.as_view()

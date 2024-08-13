@@ -27,14 +27,14 @@
             {% endif %}
         </div>
         {% include "schedule/chat.html" %}
-        <form id="update_form_{{ chat.id }}" data-id="{{ chat.id }}" class="update_form" style="display: none;">
+        <form id="update_chat_{{ chat.id }}" data-id="{{ chat.id }}" class="update_form" style="display: none;">
             {% csrf_token %}
             <input type="text" name="content" value="{{ chat.content }}">
-            <input class="btn" type="submit"  name="update_submit_{{ chat.id}}"value="保存">
+            <input class="btn" type="submit"  name="update_button_{{ chat.id}}" value="保存">
         </form>
-        <form name="delete_chat_{{ chat.id }}" style="display:none;">
+        <form id="delete_chat_{{ chat.id }}" style="display:none;">
             {% csrf_token %}
-            <input type="submit" class="btn" value="削除">
+            <input class="btn" type="submit" name="delete_button_{{ chat.id }}" value="削除">
         </form>
     </div>
 {% endfor %}
