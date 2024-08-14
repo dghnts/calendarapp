@@ -9,14 +9,23 @@
 {% endblock %}
 {% block main %}
     <div class="container">
-        <h2>ようこそ！{{ user }}さん</h2>
-        <div class="d-flex flex-column flex-md-row p-4 gap-4 py-md-5 align-items-center justify-content-center">
+        <div id="welcome_message" class="mt-2">
+            <h2>ようこそ！{{ user }}さん</h2>
+        </div>
+        <div class="d-flex flex-column flex-sm-row p-4 gap-4 py-sm-5 align-items-top justify-content-center">
             {% if not calendars %}
-                <p>まだカレンダーがありません。</p>
-                {% include "schedule/create_calendar_button.html" %}
-            {% endif %}
-            {% if owner_calendars %}
                 <div class="card">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-center">
+                            <i class="bi bi-question-lg" style="font-size:500%"></i>
+                        </div>
+                        <h5 class="text-center my-2">まだカレンダーがありません。</h5><j:w></j:w>
+                        {% include "schedule/create_calendar_button.html" %}
+                    </div>
+                </div>
+            {% endif %}        
+            {% if owner_calendars %}
+                <div class="card calendars">
                     <div class="card-header">
                         <h5 class="card-title text-center">My Claendar</h5>
                     </div>
@@ -25,21 +34,12 @@
                             <a href="{% url 'schedule:calendar' owner_calendar.id %}" class="list-group-item list-group-item-action">
                                 {{ owner_calendar.name }}
                             </a>
-                        {% endfor %}
-                        {% if owner_calendars.count < 5 %}
-                        {% with n=5|sub:owner_calendars.count %}
-                            {% with ''|center:n as range %}
-                                {% for i in range %}
-                                    <a class="list-group-item list-group-item disabled text-white">""</a>
-                                {% endfor %}
-                            {% endwith %}
-                        {% endwith %}
-                        {% endif %}
+                        {% endfor %} 
                     </div>
                 </div>
             {% endif %}
             {% if other_calendars %}
-                <div id="other_calendar_list" class="card">
+                <div class="card calendars">
                     <div class="card-header">
                         <h5 class="card-title text-center">Other Calendars</h5>
                     </div>
@@ -48,16 +48,7 @@
                             <a href="{% url 'schedule:calendar' other_calendar.id %}" class="list-group-item list-group-item-action">
                                 {{ other_calendar.name }}
                             </a>
-                        {% endfor %}     
-                        {% if other_calendars.count < 5 %}
-                        {% with n=5|sub:other_calendars.count %}
-                            {% with ''|center:n as range %}
-                                {% for i in range %}
-                                    <a class="list-group-item list-group-item disabled text-white">""</a>
-                                {% endfor %}
-                            {% endwith %}
-                        {% endwith %}
-                        {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
             {% endif %}
