@@ -26,6 +26,8 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     # templateでの演算を可能にする
     "mathfilters",
+    # custom template filterの読み込み
+    "schedule.templatetags.schedule_extras",
 ]
 
 MIDDLEWARE = [
@@ -52,7 +54,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "config.custom_context.get_calendars",
+                "config.custom_context.get_context",
             ],
         },
     },
