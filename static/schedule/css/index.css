@@ -2,3 +2,22 @@
     width: 100%;
     max-width: 360px;
 }
+
+.list-group {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 206.65px;
+    /*スクロールバー非表示の設定*/
+    /*IE(Internet Explorer)・Microsoft Edgeへの対応*/
+    -ms-overflow-style: none;
+    /*Firefoxへの対応*/
+    scrollbar-width: none;
+}
+
+.list-group::-webkit-scrollbar {
+    display: none;
+}
+
+.list-group-item {
+    max-height: 50px;
+}
