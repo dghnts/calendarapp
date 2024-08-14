@@ -41,7 +41,7 @@
                     {% if calendar %}
                         {% include "schedule/permission/edit.html" %}
                     {% endif %}
-                    {% include "schedule/create_calendar.html" %}
+                    {% include "schedule/create_calendar_button.html" %}
                     {% url 'account_email' as email_url %}
                     {% url 'socialaccount_connections' as socialaccount_url %}
                     {% if email_url or socialaccount_url %}

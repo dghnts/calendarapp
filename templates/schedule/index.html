@@ -13,7 +13,7 @@
         <div class="d-flex flex-column flex-md-row p-4 gap-4 py-md-5 align-items-center justify-content-center">
             {% if not calendars %}
                 <p>まだカレンダーがありません。</p>
-                {% include "schedule/create_calendar.html" %}
+                {% include "schedule/create_calendar_button.html" %}
             {% endif %}
             {% if owner_calendars %}
                 <div class="card">
