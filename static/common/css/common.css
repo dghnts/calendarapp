@@ -4,9 +4,9 @@ html {
     height: 100%;
 }
 
-body{
-    margin:0;
-    height:100%
+body {
+    margin: 0;
+    height: 100%;
 }
 
 main {
@@ -14,7 +14,12 @@ main {
     height: 100%;
 }
 
-#calendar_list{
-    height: 177px;
+#calendar_list {
+    max-height: 177px;
     overflow-y: scroll;
+}
+
+.list-group {
+    --bs-list-group-action-hover-bg: #0d6efd;
+    --bs-list-group-action-hover-color: #fff;
 }
