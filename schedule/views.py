@@ -147,6 +147,9 @@ calendar = CalendarView.as_view()
 
 
 class CreateCalendarView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        return render(request, "schedule/create_calendar.html")
+
     def post(self, request, *args, **kwargs):
         # TODO:カレンダーの新規作成
         # request.POSTを編集するためにコピーする
@@ -160,8 +163,6 @@ class CreateCalendarView(LoginRequiredMixin, View):
         form = CalendarForm(copied)
 
         if not form.is_valid():
-
-            print(form.errors)
 
             return redirect("schedule:index")
 
@@ -178,11 +179,11 @@ class CreateCalendarView(LoginRequiredMixin, View):
         dic["write"] = True
         dic["chat"] = True
 
-        form = CalendarPermissionForm(dic)
+        owner_form = CalendarPermissionForm(dic)
 
-        if form.is_valid():
+        if owner_form.is_valid():
 
-            form.save()
+            owner_form.save()
 
             # TODO:カレンダーに紐づく権限を付与。
             emails = request.POST.getlist("email")
@@ -194,8 +195,8 @@ class CreateCalendarView(LoginRequiredMixin, View):
                 dic = {}
                 dic["calendar"] = calendar
                 # TODO: カスタムユーザーモデルを使って検索
-                print(email)
-                print(get_user_model().objects.filter(email=email).first())
+                # print(email)
+                # print(get_user_model().objects.filter(email=email).first())
                 dic["user"] = get_user_model().objects.filter(email=email).first()
                 # ↓参照: https://note.nkmk.me/python-if-conditional-expressions/
                 dic["read"] = True if authority in reads else False
@@ -207,7 +208,11 @@ class CreateCalendarView(LoginRequiredMixin, View):
                     print("成功")
                 else:
                     print(form.errors)
-
+                    return redirect("schedule:createcalendar")
+        else:
+            print(form.errors)
+            return redirect("schedule:createcalendar")
+        print("OK")
         # 　新規作成したカレンダーのページへリダイレクトする
         return redirect("schedule:calendar", calendar.id)
 

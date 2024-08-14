@@ -1,10 +1,10 @@
 <div id="permission_form_init_area" style="display:none;">
-    <div class="row mb-2">
-        <div class="col-4 d-flex justify-content-center">
+    <div class="row row-cols-md-3 mb-2 g-3 align-items-center border-bottom border-black">
+        <div class="col-12 d-flex justify-content-center">
             <input hidden name="id">
             <input class="form-control text-center" type="text" placeholder="メールアドレス" name="email">
         </div>
-        <div class="col-4 d-flex justify-content-center authorities">
+        <div class="col-12 authorities">
             <select class="form-select text-center">
                 <option value="none">選択してください</option>
                 <option value="3">編集者</option>
@@ -17,8 +17,8 @@
             <input type="checkbox" style="display:none;" name="write" value="1">
             <input type="checkbox" style="display:none;" name="chat" value="1">
         </div>
-        <div class="col-4 d-flex justify-content-center">
-            <input type="button" class="btn btn-danger" name="delete_btn" value="削除">
+        <div class="col-12">
+            <input type="button" class="btn btn-danger form-control mb-2" name="delete_btn" value="削除">
         </div>
     </div>
 </div>
