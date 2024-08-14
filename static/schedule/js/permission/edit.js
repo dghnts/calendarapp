@@ -1,4 +1,4 @@
-window.addEventListener("load", function () {
+window.addEventListener("load", () => {
     const permission_form_edit_add = document.querySelector(
         "#permission_form_edit_add"
     );
@@ -20,10 +20,7 @@ window.addEventListener("load", function () {
 
     // 全ての権限に対して以下の処理を行う
     permission_forms.forEach((permission_form) => {
-        let selecttag = permission_form.querySelector("select");
-        selecttag.addEventListener("change", () => {
-            setupForm(permission_form, authority);
-        });
+        setupForm(permission_form, authority);
     });
 
     permission_form_edit_add.addEventListener("click", () => {

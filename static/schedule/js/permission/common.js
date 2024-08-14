@@ -9,7 +9,7 @@ function setupForm(permission_form, authority) {
 
         // selectのvalue属性と同じvalueをもつ連想配列を取得する
         const auth = authority.find((obj) => obj["value"] == value);
-
+        console.log(select);
         read.checked = auth["read"];
         write.checked = auth["write"];
         chat.checked = auth["chat"];
@@ -21,7 +21,6 @@ function setupForm(permission_form, authority) {
     // 削除ボタンに削除操作を実装する
     delete_btns.forEach((btn) => {
         btn.addEventListener("click", function () {
-            //console.log(btn.parentElement);
             btn.parentElement.parentElement.remove();
         });
     });
