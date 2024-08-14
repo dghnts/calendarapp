@@ -60,13 +60,6 @@ class CalendarView(LoginRequiredMixin, View):
                 return redirect("schedule:index")
             # print("読み込み権限の確認")
 
-            context["write"] = True
-            # 書き込み権限がない場合は編集writeをFalseに変更する
-            if not CalendarPermission.objects.filter(
-                calendar=pk, user=request.user, write=True
-            ).exists():
-                context["write"] = False
-
             # 現在表示しているカレンダーのオブジェクトを取得
             calendarobj = Calendar.objects.filter(id=pk).first()
             # 現在表示しているカレンダーに紐づいているイベントをすべて取得
@@ -103,7 +96,8 @@ class CalendarView(LoginRequiredMixin, View):
                 )
                 permission.select = value_sum
 
-            context["permissions"] = permissions
+            context["calendar_permissions"] = permissions
+            context["user_permissions"] = permissions.filter(user=request.user).first()
 
             return render(request, "schedule/calendar.html", context)
 

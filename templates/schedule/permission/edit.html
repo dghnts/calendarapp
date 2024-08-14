@@ -37,7 +37,7 @@
                 {% if user == calendar.user %}<div class="col text-center">削除</div>{% endif %}
               </div>
               <div id="permission_form_edit_area">
-                {% for permission in permissions %}
+                {% for permission in calendar_permissions %}
                   <div class="row permission_form mb-2">
                     <div class="col-4 justify-content-center">
                       <input type="hidden" name="id" value="{{ permission.id }}">
