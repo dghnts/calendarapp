@@ -1,8 +1,6 @@
 from .base import *
 import os
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -20,5 +18,3 @@ DATABASES = {
 }
 
 STATIC_URL = "/static/"
-
-EMAIL_BACKEND   = "django.core.mail.backends.console.EmailBackend"

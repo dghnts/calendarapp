@@ -8,20 +8,13 @@ EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 
 EMAIL_HOST = "ここにメールのホストを書く"
 
-DEFAULT_FROM_EMAIL = "ここに送信元メールアドレスを指定"
-
-if "SENDGRID_API_KEY" in os.environ:
-    SENDGRID_API_KEY = os.environ["SENDGRID_API_KEY"]
-else:
-    SENDGRID_API_KEY = "ここにAPIキーを入力"
-
-SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+DEFAULT_FROM_EMAIL = "example@example.com"
 
 ALLOWED_HOSTS = ["shedule-manager.com"]
 
 CSRF_TRUSTED_ORIGINS    = [ "https://shedule-manager.com" ]
 
-SECRET_KEY = os.environ["SECRET_KEY"]
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
