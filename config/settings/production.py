@@ -12,7 +12,7 @@ DEFAULT_FROM_EMAIL = "example@example.com"
 
 ALLOWED_HOSTS = ["shedule-manager.com"]
 
-CSRF_TRUSTED_ORIGINS    = [ "https://shedule-manager.com" ]
+CSRF_TRUSTED_ORIGINS = ["https://shedule-manager.com"]
 
 
 DATABASES = {
@@ -30,3 +30,7 @@ STATIC_ROOT = "/var/www/{}/static".format(BASE_DIR.name)
 
 # 下記はファイルのアップロード機能を有する場合のみ
 MEDIA_ROOT = "/var/www/{}/media".format(BASE_DIR.name)
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
